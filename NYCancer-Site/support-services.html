@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Support Services | New York Cancer & Blood Specialists</title>
+        <link rel="stylesheet" href="css/styles.css">
+        <style>
+            .services-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+                margin: 30px 0;
+            }
+            
+            @media (max-width: 1024px) {
+                .services-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .services-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+            
+            .service-card {
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            
+            .service-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            }
+            
+            .service-image {
+                width: 100%;
+                height: 300px;
+                background-size: cover;
+                background-position: center;
+            }
+            
+            .service-name {
+                padding: 20px;
+                background-color: #fff;
+                text-align: center;
+            }
+            
+            .service-name h3 {
+                margin: 0;
+                color: #333;
+                font-size: 22px;
+            }
+            
+            .service-link {
+                text-decoration: none;
+                color: inherit;
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="header-placeholder"></div>
+        
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Support Services</h1>
+                <p>Comprehensive care beyond treatment to support your overall health and wellbeing.</p>
+            </div>
+        </section>
+        
+        <section class="main-content">
+            <div class="container">
+                <div class="content-section">
+                    <p>At New York Cancer & Blood Specialists, we believe in treating the whole person, not just the disease. Our comprehensive support services are designed to address the physical, emotional, financial, and practical challenges that can arise during and after treatment.</p>
+                    <p>Our dedicated team works together to provide personalized support that complements your medical care. Explore our support services below to learn how we can help you through every aspect of your health journey.</p>
+                
+                    <div class="services-grid">
+                        <!-- Chronic Care Management -->
+                        <a href="chronic-care-management.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Chronic Care Management</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Financial Assistance -->
+                        <a href="financial-assistance.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Financial Assistance</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Pharmacy -->
+                        <a href="pharmacy.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Pharmacy</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Physical Therapy -->
+                        <a href="physical-therapy.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Physical Therapy</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Psychology -->
+                        <a href="psychology.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Psychology</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Nutrition -->
+                        <a href="nutrition.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Nutrition</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Social Work -->
+                        <a href="social-work.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Social Work</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Support Groups -->
+                        <a href="support-groups.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Support Groups</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Palliative Care -->
+                        <a href="palliative-care.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Palliative Care</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Pain Management -->
+                        <a href="pain-management.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Pain Management</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Survivorship Program -->
+                        <a href="survivorship-program.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Survivorship Program</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Genetic Counseling -->
+                        <a href="genetic-counseling.html" class="service-link">
+                            <div class="service-card">
+                                <div class="service-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="service-name">
+                                    <h3>Genetic Counseling</h3>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="content-section" style="text-align: center;">
+            <div class="container">
+                <h2>Coordinated Care for Your Needs</h2>
+                <p>Our team works together to coordinate your support services with your treatment plan. Contact us to learn more about how we can help.</p>
+                <a href="#" class="cta-button">Contact Support Services</a>
+            </div>
+        </div>
+        
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+
+        <!-- Scripts -->
+        <script src="js/common.js"></script>
+    </body>
+</html>
