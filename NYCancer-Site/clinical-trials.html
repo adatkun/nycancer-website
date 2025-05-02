@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Current Clinical Trials | New York Cancer & Blood Specialists</title>
+        <link rel="stylesheet" href="css/styles.css">
+        <style>
+            /* Table Specific Styles */
+            .trials-table {
+                width: 100%;
+                margin: 30px 0;
+                overflow-x: auto;
+            }
+
+            .trials-table table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .trials-table th {
+                background-color: #f5f5f5;
+                padding: 12px 15px;
+                text-align: left;
+                font-weight: 600;
+                border-bottom: 2px solid #ddd;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .trials-table td {
+                padding: 12px 15px;
+                border-bottom: 1px solid #eee;
+                vertical-align: middle;
+            }
+
+            .trials-table tr:hover {
+                background-color: #f9f9f9;
+            }
+
+            .details-link {
+                display: inline-block;
+                padding: 5px 10px;
+                background-color: #0078d4;
+                color: white;
+                text-decoration: none;
+                border-radius: 4px;
+                font-size: 14px;
+                text-align: center;
+            }
+
+            .details-link:hover {
+                background-color: #005fa3;
+            }
+            
+            /* Filter Styles */
+            .filter-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                margin-bottom: 20px;
+                padding: 20px;
+                background-color: #f8f8f8;
+                border-radius: 8px;
+            }
+            
+            .filter-group {
+                flex: 1 1 200px;
+            }
+            
+            .filter-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: 600;
+            }
+            
+            .filter-group select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            
+            .filter-controls {
+                display: flex;
+                gap: 10px;
+                align-items: flex-end;
+            }
+            
+            .filter-button {
+                padding: 10px 20px;
+                background-color: #0078d4;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            
+            .filter-button:hover {
+                background-color: #005fa3;
+            }
+            
+            .reset-button {
+                padding: 10px 20px;
+                background-color: #f0f0f0;
+                color: #333;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            
+            .reset-button:hover {
+                background-color: #e0e0e0;
+            }
+            
+            /* Contact Info Styles */
+            .contact-info {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                margin: 20px 0;
+            }
+
+            .contact-method {
+                flex: 1 1 200px;
+                background-color: #f5f5f5;
+                padding: 20px;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .contact-method h3 {
+                margin-top: 0;
+                margin-bottom: 10px;
+                font-size: 18px;
+            }
+
+            .contact-method p {
+                margin: 0;
+                font-size: 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="header-placeholder"></div>
+        
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Current Clinical Trials</h1>
+                <p>Access to innovative treatments and breakthrough therapies through our research program.</p>
+            </div>
+        </section>
+        
+        <section class="main-content">
+            <div class="container">
+                <div class="content-section">
+                    <div class="two-column">
+                        <div>
+                            <h2>Clinical Trials at NYCBS</h2>
+                            <p>New York Cancer & Blood Specialists is proud to offer one of the region's most comprehensive clinical trials programs. Our current portfolio includes studies investigating novel treatments for various cancer types and blood disorders at different stages.</p>
+                            <p>Clinical trials provide patients with access to promising new treatments before they're widely available. By participating in a clinical trial, you not only gain access to cutting-edge therapies but also contribute to the advancement of cancer care for future patients.</p>
+                            <p>Our research team carefully selects trials based on scientific merit and potential benefit to our patient population. Each trial undergoes rigorous review to ensure it meets our high standards for safety and scientific integrity.</p>
+                        </div>
+                        <div style="background-image: url('/api/placeholder/600/400'); background-size: cover; background-position: center; border-radius: 4px;"></div>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h2>Filter Clinical Trials</h2>
+                    <p>Use the filters below to narrow down the list of trials and find options relevant to your specific condition.</p>
+                    
+                    <div class="filter-container">
+                        <div class="filter-group">
+                            <label for="condition-filter">Condition</label>
+                            <select id="condition-filter">
+                                <option value="all">All Conditions</option>
+                                <option value="breast">Breast Cancer</option>
+                                <option value="lung">Non-Small Cell Lung Cancer</option>
+                                <option value="colorectal">Colorectal Cancer</option>
+                                <option value="prostate">Prostate Cancer</option>
+                                <option value="myeloma">Multiple Myeloma</option>
+                                <option value="lymphoma">Lymphoma</option>
+                                <option value="leukemia">Leukemia</option>
+                                <option value="solid">Solid Tumors</option>
+                                <option value="other">Other Conditions</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="sponsor-filter">Sponsor</label>
+                            <select id="sponsor-filter">
+                                <option value="all">All Sponsors</option>
+                                <option value="abbvie">AbbVie</option>
+                                <option value="amgen">Amgen</option>
+                                <option value="astrazeneca">AstraZeneca</option>
+                                <option value="beone">BeOne Medicines</option>
+                                <option value="gilead">Gilead Sciences</option>
+                                <option value="gsk">GlaxoSmithKline</option>
+                                <option value="janssen">Janssen</option>
+                                <option value="mirati">Mirati Therapeutics</option>
+                                <option value="roche">Hoffmann-La Roche</option>
+                                <option value="other">Other Sponsors</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="type-filter">Study Type</label>
+                            <select id="type-filter">
+                                <option value="all">All Types</option>
+                                <option value="treatment">Treatment</option>
+                                <option value="observational">Observational</option>
+                                <option value="registry">Registry</option>
+                                <option value="sample">Sample Collection</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-controls">
+                            <button class="filter-button">Apply Filters</button>
+                            <button class="reset-button">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h2>All Available Clinical Trials</h2>
+                    <p>Browse our complete list of currently available clinical trials. Click "View Details" for complete information about eligibility, study design, and participation requirements.</p>
+                    
+                    <div class="trials-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Condition</th>
+                                    <th>Trial Name</th>
+                                    <th>Sponsor</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Solid Tumors</td>
+                                    <td>1719-001: MRTX1719 in MTAP Deleted Advanced Solid Tumors</td>
+                                    <td>Mirati Therapeutics, Inc.</td>
+                                    <td><a href="trial-details.html?id=1719-001" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Breast Cancer</td>
+                                    <td>ACE-Breast-03: ARX788 in HER2-positive, Metastatic Breast Cancer Subjects Previously Treated with T-DXd</td>
+                                    <td>Ambrx, Inc.</td>
+                                    <td><a href="trial-details.html?id=ACE-Breast-03" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>ARTEMIA: Trial of Therapeutic Cancer Vaccine OSE2101 in Patients With Non-Small Cell Lung Cancer and Secondary Resistance to Immune Checkpoint Inhibitor</td>
+                                    <td>OSE Immunotherapeutics</td>
+                                    <td><a href="trial-details.html?id=ARTEMIA" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Breast Cancer</td>
+                                    <td>ASCENT-05: Adjuvant Sacituzumab Govitecan Plus Pembrolizumab for Patients with Triple Negative Breast Cancer</td>
+                                    <td>Gilead Sciences, Inc.</td>
+                                    <td><a href="trial-details.html?id=ASCENT-05" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Cachexia</td>
+                                    <td>AV-380-22-102: A Dose Escalation Study of GDF-15 Inhibitor AV-380 in Metastatic Cancer Patients with Cachexia</td>
+                                    <td>AVEO Pharmaceuticals, Inc.</td>
+                                    <td><a href="trial-details.html?id=AV-380-22-102" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Colon Cancer</td>
+                                    <td>AZUR-2: Perioperative Dostarlimab in Patients with dMMR/MSI-H Resectable Colon Cancer</td>
+                                    <td>GlaxoSmithKline</td>
+                                    <td><a href="trial-details.html?id=AZUR-2" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>AndroMETa-Lung-536: Telisotuzumab Adizutecan in Combination With IV Budigalimab in Adult Participants With Advanced or Metastatic Non-Squamous NSCLC</td>
+                                    <td>AbbVie</td>
+                                    <td><a href="trial-details.html?id=AndroMETa-Lung-536" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Chronic Lymphocytic Leukemia</td>
+                                    <td>BGB-11417-204: Sonrotoclax Combined With Zanubrutinib Versus Zanubrutinib Alone in Participants With Previously Untreated Chronic Lymphocytic Leukemia</td>
+                                    <td>BeOne Medicines</td>
+                                    <td><a href="trial-details.html?id=BGB-11417-204" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Breast Cancer</td>
+                                    <td>BRIA-ABC: Bria-IMT plus Immunotherapy for Patients with Pre-Treated Metastatic Breast Cancer</td>
+                                    <td>BriaCell Therapeutics Corporation</td>
+                                    <td><a href="trial-details.html?id=BRIA-ABC" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>CYBRID-01: Observational lung trial to collect tissue to train and validate a live tumor diagnostic platform</td>
+                                    <td>Elephas Biosciences Corporation</td>
+                                    <td><a href="trial-details.html?id=CYBRID-01" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Breast Cancer</td>
+                                    <td>DB-1303-O-1001: A Phase 1/2a Study of DB-1303/BNT323 in Advanced/Metastatic Solid Tumors</td>
+                                    <td>DualityBio Inc.</td>
+                                    <td><a href="trial-details.html?id=DB-1303-O-1001" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Prostate Cancer</td>
+                                    <td>Debio 4228-201: Study of Extended Release GnRH in Newly Diagnosed Locally Advanced or Metastatic Prostate Cancer</td>
+                                    <td>Debiopharm International SA</td>
+                                    <td><a href="trial-details.html?id=Debio-4228-201" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Breast Cancer</td>
+                                    <td>ELEVATE: Elacestrant Combinations for the Treatment of ER+ HER2- Metastatic Breast Cancer After CDK4/6 Inhibitor</td>
+                                    <td>Stemline Therapeutics, Inc.</td>
+                                    <td><a href="trial-details.html?id=ELEVATE" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Breast Cancer</td>
+                                    <td>EvoPAR-Breast01: Saruparib (AZD5305) Plus Camizestrant Compared With CDK4/6 Inhibitor Plus Endocrine Therapy or Plus Camizestrant in HR-Positive, HER2-Negative, BRCA1, BRCA2, or PALB2m Advanced Breast Cancer</td>
+                                    <td>AstraZeneca</td>
+                                    <td><a href="trial-details.html?id=EvoPAR-Breast01" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Prostate Cancer</td>
+                                    <td>EvoPAR-Prostate01: Saruparib (AZD5305) vs Placebo in Men With Metastatic Castration-Sensitive Prostate Cancer Receiving Physician's Choice New Hormonal Agents</td>
+                                    <td>AstraZeneca</td>
+                                    <td><a href="trial-details.html?id=EvoPAR-Prostate01" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Central Nervous System Cancer</td>
+                                    <td>F8294-201b: BRAF Inhibitor FORE8394 in Recurrent/Refractory BRAF V600E Mutant CNS Malignancy</td>
+                                    <td>Fore Biotherapeutics</td>
+                                    <td><a href="trial-details.html?id=F8294-201b" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Breast Cancer</td>
+                                    <td>First-in-Human, Escalating Oral Dose Study of RGT-419B Given Alone and with Endocrine Therapy in Subjects with Hormone Receptor Positive, Human Epidermal Growth Factor Receptor 2 Negative Advanced/Metastatic Breast Cancer</td>
+                                    <td>Regor Pharmaceuticals Inc.</td>
+                                    <td><a href="trial-details.html?id=RGT-419B" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Colorectal Cancer</td>
+                                    <td>INTRINSIC: A Multi-Arm Study Evaluating the Safety and Efficacy of Targeted Therapies in Subpopulations of Patients With Metastatic Colorectal Cancer</td>
+                                    <td>Hoffmann-La Roche</td>
+                                    <td><a href="trial-details.html?id=INTRINSIC" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>KRAScendo-1: A Study Evaluating the Efficacy and Safety of Divarasib Versus Sotorasib or Adagrasib in Participants With Previously Treated KRAS G12C-positive Advanced or Metastatic Non-Small Cell Lung Cancer</td>
+                                    <td>Hoffmann-La Roche</td>
+                                    <td><a href="trial-details.html?id=KRAScendo-1" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>KRYSTAL-17: Adagrasib Combinations in Patients with KRAS G12C Mutation</td>
+                                    <td>Mirati Therapeutics, Inc.</td>
+                                    <td><a href="trial-details.html?id=KRYSTAL-17" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>LUNAR-2: TTFields With Pembrolizumab + Platinum-based Chemotherapy for Metastatic NSCLC</td>
+                                    <td>NovoCure GmbH</td>
+                                    <td><a href="trial-details.html?id=LUNAR-2" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Multiple Myeloma</td>
+                                    <td>M22-574: Study of Treatment with Bispecific Antibody ABBV-383 in Relapsed/Refractory Multiple Myeloma After at Least 2 Prior Lines of Therapy</td>
+                                    <td>AbbVie</td>
+                                    <td><a href="trial-details.html?id=M22-574" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Follicular Lymphoma or Marginal Zone Lymphoma</td>
+                                    <td>MAHOGANY: A Study of Zanubrutinib Plus Anti-CD20 Versus Lenalidomide Plus Rituximab in Participants With Relapsed/​Refractory Follicular or Marginal Zone Lymphoma</td>
+                                    <td>BeOne Medicines</td>
+                                    <td><a href="trial-details.html?id=MAHOGANY" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>MARIGOLD: A Study to Compare ABP 234 and Keytruda® (Pembrolizumab) in Participants With Advanced or Metastatic Non-squamous Non-Small Cell Lung Cancer</td>
+                                    <td>Amgen</td>
+                                    <td><a href="trial-details.html?id=MARIGOLD" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Colorectal Cancer</td>
+                                    <td>MBI-006-COMUNITY: Combined AlloStim+Anti-PD-L1 in MSS Metastatic Colorectal Cancer</td>
+                                    <td>Mirror Biologics, Inc.</td>
+                                    <td><a href="trial-details.html?id=MBI-006-COMUNITY" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Hyperkalemia/Chronic Kidney Disease</td>
+                                    <td>NYH-01: Hyperkalemia/Chronic Kidney Disease</td>
+                                    <td>Relypsa</td>
+                                    <td><a href="trial-details.html?id=NYH-01" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Colorectal Cancer</td>
+                                    <td>OrigAMI-2: Amivantamab + Chemotherapy Versus Cetuximab + Chemotherapy in Treatment-naïve Participants with KRAS/NRAS and BRAF Wild-type Colorectal Cancer</td>
+                                    <td>Janssen Research & Development, LLC</td>
+                                    <td><a href="trial-details.html?id=OrigAMI-2" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Colorectal Cancer</td>
+                                    <td>OrigAMI-3: Amivantamab + FOLFIRI Versus Cetuximab/Bevacizumab + FOLFIRI in Participants With Recurrent KRAS/NRAS and BRAF Wild-type Colorectal Cancer</td>
+                                    <td>Janssen Research & Development, LLC</td>
+                                    <td><a href="trial-details.html?id=OrigAMI-3" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Advanced Solid tumors</td>
+                                    <td>Phase 1 Study of SGN-B6A in Advanced Solid Tumors</td>
+                                    <td>Seagen Inc.</td>
+                                    <td><a href="trial-details.html?id=SGN-B6A" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>Phase 2/3 Study of Fianlimab (Anti-LAG-3 Antibody) in Combination With Cemiplimab (Anti-PD-1 Antibody) Versus Cemiplimab Monotherapy in First-Line Treatment of Patients With Advanced Non-Small Cell Lung Cancer</td>
+                                    <td>Regeneron Pharmaceuticals</td>
+                                    <td><a href="trial-details.html?id=Fianlimab" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Multiple Myeloma</td>
+                                    <td>Prospective Observational Study to Evaluate an Electronic Health Record-Based Data Collection Infrastructure for Capturing the Risk Factors for Severe and Fatal Infusion related Reactions in Newly Diagnosed Multiple Myeloma Participants Treated with Daratumumab (Intravenous or Subcutaneous)</td>
+                                    <td>J&J</td>
+                                    <td><a href="trial-details.html?id=Daratumumab-IRR" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Solid Tumors or Multiple Myeloma</td>
+                                    <td>QXL138AM-001: Safety, PK and Efficacy of QXL138AM in Patients With Solid Tumors and Multiple Myeloma</td>
+                                    <td>Nammi Therapeutics Inc</td>
+                                    <td><a href="trial-details.html?id=QXL138AM-001" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>ITP, wAIHA, CAD</td>
+                                    <td>RUBY-4: Povetacicept (ALPN-303) for Patients with Autoimmune Cytopenias</td>
+                                    <td>Alpine Immune Sciences, Inc.</td>
+                                    <td><a href="trial-details.html?id=RUBY-4" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Diffuse Large B-Cell Lymphoma</td>
+                                    <td>SKYGLO: Glofitamab in Combination With Polatuzumab Vedotin Plus Rituximab, Cyclophosphamide, Doxorubicin, and Prednisone (Pola-R-CHP) Versus Pola-R-CHP in Previously Untreated Patients with Large B-Cell Lymphoma</td>
+                                    <td>Hoffmann-La Roche</td>
+                                    <td><a href="trial-details.html?id=SKYGLO" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Multiple Myeloma</td>
+                                    <td>SUCCESSOR-1: A Study to Evaluate Mezigdomide, Bortezomib and Dexamethasone (MEZIVd) Versus Pomalidomide, Bortezomib and Dexamethasone (PVd) in Participants With Relapsed or Refractory Multiple Myeloma (RRMM)</td>
+                                    <td>Celgene Corporation</td>
+                                    <td><a href="trial-details.html?id=SUCCESSOR-1" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>TRITON: First-Line Treatment in Metastatic Non-Small Cell Lung Cancer Patients with Non-Squamous Histology</td>
+                                    <td>AstraZeneca LP</td>
+                                    <td><a href="trial-details.html?id=TRITON" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Non-Small Cell Lung Cancer</td>
+                                    <td>TeLuRide-005: EIK1001 in Combination With Pembrolizumab and Chemotherapy in Patients With Stage 4 Non-Small Cell Lung Cancer</td>
+                                    <td>Eikon Therapeutics</td>
+                                    <td><a href="trial-details.html?id=TeLuRide-005" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Cancer Diagnosis</td>
+                                    <td>[Registry] MSK-IMPACT/ACCESS Genomic Profiling in Cancer Patients</td>
+                                    <td>Memorial Sloan Kettering Cancer Center</td>
+                                    <td><a href="trial-details.html?id=MSK-IMPACT" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Various Indications</td>
+                                    <td>[Sample Collection] Clinical Biospecimen Procurement Protocol to Support Advancements in Medical Diagnoses of Diseases (PROMEDx)</td>
+                                    <td>Precision for Medicine</td>
+                                    <td><a href="trial-details.html?id=PROMEDx" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Solid Tumors</td>
+                                    <td>[Sample Collection] Collection and Distribution of Biofluids for Research Purposes</td>
+                                    <td>Bluestar Genomics</td>
+                                    <td><a href="trial-details.html?id=Bluestar" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Solid Tumors</td>
+                                    <td>[Sample Collection] Detecting cancers Earlier Through Elective plasma-based Cancer SEEK Testing (DETECT-ASCEND 2)</td>
+                                    <td>Exact Sciences Thrive LLC</td>
+                                    <td><a href="trial-details.html?id=DETECT-ASCEND-2" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Various Indications</td>
+                                    <td>[Sample Collection] Prospective Collection of Samples for Research (SERATRIALS-05035)</td>
+                                    <td>SERATRIALS, LLC.</td>
+                                    <td><a href="trial-details.html?id=SERATRIALS-05035" class="details-link">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Solid Tumors</td>
+                                    <td>[Sample Collection] Vallania: A Case Control Study for the Development of Multiomics Blood Tests for Cancer Screening</td>
+                                    <td>Freenome Holdings Inc.</td>
+                                    <td><a href="trial-details.html?id=Vallania" class="details-link">View Details</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h2>Contact Our Research Team</h2>
+                    <p>Our list of available clinical trials changes frequently as new studies open and others complete enrollment. To get the most up-to-date information about clinical trial opportunities that may be appropriate for your specific condition, please contact our research department:</p>
+                    
+                    <div class="contact-info">
+                        <div class="contact-method">
+                            <h3>Phone</h3>
+                            <p>(631) 751-3000</p>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <h3>Email</h3>
+                            <p>research@nycancer.com</p>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <h3>Hours</h3>
+                            <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="content-section" style="text-align: center; background-color: #f8f8f8; padding: 40px 0;">
+            <div class="container">
+                <h2>Considering Participation?</h2>
+                <p>Learn more about the benefits, risks, and what to expect when participating in a clinical trial.</p>
+                <div class="cta-buttons">
+                    <a href="study-participation.html" class="cta-button">Participation Information</a>
+                    <a href="common-questions.html" class="cta-button secondary">Frequently Asked Questions</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+
+        <!-- Scripts -->
+        <script src="js/common.js"></script>
+        <script>
+            // Simple table filtering functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const filterButton = document.querySelector('.filter-button');
+                const resetButton = document.querySelector('.reset-button');
+                const tableRows = document.querySelectorAll('.trials-table tbody tr');
+                
+                filterButton.addEventListener('click', function() {
+                    const conditionFilter = document.getElementById('condition-filter').value;
+                    const sponsorFilter = document.getElementById('sponsor-filter').value;
+                    const typeFilter = document.getElementById('type-filter').value;
+                    
+                    tableRows.forEach(row => {
+                        const condition = row.cells[0].textContent.toLowerCase();
+                        const trialName = row.cells[1].textContent.toLowerCase();
+                        const sponsor = row.cells[2].textContent.toLowerCase();
+                        
+                        let showRow = true;
+                        
+                        // Apply condition filter
+                        if (conditionFilter !== 'all') {
+                            if (!condition.includes(conditionFilter.toLowerCase())) {
+                                showRow = false;
+                            }
+                        }
+                        
+                        // Apply sponsor filter
+                        if (sponsorFilter !== 'all' && showRow) {
+                            if (!sponsor.includes(sponsorFilter.toLowerCase())) {
+                                showRow = false;
+                            }
+                        }
+                        
+                        // Apply type filter
+                        if (typeFilter !== 'all' && showRow) {
+                            if (typeFilter === 'sample' && !trialName.includes('[sample')) {
+                                showRow = false;
+                            } else if (typeFilter === 'registry' && !trialName.includes('[registry')) {
+                                showRow = false;
+                            } else if (typeFilter === 'observational' && !trialName.toLowerCase().includes('observational')) {
+                                showRow = false;
+                            } else if (typeFilter === 'treatment' && (trialName.includes('[sample') || trialName.includes('[registry'))) {
+                                showRow = false;
+                            }
+                        }
+                        
+                        row.style.display = showRow ? '' : 'none';
+                    });
+                });
+                
+                resetButton.addEventListener('click', function() {
+                    document.getElementById('condition-filter').value = 'all';
+                    document.getElementById('sponsor-filter').value = 'all';
+                    document.getElementById('type-filter').value = 'all';
+                    
+                    tableRows.forEach(row => {
+                        row.style.display = '';
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
