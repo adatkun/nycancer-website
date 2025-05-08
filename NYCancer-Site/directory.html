@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find a Doctor or Location | New York Cancer & Blood Specialists</title>
+    <!-- Include your main site CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Directory-specific styles */
+        .directory-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+        
+        .tab {
+            padding: 10px 16px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+        }
+        
+        .tab.inactive {
+            color: #6b7280;
+        }
+        
+        .search-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .search-box {
+            flex-grow: 1;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        .filter-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: #f3f4f6;
+            color: #374151;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .filter-button.active {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .filter-count {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .filter-panel {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: none;
+        }
+        
+        .filter-panel.open {
+            display: block;
+        }
+        
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .filter-title {
+            font-weight: 500;
+            font-size: 18px;
+        }
+        
+        .clear-filters {
+            color: #2563eb;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        
+        @media (min-width: 768px) {
+            .filter-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .filter-section h4 {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .filter-options {
+            max-height: 200px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-checkbox {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .results-count {
+            margin-bottom: 16px;
+            color: #6b7280;
+        }
+        
+        .no-results {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            display: none;
+        }
+        
+        .no-results-title {
+            color: #1e40af;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .no-results-message {
+            color: #2563eb;
+            margin-bottom: 16px;
+        }
+        
+        .clear-all-button {
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        @media (min-width: 768px) {
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .physicians-results {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .location-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-content {
+            padding: 16px;
+        }
+        
+        .doctor-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .doctor-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .doctor-info h3 {
+            color: #1e40af;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .doctor-specialty {
+            color: #4b5563;
+            margin-bottom: 4px;
+        }
+        
+        .doctor-credentials {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .info-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .info-icon {
+            color: #6b7280;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+        
+        .info-content {
+            color: #4b5563;
+            font-size: 14px;
+        }
+        
+        .location-name {
+            color: #1e40af;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 12px;
+        }
+        
+        .tag {
+            background-color: #eff6ff;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .provider-item {
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .provider-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        .provider-image {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .provider-info {
+            overflow: hidden;
+        }
+        
+        .provider-name {
+            color: #1e40af;
+            font-weight: 500;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .provider-specialty {
+            color: #6b7280;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .primary-button {
+            flex-grow: 1;
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        
+        .primary-button:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .secondary-button {
+            background-color: white;
+            color: #2563eb;
+            border: 1px solid #2563eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        
+        .secondary-button:hover {
+            background-color: #eff6ff;
+        }
+        
+        .loading-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #2563eb;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header placeholder - will be filled by your common.js -->
+    <div id="header-placeholder"></div>
+    
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Find a Doctor or Location</h1>
+            <p>Connect with our specialists and find the care you need at a location near you.</p>
+        </div>
+    </section>
+    
+    <!-- Directory Container -->
+    <section class="main-content">
+        <div class="container">
+            <div class="content-section">
+                <div class="directory-container">
+                    <!-- Tabs -->
+                    <div class="tab-container">
+                        <div id="tab-physicians" class="tab active">Find a Physician</div>
+                        <div id="tab-locations" class="tab inactive">Our Locations</div>
+                    </div>
+                    
+                    <!-- Search and Filter -->
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input id="search-input" type="text" class="search-input" placeholder="Search by physician name or specialty...">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        
+                        <button id="filter-toggle" class="filter-button">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Filters
+                            <span id="filter-count" class="filter-count hidden">0</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Filters Panel -->
+                    <div id="filter-panel" class="filter-panel">
+                        <div class="filter-header">
+                            <h3 class="filter-title">Filter Results</h3>
+                            <button id="clear-filters" class="clear-filters hidden">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Clear all filters
+                            </button>
+                        </div>
+                        
+                        <div class="filter-grid">
+                            <!-- Specialties Filter -->
+                            <div class="filter-section">
+                                <h4>Specialties</h4>
+                                <div id="specialties-container" class="filter-options">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                            </div>
+                            
+                            <!-- Locations Filter -->
+                            <div class="filter-section">
+                                <h4>Locations</h4>
+                                <div id="locations-container" class="filter-options">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                            </div>
+                            
+                            <!-- Languages Filter -->
+                            <div id="languages-section" class="filter-section">
+                                <h4>Languages</h4>
+                                <div id="languages-container" class="filter-options">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Loading Indicator -->
+                    <div id="loading-indicator" class="loading-indicator">
+                        <div class="spinner"></div>
+                    </div>
+                    
+                    <!-- Results Count -->
+                    <div id="results-count" class="results-count hidden">0 physicians found</div>
+                    
+                    <!-- No Results Message -->
+                    <div id="no-results" class="no-results">
+                        <p class="no-results-title">No results found matching your criteria.</p>
+                        <p class="no-results-message">Try adjusting your filters or search term.</p>
+                        <button id="clear-all-button" class="clear-all-button">Clear All Filters</button>
+                    </div>
+                    
+                    <!-- Physicians Results -->
+                    <div id="physicians-results" class="results-grid physicians-results hidden"></div>
+                    
+                    <!-- Locations Results -->
+                    <div id="locations-results" class="results-grid hidden"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Help Section -->
+    <div class="content-section" style="text-align: center;">
+        <div class="container">
+            <h2>We're Here To Help</h2>
+            <p>If you have questions or would like to schedule a consultation with one of our specialists, please contact us.</p>
+            <a href="#" class="cta-button">Request an Appointment</a>
+        </div>
+    </div>
+    
+    <!-- Footer placeholder - will be filled by your common.js -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Include your common JS file that loads header and footer -->
+    <script src="js/common.js"></script>
+    
+    <!-- Directory JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State variables
+            let activeTab = 'physicians';
+            let searchQuery = '';
+            let filtersOpen = false;
+            
+            // Data state
+            let allPhysicians = [];
+            let allLocations = [];
+            let selectedSpecialties = [];
+            let selectedLocations = [];
+            let selectedLanguages = [];
+            
+            // Filter options derived from data
+            let specialties = [];
+            let locationOptions = [];
+            let languages = [];
+            
+            // DOM Elements
+            const tabPhysicians = document.getElementById('tab-physicians');
+            const tabLocations = document.getElementById('tab-locations');
+            const searchInput = document.getElementById('search-input');
+            const filterToggle = document.getElementById('filter-toggle');
+            const filterPanel = document.getElementById('filter-panel');
+            const filterCount = document.getElementById('filter-count');
+            const clearFilters = document.getElementById('clear-filters');
+            const clearAllButton = document.getElementById('clear-all-button');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const resultsCount = document.getElementById('results-count');
+            const noResults = document.getElementById('no-results');
+            const physiciansResults = document.getElementById('physicians-results');
+            const locationsResults = document.getElementById('locations-results');
+            const specialtiesContainer = document.getElementById('specialties-container');
+            const locationsContainer = document.getElementById('locations-container');
+            const languagesContainer = document.getElementById('languages-container');
+            const languagesSection = document.getElementById('languages-section');
+            
+            // Event Listeners
+            tabPhysicians.addEventListener('click', () => setActiveTab('physicians'));
+            tabLocations.addEventListener('click', () => setActiveTab('locations'));
+            searchInput.addEventListener('input', handleSearch);
+            filterToggle.addEventListener('click', toggleFilters);
+            clearFilters.addEventListener('click', clearAllFilters);
+            clearAllButton.addEventListener('click', clearAllFilters);
+            
+            // Initialize
+            fetchData();
+            
+            // Functions
+            function setActiveTab(tab) {
+                activeTab = tab;
+                
+                if (tab === 'physicians') {
+                    tabPhysicians.className = 'tab active';
+                    tabLocations.className = 'tab inactive';
+                    languagesSection.classList.remove('hidden');
+                    searchInput.placeholder = "Search by physician name or specialty...";
+                } else {
+                    tabPhysicians.className = 'tab inactive';
+                    tabLocations.className = 'tab active';
+                    languagesSection.classList.add('hidden');
+                    searchInput.placeholder = "Search by location name or address...";
+                }
+                
+                updateResults();
+            }
+            
+            function handleSearch() {
+                searchQuery = searchInput.value.toLowerCase();
+                updateResults();
+            }
+            
+            function toggleFilters() {
+                filtersOpen = !filtersOpen;
+                
+                if (filtersOpen) {
+                    filterPanel.classList.add('open');
+                    filterToggle.classList.add('active');
+                } else {
+                    filterPanel.classList.remove('open');
+                    filterToggle.classList.remove('active');
+                }
+            }
+            
+            function toggleFilterItem(type, value) {
+                if (type === 'specialty') {
+                    if (selectedSpecialties.includes(value)) {
+                        selectedSpecialties = selectedSpecialties.filter(item => item !== value);
+                    } else {
+                        selectedSpecialties.push(value);
+                    }
+                } else if (type === 'location') {
+                    if (selectedLocations.includes(value)) {
+                        selectedLocations = selectedLocations.filter(item => item !== value);
+                    } else {
+                        selectedLocations.push(value);
+                    }
+                } else if (type === 'language') {
+                    if (selectedLanguages.includes(value)) {
+                        selectedLanguages = selectedLanguages.filter(item => item !== value);
+                    } else {
+                        selectedLanguages.push(value);
+                    }
+                }
+                
+                updateFilterCount();
+                updateResults();
+            }
+            
+            function updateFilterCount() {
+                const totalFilters = selectedSpecialties.length + selectedLocations.length + selectedLanguages.length;
+                
+                if (totalFilters > 0) {
+                    filterCount.textContent = totalFilters;
+                    filterCount.classList.remove('hidden');
+                    clearFilters.classList.remove('hidden');
+                } else {
+                    filterCount.classList.add('hidden');
+                    clearFilters.classList.add('hidden');
+                }
+            }
+            
+            function clearAllFilters() {
+                searchInput.value = '';
+                searchQuery = '';
+                selectedSpecialties = [];
+                selectedLocations = [];
+                selectedLanguages = [];
+                
+                // Update checkbox states
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                updateFilterCount();
+                updateResults();
+            }
+            
+            function getFilteredResults() {
+                if (activeTab === 'physicians') {
+                    return allPhysicians.filter(physician => {
+                        // Search query matching
+                        const matchesSearch = !searchQuery ||
+                            physician.name.toLowerCase().includes(searchQuery) ||
+                            (physician.specialty && physician.specialty.toLowerCase().includes(searchQuery));
+                        
+                        // Specialty filter
+                        const matchesSpecialties = selectedSpecialties.length === 0 ||
+                            (physician.specialty && selectedSpecialties.includes(physician.specialty));
+                        
+                        // Location filter
+                        const matchesLocations = selectedLocations.length === 0 ||
+                            (physician.active_locations && physician.active_locations.some(loc => {
+                                if (loc.address) {
+                                    const addressParts = loc.address.split(',');
+                                    if (addressParts.length >= 2) {
+                                        const cityState = addressParts[1].trim();
+                                        const cityParts = cityState.split(' ');
+                                        if (cityParts.length >= 1) {
+                                            return selectedLocations.includes(cityParts[0]);
+                                        }
+                                    }
+                                }
+                                return false;
+                            }));
+                        
+                        // Language filter
+                        const matchesLanguages = selectedLanguages.length === 0 ||
+                            (physician.languages &&
+                                selectedLanguages.some(lang =>
+                                    physician.languages.toLowerCase().includes(lang.toLowerCase())
+                                ));
+                        
+                        return matchesSearch && matchesSpecialties && matchesLocations && matchesLanguages;
+                    });
+                } else {
+                    // Filter locations
+                    return allLocations.filter(location => {
+                        // Search query matching
+                        const matchesSearch = !searchQuery ||
+                            location.name.toLowerCase().includes(searchQuery) ||
+                            (location.address && location.address.toLowerCase().includes(searchQuery));
+                        
+                        // Specialty/service filter
+                        const matchesSpecialties = selectedSpecialties.length === 0 ||
+                            (location.location_types && location.location_types.some(type =>
+                                selectedSpecialties.includes(type)
+                            ));
+                        
+                        // Location city/borough filter
+                        const matchesLocations = selectedLocations.length === 0 ||
+                            (location.address && (() => {
+                                const addressParts = location.address.split(',');
+                                if (addressParts.length >= 2) {
+                                    const cityState = addressParts[1].trim();
+                                    const cityParts = cityState.split(' ');
+                                    if (cityParts.length >= 1) {
+                                        return selectedLocations.includes(cityParts[0]);
+                                    }
+                                }
+                                return false;
+                            })());
+                        
+                        return matchesSearch && matchesSpecialties && matchesLocations;
+                    });
+                }
+            }
+            
+            function updateResults() {
+                const filteredResults = getFilteredResults();
+                
+                // Update results count
+                resultsCount.textContent = `${filteredResults.length} ${activeTab === 'physicians' ? 'physicians' : 'locations'} found`;
+                resultsCount.classList.remove('hidden');
+                
+                // Show/hide no results message
+                if (filteredResults.length === 0) {
+                    noResults.style.display = 'block';
+                    physiciansResults.classList.add('hidden');
+                    locationsResults.classList.add('hidden');
+                } else {
+                    noResults.style.display = 'none';
+                    
+                    if (activeTab === 'physicians') {
+                        physiciansResults.classList.remove('hidden');
+                        locationsResults.classList.add('hidden');
+                        renderPhysicians(filteredResults);
+                    } else {
+                        physiciansResults.classList.add('hidden');
+                        locationsResults.classList.remove('hidden');
+                        renderLocations(filteredResults);
+                    }
+                }
+            }
+            
+            function renderPhysicians(physicians) {
+                physiciansResults.innerHTML = '';
+                
+                physicians.forEach(physician => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    // Create credential string
+                    const credentials = physician.credentials ? physician.credentials.join(', ') : '';
+                    
+                    // Create locations HTML
+                    let locationsHtml = '';
+                    if (physician.active_locations && physician.active_locations.length > 0) {
+                        locationsHtml = `
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 5.02944 7.02944 1 12 1C16.9706 1 21 5.02944 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div class="info-content">
+                        `;
+                        
+                        physician.active_locations.slice(0, 2).forEach(location => {
+                            locationsHtml += `<div>${location.name}</div>`;
+                        });
+                        
+                        if (physician.active_locations.length > 2) {
+                            locationsHtml += `
+                                <span style="color: #2563eb; font-size: 12px;">
+                                    +${physician.active_locations.length - 2} more locations
+                                </span>
+                            `;
+                        }
+                        
+                        locationsHtml += `
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Create languages HTML
+                    let languagesHtml = '';
+                    if (physician.languages) {
+                        const languageArray = physician.languages.split(',').map(lang => lang.trim());
+                        
+                        languagesHtml = `
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 2C14.5013 4.73835 15.9228 8.29203 16 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8 12C8.07725 8.29203 9.49872 4.73835 12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div class="info-content">
+                                    <div style="margin-bottom: 4px;">Languages:</div>
+                                    <div class="tag-container">
+                        `;
+                        
+                        languageArray.forEach(language => {
+                            languagesHtml += `<span class="tag">${language}</span>`;
+                        });
+                        
+                        languagesHtml += `
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    card.innerHTML = `
+                        <div class="card-content">
+                            <div class="doctor-header">
+                                <img
+                                    src="${physician.img || 'https://via.placeholder.com/120'}"
+                                    alt="${physician.name}"
+                                    class="doctor-image"
+                                    onerror="this.onerror=null; this.src='https://via.placeholder.com/120';"
+                                />
+                                <div class="doctor-info">
+                                    <h3>${physician.name}</h3>
+                                    <div class="doctor-specialty">${physician.specialty || ''}</div>
+                                    <div class="doctor-credentials">${credentials}</div>
+                                </div>
+                            </div>
+                            
+                            ${locationsHtml}
+                            ${languagesHtml}
+                            
+                            <div class="action-buttons">
+                                <a
+                                    href="${physician.link}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="primary-button"
+                                >
+                                    View Profile
+                                </a>
+                                ${physician.phone ? `
+                                    <a
+                                        href="tel:${physician.phone}"
+                                        class="secondary-button"
+                                    >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7293C21.7209 20.9845 21.5573 21.2136 21.3521 21.4019C21.1468 21.5901 20.9046 21.7335 20.6407 21.8227C20.3769 21.9119 20.0974 21.9451 19.82 21.92C16.7428 21.5856 13.787 20.5341 11.19 18.85C8.77382 17.3147 6.72533 15.2662 5.18999 12.85C3.49997 10.2412 2.44824 7.27097 2.11999 4.18C2.095 3.90347 2.12787 3.62476 2.21649 3.36162C2.30512 3.09849 2.44756 2.85669 2.63476 2.65162C2.82196 2.44655 3.0498 2.28271 3.30379 2.17052C3.55777 2.05833 3.83233 2.00026 4.10999 2H7.10999C7.5953 1.99522 8.06579 2.16708 8.43376 2.48353C8.80173 2.79999 9.04207 3.23945 9.10999 3.72C9.23662 4.68007 9.47144 5.62273 9.80999 6.53C9.94454 6.88792 9.97366 7.27691 9.8939 7.65088C9.81415 8.02485 9.62886 8.36811 9.35999 8.64L8.08999 9.91C9.51355 12.4135 11.5864 14.4864 14.09 15.91L15.36 14.64C15.6319 14.3711 15.9751 14.1858 16.3491 14.1061C16.7231 14.0263 17.1121 14.0555 17.47 14.19C18.3773 14.5286 19.3199 14.7634 20.28 14.89C20.7658 14.9585 21.2094 15.2032 21.5265 15.5775C21.8437 15.9518 22.0122 16.4296 22 16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </a>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                    
+                    physiciansResults.appendChild(card);
+                });
+            }
+            
+            function renderLocations(locations) {
+                locationsResults.innerHTML = '';
+                
+                locations.forEach(location => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    // Create specialties HTML
+                    let specialtiesHtml = '';
+                    if (location.location_types && location.location_types.length > 0) {
+                        specialtiesHtml = `
+                            <div style="margin-top: 12px;">
+                                <h4 style="font-weight: 500; margin-bottom: 4px;">Specialties:</h4>
+                                <div class="tag-container">
+                        `;
+                        
+                        location.location_types.forEach(type => {
+                            specialtiesHtml += `<span class="tag">${type}</span>`;
+                        });
+                        
+                        specialtiesHtml += `
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Create providers HTML
+                    let providersHtml = '';
+                    if (location.active_providers && location.active_providers.length > 0) {
+                        providersHtml = `
+                            <div style="margin-top: 16px;">
+                                <h4 style="font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 4px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Providers at this location:
+                                </h4>
+                                <div class="provider-grid">
+                        `;
+                        
+                        location.active_providers.slice(0, 4).forEach(provider => {
+                            providersHtml += `
+                                <a
+                                    href="${provider.link}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="provider-item"
+                                >
+                                    <img
+                                        src="${provider.img || 'https://via.placeholder.com/40'}"
+                                        alt="${provider.name}"
+                                        class="provider-image"
+                                        onerror="this.onerror=null; this.src='https://via.placeholder.com/40';"
+                                    />
+                                    <div class="provider-info">
+                                        <div class="provider-name">${provider.name}</div>
+                                        <div class="provider-specialty">${provider.speciality || ''}</div>
+                                    </div>
+                                </a>
+                            `;
+                        });
+                        
+                        providersHtml += `
+                                </div>
+                        `;
+                        
+                        if (location.active_providers.length > 4) {
+                            providersHtml += `
+                                <div style="margin-top: 8px; text-align: center;">
+                                    <a href="${location.link}" style="font-size: 14px; color: #2563eb; text-decoration: none;">
+                                        See all ${location.active_providers.length} providers
+                                    </a>
+                                </div>
+                            `;
+                        }
+                        
+                        providersHtml += `
+                            </div>
+                        `;
+                    }
+                    
+                    card.innerHTML = `
+                        <img
+                            src="${location.img || 'https://via.placeholder.com/400x200'}"
+                            alt="${location.name}"
+                            class="location-image"
+                            onerror="this.onerror=null; this.src='https://via.placeholder.com/400x200';"
+                        />
+                        <div class="card-content">
+                            <div class="location-name">${location.name}</div>
+                            
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 5.02944 7.02944 1 12 1C16.9706 1 21 5.02944 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div class="info-content">${location.address || ''}</div>
+                            </div>
+                            
+                            ${location.internal_phone ? `
+                                <div class="info-row">
+                                    <div class="info-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7293C21.7209 20.9845 21.5573 21.2136 21.3521 21.4019C21.1468 21.5901 20.9046 21.7335 20.6407 21.8227C20.3769 21.9119 20.0974 21.9451 19.82 21.92C16.7428 21.5856 13.787 20.5341 11.19 18.85C8.77382 17.3147 6.72533 15.2662 5.18999 12.85C3.49997 10.2412 2.44824 7.27097 2.11999 4.18C2.095 3.90347 2.12787 3.62476 2.21649 3.36162C2.30512 3.09849 2.44756 2.85669 2.63476 2.65162C2.82196 2.44655 3.0498 2.28271 3.30379 2.17052C3.55777 2.05833 3.83233 2.00026 4.10999 2H7.10999C7.5953 1.99522 8.06579 2.16708 8.43376 2.48353C8.80173 2.79999 9.04207 3.23945 9.10999 3.72C9.23662 4.68007 9.47144 5.62273 9.80999 6.53C9.94454 6.88792 9.97366 7.27691 9.8939 7.65088C9.81415 8.02485 9.62886 8.36811 9.35999 8.64L8.08999 9.91C9.51355 12.4135 11.5864 14.4864 14.09 15.91L15.36 14.64C15.6319 14.3711 15.9751 14.1858 16.3491 14.1061C16.7231 14.0263 17.1121 14.0555 17.47 14.19C18.3773 14.5286 19.3199 14.7634 20.28 14.89C20.7658 14.9585 21.2094 15.2032 21.5265 15.5775C21.8437 15.9518 22.0122 16.4296 22 16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </div>
+                                    <div class="info-content">${location.internal_phone}</div>
+                                </div>
+                            ` : ''}
+                            
+                            ${specialtiesHtml}
+                            ${providersHtml}
+                            
+                            <div class="action-buttons">
+                                <a
+                                    href="${location.link}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="primary-button"
+                                >
+                                    View Location
+                                </a>
+                                <a
+                                    href="https://maps.google.com/?q=${encodeURIComponent(location.address || '')}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="secondary-button"
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 18L3 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    locationsResults.appendChild(card);
+                });
+            }
+            
+            function createFilterCheckbox(container, type, value) {
+                const label = document.createElement('label');
+                label.className = 'filter-option';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'filter-checkbox';
+                checkbox.checked = (type === 'specialty' && selectedSpecialties.includes(value)) ||
+                                 (type === 'location' && selectedLocations.includes(value)) ||
+                                 (type === 'language' && selectedLanguages.includes(value));
+                
+                checkbox.addEventListener('change', () => toggleFilterItem(type, value));
+                
+                const span = document.createElement('span');
+                span.textContent = value;
+                
+                label.appendChild(checkbox);
+                label.appendChild(span);
+                container.appendChild(label);
+            }
+            
+            function renderFilterOptions() {
+                // Clear containers
+                specialtiesContainer.innerHTML = '';
+                locationsContainer.innerHTML = '';
+                languagesContainer.innerHTML = '';
+                
+                // Add specialties
+                specialties.forEach(specialty => {
+                    createFilterCheckbox(specialtiesContainer, 'specialty', specialty);
+                });
+                
+                // Add locations
+                locationOptions.forEach(location => {
+                    createFilterCheckbox(locationsContainer, 'location', location);
+                });
+                
+                // Add languages
+                languages.forEach(language => {
+                    createFilterCheckbox(languagesContainer, 'language', language);
+                });
+            }
+            
+            // Fetch data from API
+            async function fetchData() {
+                try {
+                    // Show loading indicator
+                    loadingIndicator.style.display = 'flex';
+                    
+                    // Fetch from real APIs
+                    const locationsResponse = await fetch('https://api.nycancer.com/open/directory/locations/all');
+                    if (!locationsResponse.ok) {
+                        throw new Error(`Locations API responded with status: ${locationsResponse.status}`);
+                    }
+                    const locationsData = await locationsResponse.json();
+                    
+                    const physiciansResponse = await fetch('https://api.nycancer.com/open/directory/filter/');
+                    if (!physiciansResponse.ok) {
+                        throw new Error(`Physicians API responded with status: ${physiciansResponse.status}`);
+                    }
+                    const physiciansData = await physiciansResponse.json();
+                    
+                    // Process locations data
+                    allLocations = locationsData.data;
+                    
+                    // Process physicians data
+                    allPhysicians = physiciansData.data;
+                    
+                    // Extract filter options
+                    // Specialties
+                    const allSpecialties = new Set();
+                    physiciansData.data.forEach(physician => {
+                        if (physician.specialty) {
+                            allSpecialties.add(physician.specialty);
+                        }
+                    });
+                    
+                    locationsData.data.forEach(location => {
+                        if (location.location_types && location.location_types.length > 0) {
+                            location.location_types.forEach(type => allSpecialties.add(type));
+                        }
+                    });
+                    
+                    specialties = Array.from(allSpecialties);
+                    
+                    // Location options (cities/boroughs)
+                    const allLocationOptions = new Set();
+                    locationsData.data.forEach(location => {
+                        if (location.address) {
+                            const addressParts = location.address.split(',');
+                            if (addressParts.length >= 2) {
+                                const cityState = addressParts[1].trim();
+                                const cityParts = cityState.split(' ');
+                                if (cityParts.length >= 1) {
+                                    allLocationOptions.add(cityParts[0]);
+                                }
+                            }
+                        }
+                    });
+                    
+                    locationOptions = Array.from(allLocationOptions);
+                    
+                    // Languages
+                    const allLanguages = new Set();
+                    physiciansData.data.forEach(physician => {
+                        if (physician.languages) {
+                            physician.languages.split(',').forEach(lang =>
+                                allLanguages.add(lang.trim())
+                            );
+                        }
+                    });
+                    
+                    languages = Array.from(allLanguages);
+                    
+                    // Render filter options
+                    renderFilterOptions();
+                    
+                    // Hide loading indicator and show results
+                    loadingIndicator.style.display = 'none';
+                    updateResults();
+                    
+                } catch (err) {
+                    console.error("Error fetching directory data:", err);
+                    loadingIndicator.style.display = 'none';
+                    
+                    // Show error message
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-6 text-center';
+                    errorDiv.innerHTML = `
+                        <div class="text-red-600 mb-2 text-xl">⚠️ Unable to load directory data: ${err.message}</div>
+                        <p class="mb-4">Please check your API connection and try again.</p>
+                        <button
+                            class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            onclick="window.location.reload()"
+                        >
+                            Try Again
+                        </button>
+                    `;
+                    document.querySelector('.directory-container').appendChild(errorDiv);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
