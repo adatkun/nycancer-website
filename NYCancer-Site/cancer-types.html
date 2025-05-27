@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cancer Types | New York Cancer & Blood Specialists</title>
+        <link rel="stylesheet" href="css/styles.css">
+        <style>
+            .cancer-types-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+                margin: 30px 0;
+            }
+            
+            @media (max-width: 1024px) {
+                .cancer-types-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .cancer-types-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+            
+            .cancer-type-card {
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            
+            .cancer-type-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            }
+            
+            .cancer-type-image {
+                width: 100%;
+                height: 300px;
+                background-size: cover;
+                background-position: center;
+            }
+            
+            .cancer-type-name {
+                padding: 20px;
+                background-color: #fff;
+                text-align: center;
+            }
+            
+            .cancer-type-name h3 {
+                margin: 0;
+                color: #333;
+                font-size: 22px;
+            }
+            
+            .cancer-type-link {
+                text-decoration: none;
+                color: inherit;
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="header-placeholder"></div>
+        
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Cancer Types</h1>
+                <p>Specialized care for all types of cancer by our expert team of oncologists.</p>
+            </div>
+        </section>
+        
+        <section class="main-content">
+            <div class="container">
+                <div class="content-section">
+                    <p>At New York Cancer & Blood Specialists, we provide comprehensive care for patients with all types of cancer. Our multidisciplinary teams include specialists who focus on specific cancer types, ensuring you receive the most informed and effective treatment for your condition.</p>
+                    <p>Select a cancer type below to learn more about our specialized approach to diagnosis, treatment, and supportive care.</p>
+                
+                    <div class="cancer-types-grid">
+                        <!-- Adrenal Cancer -->
+                        <a href="adrenal-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url(images/adrenalCancer_1000x300.jpg);"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Adrenal Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Anal Canal Cancer -->
+                        <a href="anal-canal-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Anal Canal Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Appendix Cancer -->
+                        <a href="appendix-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Appendix Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Bladder Cancer -->
+                        <a href="bladder-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Bladder Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Brain Cancer -->
+                        <a href="brain-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Brain Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Breast Cancer -->
+                        <a href="breast-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Breast Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Cancer of Unknown Primary Origin -->
+                        <a href="cancer-unknown-primary.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Cancer of Unknown Primary Origin</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Colorectal Cancer -->
+                        <a href="colorectal-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Colorectal Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Esophageal Cancer -->
+                        <a href="esophageal-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Esophageal Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Gallbladder Cancer -->
+                        <a href="gallbladder-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Gallbladder Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Gynecologic Cancer -->
+                        <a href="gynecologic-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Gynecologic Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Kidney Cancer -->
+                        <a href="kidney-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Kidney Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Leukemia -->
+                        <a href="leukemia.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Leukemia</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Liver Cancer -->
+                        <a href="liver-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Liver Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Lung Cancer -->
+                        <a href="lung-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Lung Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Lymphoma -->
+                        <a href="lymphoma.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Lymphoma</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Myeloma -->
+                        <a href="myeloma.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Myeloma</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Pancreatic Cancer -->
+                        <a href="pancreatic-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Pancreatic Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Prostate Cancer -->
+                        <a href="prostate-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Prostate Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Skin Cancer -->
+                        <a href="skin-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Skin Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Stomach Cancer -->
+                        <a href="stomach-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Stomach Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Thyroid Cancer -->
+                        <a href="thyroid-cancer.html" class="cancer-type-link">
+                            <div class="cancer-type-card">
+                                <div class="cancer-type-image" style="background-image: url('/api/placeholder/1000/300');"></div>
+                                <div class="cancer-type-name">
+                                    <h3>Thyroid Cancer</h3>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="content-section" style="text-align: center;">
+            <div class="container">
+                <h2>We're Here To Help</h2>
+                <p>If you have questions about a specific cancer type or would like to schedule a consultation, please contact us.</p>
+                <a href="#" class="cta-button">Request an Appointment</a>
+            </div>
+        </div>
+        
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+
+        <!-- Scripts -->
+        <script src="js/common.js"></script>
+    </body>
+</html>
