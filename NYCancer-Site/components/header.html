@@ -1,8 +1,14 @@
 <div class="top-bar">
     <div class="container top-bar-content">
         <div class="contact-info">
-            <span>(855) 528-7322</span>
-            <span>info@nycancer.com</span>
+            <a href="tel:+18555287322" class="contact-item">
+                <i class="fas fa-phone contact-icon"></i>
+                <span class="contact-text">(855) 528-7322</span>
+            </a>
+            <a href="mailto:info@nycancer.com" class="contact-item">
+                <i class="fas fa-envelope contact-icon"></i>
+                <span class="contact-text">info@nycancer.com</span>
+            </a>
         </div>
         <div class="top-actions">
             <a href="https://accounts.flatiron.com/account/login?returnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fclient_id%3Dfh.patient_portal%26nonce%3DxCGrLwTc7iREjhVw%26redirect_uri%3Dhttps%253A%252F%252Fcarespaceportal.com%252Fcb%26response_type%3Dcode%26scope%3Dopenid%2520profile%26state%3DsthPvJz8GD2Earlz">Patient Portal</a>
@@ -102,6 +108,9 @@
     </div>
 </nav>
 
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
 /* Header Logo Responsive Styling */
 .header-logo {
@@ -134,23 +143,51 @@
     white-space: nowrap;
 }
 
+/* Icon styling */
+.contact-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.contact-item:hover {
+    opacity: 0.8;
+}
+
+.contact-icon {
+    font-size: 14px;
+}
+
 /* Simple mobile adjustments without breakpoints */
 @media (max-width: 768px) {
     .top-bar-content {
-        flex-direction: column;
-        gap: 8px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
         text-align: center;
         padding: 8px 15px;
     }
     
     .contact-info {
         display: flex;
-        flex-direction: column;
-        gap: 4px;
+        flex-direction: row;
+        gap: 25px;
     }
     
     .contact-info span {
         font-size: 14px;
+    }
+    
+    /* Hide contact text on narrow screens, keep icons */
+    .contact-text {
+        display: none;
+    }
+    
+    .contact-icon {
+        font-size: 16px;
     }
     
     .header-content {
