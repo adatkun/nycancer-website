@@ -981,25 +981,42 @@
             const reviews = document.querySelectorAll('.review-card');
             
             let currentSlide = 0;
-            const reviewsPerSlide = window.innerWidth <= 768 ? 1 : (window.innerWidth <= 1024 ? 2 : 3);
-            const totalSlides = Math.ceil(reviews.length / reviewsPerSlide);
+            let reviewsPerSlide = 3;
+            let totalSlides = Math.ceil(reviews.length / reviewsPerSlide);
+            let autoSlideInterval;
             
-            // Create dots
-            for (let i = 0; i < totalSlides; i++) {
-                const dot = document.createElement('div');
-                dot.classList.add('slider-dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => goToSlide(i));
-                dotsContainer.appendChild(dot);
+            function getReviewsPerSlide() {
+                if (window.innerWidth <= 768) return 1;
+                if (window.innerWidth <= 1024) return 2;
+                return 3;
             }
             
-            const dots = document.querySelectorAll('.slider-dot');
+            function initializeSlider() {
+                reviewsPerSlide = getReviewsPerSlide();
+                totalSlides = Math.ceil(reviews.length / reviewsPerSlide);
+                currentSlide = Math.min(currentSlide, totalSlides - 1);
+                
+                // Clear existing dots
+                dotsContainer.innerHTML = '';
+                
+                // Create dots
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('slider-dot');
+                    if (i === currentSlide) dot.classList.add('active');
+                    dot.addEventListener('click', () => goToSlide(i));
+                    dotsContainer.appendChild(dot);
+                }
+                
+                updateSlider();
+            }
             
             function updateSlider() {
                 const translateX = -currentSlide * (100 / reviewsPerSlide);
                 slider.style.transform = `translateX(${translateX}%)`;
                 
                 // Update dots
+                const dots = document.querySelectorAll('.slider-dot');
                 dots.forEach((dot, index) => {
                     dot.classList.toggle('active', index === currentSlide);
                 });
@@ -1028,24 +1045,7 @@
                 }
             }
             
-            prevBtn.addEventListener('click', prevSlide);
-            nextBtn.addEventListener('click', nextSlide);
-            
-            // Initialize slider
-            updateSlider();
-            
-            // Auto-slide every 5 seconds
-            let autoSlideInterval = setInterval(() => {
-                if (currentSlide < totalSlides - 1) {
-                    nextSlide();
-                } else {
-                    goToSlide(0);
-                }
-            }, 5000);
-            
-            // Pause auto-slide when user interacts
-            slider.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
-            slider.addEventListener('mouseleave', () => {
+            function startAutoSlide() {
                 autoSlideInterval = setInterval(() => {
                     if (currentSlide < totalSlides - 1) {
                         nextSlide();
@@ -1053,11 +1053,39 @@
                         goToSlide(0);
                     }
                 }, 5000);
+            }
+            
+            function stopAutoSlide() {
+                clearInterval(autoSlideInterval);
+            }
+            
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+            
+            // Initialize slider
+            initializeSlider();
+            startAutoSlide();
+            
+            // Pause auto-slide when user interacts
+            slider.addEventListener('mouseenter', stopAutoSlide);
+            slider.addEventListener('mouseleave', startAutoSlide);
+            slider.addEventListener('touchstart', stopAutoSlide);
+            slider.addEventListener('touchend', () => {
+                setTimeout(startAutoSlide, 3000); // Resume after 3 seconds on mobile
             });
             
-            // Handle window resize
+            // Handle window resize without reload
+            let resizeTimeout;
             window.addEventListener('resize', () => {
-                location.reload(); // Simple solution for responsive changes
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    const newReviewsPerSlide = getReviewsPerSlide();
+                    if (newReviewsPerSlide !== reviewsPerSlide) {
+                        stopAutoSlide();
+                        initializeSlider();
+                        startAutoSlide();
+                    }
+                }, 250);
             });
         });
         
