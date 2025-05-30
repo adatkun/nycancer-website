@@ -3,10 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Marco Avvento, MD | New York Cancer & Blood Specialists</title>
+    <title>Dr. Louis Avvento, MD | New York Cancer & Blood Specialists</title>
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        .interactive-info-container {
+        .content-section {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .content-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .cta-section {
+            border-top: 1px solid #e9ecef;
+            padding-top: 40px;
+        }
             background: #f8f9fa;
             border-radius: 8px;
             overflow: hidden;
@@ -401,15 +415,15 @@
         
         .education-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
         }
         
         .education-card {
             background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             text-align: center;
             transition: transform 0.3s ease;
         }
@@ -419,13 +433,13 @@
         }
         
         .education-icon {
-            font-size: 1.8em;
-            margin-bottom: 8px;
+            font-size: 1.4em;
+            margin-bottom: 6px;
         }
         
         .education-card h4 {
             color: #007bff;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-size: 14px;
         }
         
@@ -517,15 +531,15 @@
         
         .hospital-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
         }
         
         .hospital-card {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             text-align: center;
             transition: transform 0.3s ease;
         }
@@ -535,13 +549,14 @@
         }
         
         .hospital-icon {
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 1.5em;
+            margin-bottom: 8px;
         }
         
         .hospital-card h4 {
             color: #007bff;
             margin-bottom: 5px;
+            font-size: 14px;
         }
         
         @media (max-width: 768px) {
@@ -574,43 +589,46 @@
             .review-card {
                 flex: 0 0 100%;
                 padding: 15px;
+                min-height: 200px;
             }
             
             .container-b {
-                float: left;
-                width: 180px;
-                margin: 0 20px 20px 0;
+                float: none;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto 30px auto;
                 flex-direction: column;
                 align-items: center;
-                gap: 12px;
+                gap: 15px;
             }
             
             .bio-doctor-image {
                 width: 100%;
+                height: auto;
             }
             
             .doctor-rating,
             .languages-info-inline {
                 width: 100%;
-                padding: 10px;
-                font-size: 12px;
+                padding: 12px;
+                font-size: 13px;
             }
             
             .languages-info-inline h4 {
-                font-size: 13px;
-                margin-bottom: 6px;
+                font-size: 14px;
+                margin-bottom: 8px;
             }
             
             .languages-info-inline p {
-                font-size: 12px;
+                font-size: 13px;
             }
             
             .rating-text {
-                font-size: 12px;
+                font-size: 13px;
             }
             
             .bio-textbox {
-                max-height: 500px;
+                max-height: 1000px;
             }
             
             .read-more-overlay {
@@ -620,6 +638,15 @@
             
             .video-wrapper {
                 max-width: 100%;
+            }
+            
+            .bio-content {
+                padding: 20px;
+            }
+            
+            .doctor-name-header {
+                clear: both;
+                margin-top: 20px;
             }
         }
         
@@ -647,7 +674,7 @@
                         <div class="bio-textbox" id="bioTextbox">
                             <div class="bio-content">
                                 <div class="container-b">
-                                    <img src="images/avvento.jpg" alt="Dr. Marco Avvento" class="bio-doctor-image">
+                                    <img src="images/avvento.jpg" alt="Dr. Louis Avvento" class="bio-doctor-image">
                                     
                                     <div class="doctor-rating">
                                         <div class="stars">★★★★★</div>
@@ -665,32 +692,73 @@
                                     <p>Medical Oncology & Hematology</p>
                                 </div>
                                 
-                                <p>graduated from the University of Rome with a degree in medicine in 1981. He continued with his residency at Jamaica Hospital in Queens, where he chose to submerge himself into the oncology world because, at the time, treatments were limited and patient care was extremely challenging. He wanted to be a part of a healthcare revolution to change the lives of oncology patients for the better and has found it to be the most rewarding career he could have chosen.</p>
-                                
-                                <p>After completing his fellowship in Hematology and Oncology at Stony Brook University, Dr. Avvento began a private practice in Riverhead as a solo practitioner with a nurse and receptionist – a staff of three. The practice eventually grew to a staff of forty-five oncology professionals. Dr. Avvento chose the East End of Long Island because in 1988, there were no other practices around. He created a more convenient and comfortable situation for patients.</p>
+                                <p>Louis J. Avvento, MD graduated from the University of Rome with a degree in medicine in 1981. He continued with his residency at Jamaica Hospital in Queens, where he chose to submerge himself into the oncology world because, at the time, treatments were limited and patient care was extremely challenging. He wanted to be a part of a healthcare revolution to change the lives of oncology patients for the better and has found it to be the most rewarding career he could have chosen After completing his fellowship in Hematology and Oncology at Stony Brook University, Dr. Avvento began a private practice in Riverhead as a solo practitioner with a nurse and receptionist – a staff of three. The practice eventually grew to a staff of forty-five oncology professionals. Dr. Avvento chose the East End of Long Island because in 1988, there were no other practices around. He created a more convenient and comfortable situation for patients.</p>
                                 
                                 <p>Dr. Avvento is board-certified in four specialties including Internal Medicine, Hematology and Hospice, Medical Oncology, and Palliative Care. He has been the Medical Director of East End Hospice in Westhampton, NY since 1990. He is the former Director of Palliative Care at both Peconic Bay Medical Center and Southampton Hospital in Riverhead, NY. He was involved in establishing the Palliative Care Fellowship at Southampton Hospital for training doctors in palliative care. Dr Avvento was also responsible for the palliative care board certification of 4 physicians at the Southampton Hospital and 3 Nurse practitioners at Peconic Bay Medical Center under the newly established palliative care programs. Dr. Avvento is a former board member of Fighting Chance and currently holds an appointment as Adjunct Assistant Clinical Professorship at Mount Sinai.</p>
                                 
-                                <p>Through the years, Dr. Avvento has received multiple awards in recognition of his outstanding performance and achievements in the field. Accolades include: "Best Doctors on Long Island" – Newsday, 2008-2019; "Physician of the Year" – Peconic Bay Medical Center, 2005; "Best Doctors" – New York Magazine, 2004/2008; Castle Connolly Top Doctors: New York Metro Area – 2002 to 2008, 2010 to 2014; Patient Choice 5th Anniversary Award – 2012; Patients' Choice Award – 2008 to 2012, 2014; and Compassionate Doctor Recognition – 2010 to 2012.</p>
+                                <p>Through the years, Dr. Avvento has received multiple awards in recognition of his outstanding performance and achievements in the field. Accolades include: "Best Doctors on Long Island' –Newsday, 2008-2019; "Physician of the Year" –Peconic Bay Medical Center, 2005; "Best Doctors" –New York Magazine, 2004/2008; Castle Connolly Top Doctors: New York Metro Area – 2002 to 2008, 2010 to 2014; Patient' Choice 5th Anniversary Award – 2012; Patients' Choice Award – 2008 to 2012, 2014; and Compassionate Doctor Recognition – 2010 to 2012.</p>
                                 
-                                <h3>Clinical Expertise & Specializations</h3>
-                                <p>Dr. Avvento's clinical expertise encompasses a broad range of oncological conditions, with particular focus on treating solid tumors and providing comprehensive supportive care. He stays current with the latest advances in cancer treatment, including targeted therapies, immunotherapy, and precision medicine approaches.</p>
-                                
-                                <p>His practice includes the management of various cancer types, symptom management, survivorship care, and coordination with surgical and radiation oncology colleagues. Dr. Avvento is also actively involved in clinical research, offering eligible patients access to cutting-edge clinical trials that may provide additional treatment options.</p>
-                                
-                                <p>Dr. Avvento is committed to evidence-based medicine and follows National Comprehensive Cancer Network (NCCN) and American Society of Clinical Oncology (ASCO) guidelines to ensure that all patients receive the most current, effective treatments available.</p>
-                                
-                                <h3>Personal Philosophy & Approach to Care</h3>
-                                <p>Dr. Avvento's approach to oncology is deeply rooted in the belief that every patient deserves not only the most advanced medical care available, but also compassionate support that addresses their unique needs and circumstances. He understands that a cancer diagnosis affects not just the patient, but entire families and support networks.</p>
-                                
-                                <p>"My role extends far beyond prescribing treatment," says Dr. Avvento. "I see myself as a guide and advocate, helping patients and families navigate this difficult journey while maintaining hope and dignity. Every patient teaches me something new, and I'm honored to be trusted with their care."</p>
-                                
-                                <p>Dr. Avvento is fluent in both English and Italian, allowing him to better serve patients in their preferred language. He believes that clear communication is fundamental to effective care, and he takes time to ensure that patients and families fully understand their diagnosis, treatment options, and what to expect throughout their care journey.</p>
-                                
-                                <h3>Beyond the Clinic</h3>
-                                <p>When not caring for patients, Dr. Avvento enjoys spending time with his family exploring Long Island's beaches and parks. He is an avid reader of both medical literature and historical fiction, and he finds that staying curious about the world helps him bring fresh perspectives to his patient care. Dr. Avvento also volunteers with local cancer support organizations, believing strongly in giving back to the community that has supported his practice.</p>
-                                
-                                <p>An accomplished home chef, Dr. Avvento often discusses nutrition and healthy eating with his patients, drawing from his Italian heritage to emphasize the importance of good food in healing and wellness. He believes that maintaining quality of life during treatment is just as important as the medical interventions themselves.</p>
+                                <div style="margin-top: 40px;">
+                                    <div class="interactive-info-container">
+                                        <div class="info-tabs">
+                                            <button class="info-tab active" data-tab="education">Education & Training</button>
+                                            <button class="info-tab" data-tab="hospitals">Hospital Affiliations</button>
+                                        </div>
+                                        
+                                        <div class="info-content">
+                                            <div class="tab-content active" id="education">
+                                                <div class="education-grid">
+                                                    <div class="education-card">
+                                                        <div class="education-icon">🎓</div>
+                                                        <h4>Medical School</h4>
+                                                        <p><strong>University of Rome</strong></p>
+                                                    </div>
+                                                    <div class="education-card">
+                                                        <div class="education-icon">📚</div>
+                                                        <h4>Undergraduate</h4>
+                                                        <p><strong>New York University</strong></p>
+                                                    </div>
+                                                    <div class="education-card">
+                                                        <div class="education-icon">🏥</div>
+                                                        <h4>Residency</h4>
+                                                        <p><strong>The Jamaica Hospital</strong></p>
+                                                    </div>
+                                                    <div class="education-card">
+                                                        <div class="education-icon">⚕️</div>
+                                                        <h4>Fellowship</h4>
+                                                        <p><strong>SUNY Stony Brook</strong><br>North Port VA Medical Center</p>
+                                                    </div>
+                                                    <div class="education-card">
+                                                        <div class="education-icon">🏆</div>
+                                                        <h4>Board Certification</h4>
+                                                        <p><strong>MD, FACP</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="tab-content" id="hospitals">
+                                                <div class="hospital-grid">
+                                                    <div class="hospital-card">
+                                                        <div class="hospital-icon">🏥</div>
+                                                        <h4>Eastern Long Island Hospital</h4>
+                                                    </div>
+                                                    <div class="hospital-card">
+                                                        <div class="hospital-icon">🏥</div>
+                                                        <h4>Peconic Bay Medical Center</h4>
+                                                    </div>
+                                                    <div class="hospital-card">
+                                                        <div class="hospital-icon">🏥</div>
+                                                        <h4>Southampton Hospital</h4>
+                                                    </div>
+                                                    <div class="hospital-card">
+                                                        <div class="hospital-icon">🏥</div>
+                                                        <h4>Stony Brook University Hospital</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="read-more-overlay" id="readMoreOverlay">
@@ -840,71 +908,6 @@
                         </div>
                         
                         <div class="slider-dots" id="sliderDots"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section">
-                <h2>Additional Information</h2>
-                <p>Explore Dr. Avvento's education, training, and hospital affiliations.</p>
-                
-                <div class="interactive-info-container">
-                    <div class="info-tabs">
-                        <button class="info-tab active" data-tab="education">Education & Training</button>
-                        <button class="info-tab" data-tab="hospitals">Hospital Affiliations</button>
-                    </div>
-                    
-                    <div class="info-content">
-                        <div class="tab-content active" id="education">
-                            <div class="education-grid">
-                                <div class="education-card">
-                                    <div class="education-icon">🎓</div>
-                                    <h4>Medical School</h4>
-                                    <p><strong>University of Rome</strong></p>
-                                </div>
-                                <div class="education-card">
-                                    <div class="education-icon">📚</div>
-                                    <h4>Undergraduate</h4>
-                                    <p><strong>New York University</strong></p>
-                                </div>
-                                <div class="education-card">
-                                    <div class="education-icon">🏥</div>
-                                    <h4>Residency</h4>
-                                    <p><strong>The Jamaica Hospital</strong></p>
-                                </div>
-                                <div class="education-card">
-                                    <div class="education-icon">⚕️</div>
-                                    <h4>Fellowship</h4>
-                                    <p><strong>SUNY Stony Brook</strong><br>North Port VA Medical Center</p>
-                                </div>
-                                <div class="education-card">
-                                    <div class="education-icon">🏆</div>
-                                    <h4>Board Certification</h4>
-                                    <p><strong>MD, FACP</strong></p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="tab-content" id="hospitals">
-                            <div class="hospital-grid">
-                                <div class="hospital-card">
-                                    <div class="hospital-icon">🏥</div>
-                                    <h4>Eastern Long Island Hospital</h4>
-                                </div>
-                                <div class="hospital-card">
-                                    <div class="hospital-icon">🏥</div>
-                                    <h4>Peconic Bay Medical Center</h4>
-                                </div>
-                                <div class="hospital-card">
-                                    <div class="hospital-icon">🏥</div>
-                                    <h4>Southampton Hospital</h4>
-                                </div>
-                                <div class="hospital-card">
-                                    <div class="hospital-icon">🏥</div>
-                                    <h4>Stony Brook University Hospital</h4>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
