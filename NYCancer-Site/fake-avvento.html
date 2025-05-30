@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Marco Avvento, MD | New York Cancer & Blood Specialists</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .interactive-info-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .doctor-bio-container {
+            display: block;
+            transition: all 0.5s ease;
+        }
+        
+        .doctor-bio-container.expanded {
+            display: block;
+        }
+        
+        .bio-text-container {
+            width: 100%;
+        }
+        
+        .bio-text-container.expanded {
+            width: 100%;
+            max-width: none;
+        }
+        
+        .bio-textbox {
+            position: relative;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            max-height: 625px;
+        }
+        
+        .bio-textbox.expanded {
+            max-height: none;
+        }
+        
+        .doctor-name-header {
+            margin-bottom: 15px;
+        }
+        
+        .doctor-name-header h1 {
+            font-size: 28px;
+            color: #007bff;
+            margin: 0 0 5px 0;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .doctor-name-header p {
+            font-size: 16px;
+            color: #6c757d;
+            margin: 0 0 10px 0;
+            font-style: italic;
+        }
+        
+        .bio-content {
+            padding: 25px;
+            line-height: 1.7;
+            color: #333;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 15px;
+            text-align: justify;
+        }
+        
+        .container-b {
+            float: left;
+            width: 300px;
+            margin: 0 30px 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .bio-doctor-image {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .doctor-rating {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+        }
+        
+        .stars {
+            color: #ffc107;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .rating-text {
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        .languages-info-inline {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            text-align: center;
+        }
+        
+        .languages-info-inline h4 {
+            color: #007bff;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .languages-info-inline p {
+            margin: 0;
+            line-height: 1.4;
+            font-size: 13px;
+        }
+        
+        .bio-content h3 {
+            color: #007bff;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            clear: both;
+        }
+        
+        .bio-content p {
+            margin-bottom: 16px;
+            text-indent: 0;
+        }
+        
+        .bio-content p:first-of-type {
+            margin-top: 0;
+        }
+        
+        .bio-content strong {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .read-more-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(transparent 0%, rgba(248, 249, 250, 0.8) 60%, rgba(248, 249, 250, 0.95) 100%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding-bottom: 20px;
+        }
+        
+        .read-more-overlay:hover {
+            background: linear-gradient(transparent 0%, rgba(248, 249, 250, 0.9) 60%, rgba(248, 249, 250, 1) 100%);
+        }
+        
+        .read-more-overlay.hidden {
+            display: none;
+        }
+        
+        .bio-textbox.expanded .read-more-overlay {
+            position: static;
+            height: auto;
+            background: none;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .bio-textbox.expanded .read-more-overlay:hover {
+            background: none;
+        }
+        
+        .overlay-content {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
+        }
+        
+        .down-arrow {
+            font-size: 16px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(-3px);
+            }
+        }
+        
+        .doctor-image-container {
+            position: relative;
+        }
+        
+        .video-container {
+            background: white !important;
+            padding: 40px 20px !important;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 500px !important;
+        }
+        
+        .video-wrapper {
+            position: relative !important;
+            width: 100% !important;
+            max-width: 800px !important;
+            aspect-ratio: 16/9 !important;
+            min-height: 450px !important;
+        }
+        
+        .video-wrapper iframe {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 4px;
+            border: none !important;
+        }
+        
+        .reviews-container {
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .reviews-slider {
+            display: flex;
+            transition: transform 0.5s ease;
+            gap: 20px;
+        }
+        
+        .review-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+            flex: 0 0 calc(33.333% - 14px);
+            min-height: 200px;
+            box-sizing: border-box;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .reviewer-info strong {
+            color: #007bff;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .review-stars {
+            color: #ffc107;
+        }
+        
+        .review-date {
+            color: #6c757d;
+            font-size: 12px;
+        }
+        
+        .review-card p {
+            margin: 0;
+            line-height: 1.6;
+            color: #495057;
+        }
+        
+        .slider-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .slider-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .slider-button:hover {
+            background: #0056b3;
+        }
+        
+        .slider-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .slider-dot.active {
+            background: #007bff;
+        }
+        
+        .info-tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .info-tab:hover {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+        
+        .info-tab.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background-color: #fff;
+        }
+        
+        .info-content {
+            padding: 30px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .education-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .education-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .education-icon {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+        
+        .education-card h4 {
+            color: #007bff;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .education-card p {
+            font-size: 13px;
+            margin: 0;
+        }
+        
+        .location-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .location-card {
+            background: white;
+            border-radius: 8px;
+            padding: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .location-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .location-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .location-content {
+            padding: 25px;
+        }
+        
+        .location-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .location-icon {
+            margin-right: 10px;
+            color: #007bff;
+            display: flex;
+            align-items: center;
+        }
+        
+        .pin-icon {
+            width: 20px;
+            height: 20px;
+            fill: #007bff;
+        }
+        
+        .location-header h4 {
+            color: #007bff;
+            margin: 0;
+        }
+        
+        .location-details p {
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+        
+        .map-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .map-button:hover {
+            background: #0056b3;
+        }
+        
+        .hospitals-intro {
+            margin-bottom: 25px;
+            font-style: italic;
+            color: #6c757d;
+        }
+        
+        .hospital-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .hospital-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .hospital-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .hospital-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .hospital-card h4 {
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .info-tabs {
+                flex-direction: column;
+            }
+            
+            .info-tab {
+                border-bottom: 1px solid #e9ecef;
+                border-right: none;
+            }
+            
+            .info-tab.active {
+                border-bottom-color: #007bff;
+                border-right-color: transparent;
+            }
+            
+            .education-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .location-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .hospital-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .review-card {
+                flex: 0 0 100%;
+                padding: 15px;
+            }
+            
+            .container-b {
+                float: left;
+                width: 180px;
+                margin: 0 20px 20px 0;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .bio-doctor-image {
+                width: 100%;
+            }
+            
+            .doctor-rating,
+            .languages-info-inline {
+                width: 100%;
+                padding: 10px;
+                font-size: 12px;
+            }
+            
+            .languages-info-inline h4 {
+                font-size: 13px;
+                margin-bottom: 6px;
+            }
+            
+            .languages-info-inline p {
+                font-size: 12px;
+            }
+            
+            .rating-text {
+                font-size: 12px;
+            }
+            
+            .bio-textbox {
+                max-height: 500px;
+            }
+            
+            .read-more-overlay {
+                height: 100px;
+                padding-bottom: 15px;
+            }
+            
+            .video-wrapper {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .bio-content.expanded {
+                column-count: 1;
+                max-width: 700px;
+            }
+            
+            .review-card {
+                flex: 0 0 calc(50% - 10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    
+    <section class="main-content">
+        <div class="container">
+            
+            <div class="content-section">
+                <div class="doctor-bio-container">
+                    <div class="bio-text-container">
+                        <div class="bio-textbox" id="bioTextbox">
+                            <div class="bio-content">
+                                <div class="container-b">
+                                    <img src="images/avvento.jpg" alt="Dr. Marco Avvento" class="bio-doctor-image">
+                                    
+                                    <div class="doctor-rating">
+                                        <div class="stars">★★★★★</div>
+                                        <div class="rating-text">4.9 stars • 298 reviews</div>
+                                    </div>
+                                    
+                                    <div class="languages-info-inline">
+                                        <h4>Languages Spoken</h4>
+                                        <p>🇺🇸 English<br>🇮🇹 Italian</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="doctor-name-header">
+                                    <h1>Dr. Louis Avvento</h1>
+                                    <p>Medical Oncology & Hematology</p>
+                                </div>
+                                
+                                <p>graduated from the University of Rome with a degree in medicine in 1981. He continued with his residency at Jamaica Hospital in Queens, where he chose to submerge himself into the oncology world because, at the time, treatments were limited and patient care was extremely challenging. He wanted to be a part of a healthcare revolution to change the lives of oncology patients for the better and has found it to be the most rewarding career he could have chosen.</p>
+                                
+                                <p>After completing his fellowship in Hematology and Oncology at Stony Brook University, Dr. Avvento began a private practice in Riverhead as a solo practitioner with a nurse and receptionist – a staff of three. The practice eventually grew to a staff of forty-five oncology professionals. Dr. Avvento chose the East End of Long Island because in 1988, there were no other practices around. He created a more convenient and comfortable situation for patients.</p>
+                                
+                                <p>Dr. Avvento is board-certified in four specialties including Internal Medicine, Hematology and Hospice, Medical Oncology, and Palliative Care. He has been the Medical Director of East End Hospice in Westhampton, NY since 1990. He is the former Director of Palliative Care at both Peconic Bay Medical Center and Southampton Hospital in Riverhead, NY. He was involved in establishing the Palliative Care Fellowship at Southampton Hospital for training doctors in palliative care. Dr Avvento was also responsible for the palliative care board certification of 4 physicians at the Southampton Hospital and 3 Nurse practitioners at Peconic Bay Medical Center under the newly established palliative care programs. Dr. Avvento is a former board member of Fighting Chance and currently holds an appointment as Adjunct Assistant Clinical Professorship at Mount Sinai.</p>
+                                
+                                <p>Through the years, Dr. Avvento has received multiple awards in recognition of his outstanding performance and achievements in the field. Accolades include: "Best Doctors on Long Island" – Newsday, 2008-2019; "Physician of the Year" – Peconic Bay Medical Center, 2005; "Best Doctors" – New York Magazine, 2004/2008; Castle Connolly Top Doctors: New York Metro Area – 2002 to 2008, 2010 to 2014; Patient Choice 5th Anniversary Award – 2012; Patients' Choice Award – 2008 to 2012, 2014; and Compassionate Doctor Recognition – 2010 to 2012.</p>
+                                
+                                <h3>Clinical Expertise & Specializations</h3>
+                                <p>Dr. Avvento's clinical expertise encompasses a broad range of oncological conditions, with particular focus on treating solid tumors and providing comprehensive supportive care. He stays current with the latest advances in cancer treatment, including targeted therapies, immunotherapy, and precision medicine approaches.</p>
+                                
+                                <p>His practice includes the management of various cancer types, symptom management, survivorship care, and coordination with surgical and radiation oncology colleagues. Dr. Avvento is also actively involved in clinical research, offering eligible patients access to cutting-edge clinical trials that may provide additional treatment options.</p>
+                                
+                                <p>Dr. Avvento is committed to evidence-based medicine and follows National Comprehensive Cancer Network (NCCN) and American Society of Clinical Oncology (ASCO) guidelines to ensure that all patients receive the most current, effective treatments available.</p>
+                                
+                                <h3>Personal Philosophy & Approach to Care</h3>
+                                <p>Dr. Avvento's approach to oncology is deeply rooted in the belief that every patient deserves not only the most advanced medical care available, but also compassionate support that addresses their unique needs and circumstances. He understands that a cancer diagnosis affects not just the patient, but entire families and support networks.</p>
+                                
+                                <p>"My role extends far beyond prescribing treatment," says Dr. Avvento. "I see myself as a guide and advocate, helping patients and families navigate this difficult journey while maintaining hope and dignity. Every patient teaches me something new, and I'm honored to be trusted with their care."</p>
+                                
+                                <p>Dr. Avvento is fluent in both English and Italian, allowing him to better serve patients in their preferred language. He believes that clear communication is fundamental to effective care, and he takes time to ensure that patients and families fully understand their diagnosis, treatment options, and what to expect throughout their care journey.</p>
+                                
+                                <h3>Beyond the Clinic</h3>
+                                <p>When not caring for patients, Dr. Avvento enjoys spending time with his family exploring Long Island's beaches and parks. He is an avid reader of both medical literature and historical fiction, and he finds that staying curious about the world helps him bring fresh perspectives to his patient care. Dr. Avvento also volunteers with local cancer support organizations, believing strongly in giving back to the community that has supported his practice.</p>
+                                
+                                <p>An accomplished home chef, Dr. Avvento often discusses nutrition and healthy eating with his patients, drawing from his Italian heritage to emphasize the importance of good food in healing and wellness. He believes that maintaining quality of life during treatment is just as important as the medical interventions themselves.</p>
+                            </div>
+                            
+                            <div class="read-more-overlay" id="readMoreOverlay">
+                                <div class="overlay-content">
+                                    <span>Read more about Dr. Avvento</span>
+                                    <div class="down-arrow">↓</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <div class="container">
+                    <h2>Meet Dr. Avvento</h2>
+                    <p>Watch Dr. Avvento share his personal approach to patient care and his commitment to providing compassionate cancer treatment in the community.</p>
+                </div>
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://player.vimeo.com/video/268994377?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" title="Dr. Louis Avvento"></iframe>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <div class="container">
+                    <h2>Practice Locations</h2>
+                    <p>Dr. Avvento provides compassionate cancer care at two convenient locations on Long Island.</p>
+                    <div class="location-cards">
+                        <div class="location-card">
+                            <img src="images/locations/riverhead.jpg" alt="Riverhead Medical Oncology Office" class="location-image">
+                            <div class="location-content">
+                                <div class="location-header">
+                                    <div class="location-icon">
+                                        <svg class="pin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                        </svg>
+                                    </div>
+                                    <h4>Riverhead Medical Oncology</h4>
+                                </div>
+                                <div class="location-details">
+                                    <p><strong>Address:</strong><br>750 Old Country Road<br>Riverhead, NY 11901</p>
+                                    <p><strong>Phone:</strong> <a href="tel:6317513000">(631) 751-3000</a></p>
+                                    <button class="map-button" onclick="openMap('750 Old Country Road, Riverhead, NY 11901')">View on Map</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="location-card">
+                            <img src="images/locations/southampton.jpg" alt="Southampton Medical Oncology Office" class="location-image">
+                            <div class="location-content">
+                                <div class="location-header">
+                                    <div class="location-icon">
+                                        <svg class="pin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                        </svg>
+                                    </div>
+                                    <h4>Southampton Medical Oncology</h4>
+                                </div>
+                                <div class="location-details">
+                                    <p><strong>Address:</strong><br>640 County Road 39<br>Southampton, NY 11968</p>
+                                    <p><strong>Phone:</strong> <a href="tel:6317513000">(631) 751-3000</a></p>
+                                    <button class="map-button" onclick="openMap('640 County Road 39, Southampton, NY 11968')">View on Map</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <div class="container">
+                    <h2>What Patients Are Saying</h2>
+                    <div class="reviews-container">
+                        <div class="reviews-slider" id="reviewsSlider">
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>Sarah M.</strong>
+                                        <div class="review-stars">★★★★★</div>
+                                    </div>
+                                    <span class="review-date">3 weeks ago</span>
+                                </div>
+                                <p>"Dr. Avvento is an exceptional oncologist who truly cares about his patients. He took the time to explain my diagnosis and treatment options in detail, making sure my family and I understood everything. His compassionate approach made such a difficult time more manageable. I highly recommend him to anyone facing cancer."</p>
+                            </div>
+                            
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>Michael R.</strong>
+                                        <div class="review-stars">★★★★★</div>
+                                    </div>
+                                    <span class="review-date">1 month ago</span>
+                                </div>
+                                <p>"I've been seeing Dr. Avvento for over two years now, and I can't say enough good things about him and his team. They are always available when I have concerns, and the care coordination between his offices is seamless. Dr. Avvento's expertise and genuine care have given me confidence throughout my treatment journey."</p>
+                            </div>
+                            
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>Jennifer L.</strong>
+                                        <div class="review-stars">★★★★★</div>
+                                    </div>
+                                    <span class="review-date">2 months ago</span>
+                                </div>
+                                <p>"Dr. Avvento's bilingual abilities were so helpful for my mother, who is more comfortable speaking Italian. He explained everything in both languages to make sure we all understood the treatment plan. His cultural sensitivity and medical expertise make him truly special."</p>
+                            </div>
+                            
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>David K.</strong>
+                                        <div class="review-stars">★★★★★</div>
+                                    </div>
+                                    <span class="review-date">2 months ago</span>
+                                </div>
+                                <p>"The entire team at Dr. Avvento's practice is outstanding. From scheduling to treatment, everything is handled professionally and with care. Dr. Avvento stays up-to-date with the latest treatments and offered me access to a clinical trial that has been incredibly effective. I'm grateful for his dedication."</p>
+                            </div>
+                            
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>Lisa T.</strong>
+                                        <div class="review-stars">★★★★★</div>
+                                    </div>
+                                    <span class="review-date">3 months ago</span>
+                                </div>
+                                <p>"Dr. Avvento has a remarkable ability to balance honesty about diagnosis with hope and optimism. He never rushed our appointments and always made sure all my questions were answered. His nutritional advice, drawing from his Italian background, has also been incredibly helpful during treatment."</p>
+                            </div>
+                            
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>Robert P.</strong>
+                                        <div class="review-stars">★★★★☆</div>
+                                    </div>
+                                    <span class="review-date">4 months ago</span>
+                                </div>
+                                <p>"Dr. Avvento is knowledgeable and caring. The Southampton office is convenient for me, and the staff there is excellent. Sometimes the wait times can be a bit long, but it's clear that Dr. Avvento spends quality time with each patient, which I appreciate."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="slider-controls">
+                            <button class="slider-button" id="prevBtn">‹</button>
+                            <button class="slider-button" id="nextBtn">›</button>
+                        </div>
+                        
+                        <div class="slider-dots" id="sliderDots"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>Additional Information</h2>
+                <p>Explore Dr. Avvento's education, training, and hospital affiliations.</p>
+                
+                <div class="interactive-info-container">
+                    <div class="info-tabs">
+                        <button class="info-tab active" data-tab="education">Education & Training</button>
+                        <button class="info-tab" data-tab="hospitals">Hospital Affiliations</button>
+                    </div>
+                    
+                    <div class="info-content">
+                        <div class="tab-content active" id="education">
+                            <div class="education-grid">
+                                <div class="education-card">
+                                    <div class="education-icon">🎓</div>
+                                    <h4>Medical School</h4>
+                                    <p><strong>University of Rome</strong></p>
+                                </div>
+                                <div class="education-card">
+                                    <div class="education-icon">📚</div>
+                                    <h4>Undergraduate</h4>
+                                    <p><strong>New York University</strong></p>
+                                </div>
+                                <div class="education-card">
+                                    <div class="education-icon">🏥</div>
+                                    <h4>Residency</h4>
+                                    <p><strong>The Jamaica Hospital</strong></p>
+                                </div>
+                                <div class="education-card">
+                                    <div class="education-icon">⚕️</div>
+                                    <h4>Fellowship</h4>
+                                    <p><strong>SUNY Stony Brook</strong><br>North Port VA Medical Center</p>
+                                </div>
+                                <div class="education-card">
+                                    <div class="education-icon">🏆</div>
+                                    <h4>Board Certification</h4>
+                                    <p><strong>MD, FACP</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="hospitals">
+                            <div class="hospital-grid">
+                                <div class="hospital-card">
+                                    <div class="hospital-icon">🏥</div>
+                                    <h4>Eastern Long Island Hospital</h4>
+                                </div>
+                                <div class="hospital-card">
+                                    <div class="hospital-icon">🏥</div>
+                                    <h4>Peconic Bay Medical Center</h4>
+                                </div>
+                                <div class="hospital-card">
+                                    <div class="hospital-icon">🏥</div>
+                                    <h4>Southampton Hospital</h4>
+                                </div>
+                                <div class="hospital-card">
+                                    <div class="hospital-icon">🏥</div>
+                                    <h4>Stony Brook University Hospital</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <div class="container">
+                    <div class="cta-box">
+                        <h2>Schedule Your Appointment with Dr. Avvento</h2>
+                        <p>Experience personalized, compassionate cancer care with a physician who puts your needs first. Dr. Avvento and his dedicated care team are ready to support you throughout your treatment journey.</p>
+                        <a href="tel:+18555287322" class="cta-button">Call (855) 528-7322</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="js/common.js"></script>
+    <script src="https://player.vimeo.com/api/player.js"></script>
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.info-tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Remove active classes
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active classes
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+            
+            // Bio expansion functionality
+            const readMoreOverlay = document.getElementById('readMoreOverlay');
+            const bioTextbox = document.getElementById('bioTextbox');
+            const overlayContent = readMoreOverlay.querySelector('.overlay-content span');
+            const downArrow = readMoreOverlay.querySelector('.down-arrow');
+            let isExpanded = false;
+            
+            readMoreOverlay.addEventListener('click', function() {
+                if (!isExpanded) {
+                    // Expand
+                    bioTextbox.classList.add('expanded');
+                    overlayContent.textContent = 'Show Less';
+                    downArrow.textContent = '↑';
+                    isExpanded = true;
+                } else {
+                    // Collapse
+                    bioTextbox.classList.remove('expanded');
+                    overlayContent.textContent = 'Read more about Dr. Avvento';
+                    downArrow.textContent = '↓';
+                    isExpanded = false;
+                    
+                    // Smooth scroll back to top of bio section
+                    bioTextbox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+            
+            // Reviews slider functionality
+            const slider = document.getElementById('reviewsSlider');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dotsContainer = document.getElementById('sliderDots');
+            const reviews = document.querySelectorAll('.review-card');
+            
+            let currentSlide = 0;
+            const reviewsPerSlide = window.innerWidth <= 768 ? 1 : (window.innerWidth <= 1024 ? 2 : 3);
+            const totalSlides = Math.ceil(reviews.length / reviewsPerSlide);
+            
+            // Create dots
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('slider-dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+            
+            const dots = document.querySelectorAll('.slider-dot');
+            
+            function updateSlider() {
+                const translateX = -currentSlide * (100 / reviewsPerSlide);
+                slider.style.transform = `translateX(${translateX}%)`;
+                
+                // Update dots
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentSlide);
+                });
+                
+                // Update button states
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+            }
+            
+            function goToSlide(slideIndex) {
+                currentSlide = slideIndex;
+                updateSlider();
+            }
+            
+            function nextSlide() {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    updateSlider();
+                }
+            }
+            
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlider();
+                }
+            }
+            
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+            
+            // Initialize slider
+            updateSlider();
+            
+            // Auto-slide every 5 seconds
+            let autoSlideInterval = setInterval(() => {
+                if (currentSlide < totalSlides - 1) {
+                    nextSlide();
+                } else {
+                    goToSlide(0);
+                }
+            }, 5000);
+            
+            // Pause auto-slide when user interacts
+            slider.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+            slider.addEventListener('mouseleave', () => {
+                autoSlideInterval = setInterval(() => {
+                    if (currentSlide < totalSlides - 1) {
+                        nextSlide();
+                    } else {
+                        goToSlide(0);
+                    }
+                }, 5000);
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                location.reload(); // Simple solution for responsive changes
+            });
+        });
+        
+        // Map functionality
+        function openMap(address) {
+            const encodedAddress = encodeURIComponent(address);
+            const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+            window.open(mapUrl, '_blank');
+        }
+    </script>
+</body>
+</html>

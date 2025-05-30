@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - NYCancer</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Responsive video container */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            height: 315px; /* Use fixed height on desktop to match original exactly */
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        /* Only use responsive aspect ratio on mobile */
+        @media (max-width: 768px) {
+            .video-wrapper {
+                height: 0;
+                padding-bottom: 56.25%;
+            }
+        }
+        
+        /* Ensure two-column layout is responsive */
+        .two-column {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        
+        .two-column > div {
+            flex: 1;
+        }
+        
+        /* Constrain video column to not grow larger than content */
+        .two-column .video-wrapper {
+            flex: 0 0 auto;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .two-column {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .video-wrapper {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">About Us</h1>
+            <p>Providing world-class cancer and blood disorder care in our communities.</p>
+        </div>
+    </section>
+    
+    <section class="main-content">
+        <div class="container">
+            <div class="content-section">
+                <div class="two-column" id="core-mission">
+                    <div>
+                        <h2>Our Mission and Vision</h2>
+                        <p>Our mission is to provide world-class, patient-centered, affordable care to patients with cancer and blood disorders in their own communities, close to family and friends.</p>
+                        <p>Our vision is a world free of cancer and blood disorders by contributing to the search for cures by offering cutting-edge clinical trials and personalized, state-of-the-art treatments that save and prolong lives.</p>
+                        <p>With locations in Nassau and Suffolk counties, as well as in the Bronx, Manhattan, Queens, Staten Island, Brooklyn, and Upstate New York, NYCBS brings advanced cancer and blood disorder treatment within reach of the communities we serve. We understand the significance of being close to home during these challenging times and strive to make this journey as manageable as possible for our patients.</p>
+                    </div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/ndwynKjYxl4?si=sSC56jJQTvWtuT9x" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>Comprehensive Care, Compassionate Approach</h2>
+                <p>At NYCBS, we approach cancer and blood disorder care holistically, with a commitment to treating the whole patient, not just the disease. Our multidisciplinary and comprehensive approach to care utilizes the most advanced imaging, state-of-the-art therapies, including medical oncology and radiation oncology, as well as surgery. We believe in addressing the emotional, psychological, and physical aspects of your well-being and offer a wide range of supportive services, including nutrition, social work, psychology, physical therapy, chronic care management, financial assistance, and more.</p>
+                <p>NYCBS is at the forefront of medical technology and equipment. Our full-service research department and dedicated team of specialists continuously work towards advancing cancer care. Patients can access more than 60 clinical trials featuring the latest cancer therapeutics, as well as an on-site laboratory and pharmacy, making care as convenient as possible.</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>Our Core Belief</h2>
+                <p>Advocating for and ensuring the health and well-being of our patients is and always will be our top priority. We are dedicated to delivering the highest standard of care, guided by our core values of compassion, respect, and excellence. As your trusted partners in cancer care, we aim to provide not only effective treatment but also the support, understanding, and comfort you deserve.</p>
+                <p>Thank you for choosing New York Cancer & Blood Specialists. We are honored to stand by your side every step of the way in the fight against cancer and blood disorders.</p>
+            </div>
+            
+            <div class="content-section" id="core-values">
+                <h2>Our Core Values</h2>
+                <p>The NYCBS Core Values are at the heart of everything we do.</p>
+                
+                <div class="values-container">
+                    <div class="value-card">
+                        <h3>Patient Experience</h3>
+                        <p>Commits to satisfying internal and external patients.</p>
+                    </div>
+                    
+                    <div class="value-card">
+                        <h3>Professionalism</h3>
+                        <p>Builds professional skills and competencies and improves work processes.</p>
+                    </div>
+                    
+                    <div class="value-card">
+                        <h3>Leadership</h3>
+                        <p>Provides direction and leadership to help teams achieve goals and operate cooperatively and cohesively.</p>
+                    </div>
+                    
+                    <div class="value-card">
+                        <h3>Communication</h3>
+                        <p>Delivers clear, effective communication and takes responsibility for understanding others.</p>
+                    </div>
+                    
+                    <div class="value-card">
+                        <h3>Integrity</h3>
+                        <p>Gains the trust of others by taking responsibility for your own actions and telling the truth.</p>
+                    </div>
+                    
+                    <div class="value-card">
+                        <h3>Adaptability</h3>
+                        <p>Responds quickly to change and easily considers new approaches.</p>
+                    </div>
+                    
+                    <div class="value-card">
+                        <h3>Diversity</h3>
+                        <p>The ability to recognize each person's differences and utilize those differences to increase the organization's effectiveness.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <div class="two-column" id="patient-advocacy">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/0xl4mnUBx4c?si=G19l8YCTbllCysMt" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div>
+                        <h2>Patient Advocacy</h2>
+                        <p>In the advent of sequestration, advocating for patient choice is a natural extension of our continuing commitment to patient well-being.</p>
+                        <p>We believe that every patient deserves access to the highest quality care, regardless of their circumstances. Our patient advocacy program works to ensure that patients have the resources and support they need throughout their cancer journey.</p>
+                        <p>Our team works diligently to help patients navigate insurance challenges, financial concerns, and other barriers to care, ensuring that treatment decisions are based on medical needs rather than external constraints.</p>
+                        <a href="#" class="cta-button">Learn More About Patient Advocacy</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>Contact Us</h2>
+                <p>Call (1) 833-CANCER-9</p>
+                <p>If you would like to make an appointment, please visit our <a href="#">appointment request page</a>.</p>
+                <a href="#" class="cta-button">Request Appointment</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="js/common.js"></script>
+</body>
+</html>
