@@ -51,7 +51,15 @@
             
             <!-- Location Information -->
             <div class="content-section">
-                <h2>NYCBS Babylon</h2>
+                <div class="location-title-section">
+                    <h2>NYCBS Babylon</h2>
+                    <div class="specialty-tags">
+                        <span class="specialty-tag">Medical Oncology</span>
+                        <span class="specialty-tag">Radiation Oncology</span>
+                        <span class="specialty-tag">Advanced Imaging</span>
+                        <span class="specialty-tag">Urology</span>
+                    </div>
+                </div>
                 <div class="location-header-info">
                     <div class="location-details">
                         <div class="contact-info">
@@ -655,6 +663,40 @@
 </html>
 
 <style>
+/* Location Title Section */
+.location-title-section {
+    margin-bottom: 2rem;
+}
+
+.location-title-section h2 {
+    margin-bottom: 1rem;
+}
+
+/* Specialty Tags */
+.specialty-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.specialty-tag {
+    background-color: #f0f6ff;
+    color: #0066cc;
+    border: 1px solid #d1e7ff;
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.specialty-tag:hover {
+    background-color: #e6f2ff;
+    border-color: #b3d9ff;
+}
+
 /* Photo Slider */
 .photo-slider {
     position: relative;
@@ -1112,6 +1154,15 @@
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
+    .specialty-tags {
+        gap: 0.5rem;
+    }
+    
+    .specialty-tag {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
     .location-header-info {
         grid-template-columns: 1fr;
     }
