@@ -5,176 +5,727 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Breast Cancer Treatment</title>
                     <link rel="stylesheet" href="css/styles.css">
+                    <style>
+                        /* Interactive Cards Styles - More Specific Selectors */
+                        .early-detection-section {
+                            background: #f8f9ff;
+                            padding: 40px 0;
+                            margin: 20px 0;
+                        }
+
+                        .early-detection-section .early-detection-intro {
+                            text-align: center;
+                            margin-bottom: 30px;
+                        }
+
+                        .early-detection-section .early-detection-intro h2 {
+                            color: #0066cc;
+                            font-size: 2.5em;
+                            margin-bottom: 10px;
+                            font-weight: 600;
+                        }
+
+                        .early-detection-section .early-detection-intro p {
+                            font-size: 1.2em;
+                            color: #666;
+                            max-width: 800px;
+                            margin: 0 auto;
+                        }
+
+                        .early-detection-section .cards-container {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 20px;
+                            max-width: 900px;
+                            margin: 0 auto;
+                            padding: 0 20px;
+                        }
+
+                        .early-detection-section .info-card {
+                            background: white;
+                            border-radius: 20px;
+                            padding: 25px;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                            border-left: 6px solid #0066cc;
+                            transition: all 0.3s ease;
+                            cursor: pointer;
+                            position: relative;
+                            overflow: hidden;
+                        }
+
+                        .early-detection-section .info-card:hover {
+                            transform: translateY(-10px);
+                            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+                        }
+
+                        .early-detection-section .info-card.expanded {
+                            border-left-color: #28a745;
+                            background: linear-gradient(135deg, #f8fff9 0%, #e8f5e8 100%);
+                        }
+
+                        .card-header {
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 15px;
+                        }
+
+                        .card-icon {
+                            width: 60px;
+                            height: 60px;
+                            border-radius: 50%;
+                            background: linear-gradient(135deg, #0066cc, #004499);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-right: 20px;
+                            color: white;
+                            font-size: 24px;
+                            font-weight: bold;
+                            flex-shrink: 0;
+                        }
+
+                        .info-card.expanded .card-icon {
+                            background: linear-gradient(135deg, #28a745, #20a044);
+                        }
+
+                        .card-title {
+                            font-size: 1.5em;
+                            color: #0066cc;
+                            font-weight: 600;
+                            margin-bottom: 5px;
+                        }
+
+                        .info-card.expanded .card-title {
+                            color: #28a745;
+                        }
+
+                        .card-subtitle {
+                            color: #666;
+                            font-size: 1em;
+                        }
+
+                        .card-preview {
+                            font-size: 1.1em;
+                            line-height: 1.6;
+                            color: #555;
+                        }
+
+                        .card-content {
+                            display: none;
+                            animation: slideDown 0.5s ease-in-out;
+                            margin-top: 20px;
+                        }
+
+                        .info-card.expanded .card-content {
+                            display: block;
+                        }
+
+                        @keyframes slideDown {
+                            from { 
+                                opacity: 0; 
+                                transform: translateY(-20px);
+                                max-height: 0;
+                            }
+                            to { 
+                                opacity: 1; 
+                                transform: translateY(0);
+                                max-height: 1000px;
+                            }
+                        }
+
+                        .content-subsection {
+                            margin-bottom: 20px;
+                        }
+
+                        .content-subsection h4 {
+                            color: #0066cc;
+                            font-size: 1.2em;
+                            margin-bottom: 12px;
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        .content-subsection h4::before {
+                            content: '•';
+                            color: #28a745;
+                            font-size: 1.5em;
+                            margin-right: 10px;
+                        }
+
+                        .info-list {
+                            list-style: none;
+                            padding-left: 0;
+                        }
+
+                        .info-list li {
+                            margin-bottom: 10px;
+                            padding-left: 25px;
+                            position: relative;
+                            line-height: 1.5;
+                        }
+
+                        .info-list li::before {
+                            content: '→';
+                            position: absolute;
+                            left: 0;
+                            color: #0066cc;
+                            font-weight: bold;
+                        }
+
+                        .highlight-callout {
+                            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+                            border: 1px solid #ffc107;
+                            border-radius: 10px;
+                            padding: 15px;
+                            margin: 15px 0;
+                        }
+
+                        .highlight-callout h5 {
+                            color: #856404;
+                            margin-bottom: 8px;
+                            font-size: 1.1em;
+                        }
+
+                        .stats-highlight {
+                            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                            gap: 15px;
+                            margin: 15px 0;
+                        }
+
+                        /* NEW LAYOUT STYLES */
+                        .understanding-section {
+                            width: 100%;
+                            padding: 30px 20px;
+                            background: white;
+                            text-align: center;
+                        }
+
+                        .understanding-section h2 {
+                            color: #0066cc;
+                            font-size: 2.5em;
+                            margin-bottom: 10px;
+                            font-weight: 600;
+                        }
+
+                        .understanding-section p {
+                            font-size: 1.2em;
+                            color: #666;
+                            max-width: 800px;
+                            margin: 0 auto 25px auto;
+                        }
+
+                        .split-screen-section {
+                            max-width: 1200px;
+                            margin: 25px auto;
+                            padding: 30px;
+                            background: #ffffff;
+                            border-radius: 15px;
+                            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                        }
+
+                        .video-wrapper {
+                            width: 600px;
+                            height: 338px;
+                            float: right;
+                            margin: 0 0 25px 40px;
+                            border-radius: 15px;
+                            overflow: hidden;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+                            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                            padding: 15px;
+                        }
+
+                        .video-wrapper iframe {
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 10px;
+                        }
+
+                        .content-text h3 {
+                            color: #0066cc;
+                            font-size: 1.4em;
+                            margin-bottom: 12px;
+                            margin-top: 20px;
+                            font-weight: 600;
+                        }
+
+                        .content-text h3:first-child {
+                            margin-top: 0;
+                        }
+
+                        .content-text ul {
+                            margin-bottom: 20px;
+                            padding-left: 20px;
+                        }
+
+                        .content-text li {
+                            margin-bottom: 10px;
+                            line-height: 1.6;
+                            text-align: justify;
+                        }
+
+                        @media (max-width: 768px) {
+                            .split-screen-section {
+                                padding: 25px 20px;
+                            }
+
+                            .video-wrapper {
+                                float: none;
+                                width: 100%;
+                                height: 250px;
+                                margin: 0 0 25px 0;
+                                display: block;
+                            }
+
+                            .understanding-section h2 {
+                                font-size: 2em;
+                            }
+                        }
+
+                        /* Visual Statistics Styles */
+                        .stats-visualization {
+                            background: none;
+                            border: none;
+                            border-radius: 0;
+                            padding: 20px;
+                            margin: 0;
+                            text-align: center;
+                            max-width: 1200px;
+                            margin: 0 auto;
+                        }
+
+                        .women-visual-container {
+                            margin: 15px 0;
+                        }
+
+                        .women-icons {
+                            display: flex;
+                            justify-content: center;
+                            gap: 15px;
+                            margin-bottom: 20px;
+                            flex-wrap: wrap;
+                        }
+
+                        .woman-icon {
+                            width: 35px;
+                            height: 50px;
+                            transition: all 0.3s ease;
+                            cursor: pointer;
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .woman-icon::before {
+                            content: '';
+                            position: absolute;
+                            width: 20px;
+                            height: 20px;
+                            background: #ccc;
+                            border-radius: 50%;
+                            top: 8px;
+                            transition: all 0.3s ease;
+                        }
+
+                        .woman-icon::after {
+                            content: '';
+                            position: absolute;
+                            width: 30px;
+                            height: 25px;
+                            background: #ccc;
+                            bottom: 5px;
+                            border-radius: 15px 15px 5px 5px;
+                            transition: all 0.3s ease;
+                        }
+
+                        .woman-icon.affected {
+                            animation: highlight 2s ease-in-out infinite alternate;
+                            filter: drop-shadow(0 0 8px rgba(0, 102, 204, 0.6));
+                        }
+
+                        .woman-icon.affected::before {
+                            background: linear-gradient(135deg, #0066cc, #004499);
+                        }
+
+                        .woman-icon.affected::after {
+                            background: linear-gradient(135deg, #0066cc, #004499);
+                        }
+
+                        @keyframes highlight {
+                            from { transform: scale(1); }
+                            to { transform: scale(1.1); }
+                        }
+
+                        .progress-bar-container {
+                            margin: 15px 0;
+                        }
+
+                        .progress-bar {
+                            width: 100%;
+                            height: 20px;
+                            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+                            border-radius: 10px;
+                            overflow: hidden;
+                            border: 1px solid #ccc;
+                            position: relative;
+                        }
+
+                        .progress-fill {
+                            height: 100%;
+                            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+                            border-radius: 10px;
+                            width: 0;
+                            animation: fillProgress 3s ease-in-out forwards;
+                            position: relative;
+                        }
+
+                        .progress-fill::after {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                            animation: shimmer 2s ease-in-out infinite;
+                        }
+
+                        @keyframes fillProgress {
+                            from { width: 0; }
+                            to { width: 12.5%; }
+                        }
+
+                        @keyframes shimmer {
+                            0% { transform: translateX(-100%); }
+                            100% { transform: translateX(100%); }
+                        }
+
+                        .progress-label {
+                            font-size: 1.1em;
+                            color: #0066cc;
+                            font-weight: 600;
+                            margin-top: 8px;
+                        }
+
+                        .stats-context {
+                            display: grid;
+                            grid-template-columns: 1fr;
+                            gap: 12px;
+                            margin-top: 20px;
+                        }
+
+                        .stat-highlight {
+                            background: white;
+                            border: 1px solid #0066cc;
+                            border-radius: 10px;
+                            padding: 12px;
+                            font-size: 1em;
+                            color: #333;
+                        }
+
+                        .stat-highlight strong {
+                            color: #0066cc;
+                        }
+
+                        .stat-item {
+                            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                            padding: 12px;
+                            border-radius: 10px;
+                            text-align: center;
+                            border: 1px solid #0066cc;
+                        }
+
+                        .stat-number {
+                            font-size: 1.8em;
+                            font-weight: bold;
+                            color: #0066cc;
+                            display: block;
+                        }
+
+                        .stat-label {
+                            color: #004499;
+                            font-weight: 600;
+                            font-size: 0.9em;
+                            margin-top: 5px;
+                        }
+
+                        .expand-indicator {
+                            position: absolute;
+                            top: 20px;
+                            right: 20px;
+                            font-size: 24px;
+                            color: #0066cc;
+                            transition: transform 0.3s ease;
+                        }
+
+                        .info-card.expanded .expand-indicator {
+                            transform: rotate(180deg);
+                            color: #28a745;
+                        }
+
+                        .main-content {
+                            padding: 20px 0;
+                        }
+
+                        .content-section {
+                            padding: 20px 0;
+                        }
+
+                        .content-section h2 {
+                            margin-bottom: 10px;
+                        }
+
+                        .content-section p {
+                            margin-bottom: 15px;
+                        }
+
+                        @media (max-width: 768px) {
+                            .cards-container {
+                                padding: 0 15px;
+                            }
+                            
+                            .card-header {
+                                flex-direction: column;
+                                text-align: center;
+                            }
+                            
+                            .card-icon {
+                                margin-right: 0;
+                                margin-bottom: 15px;
+                            }
+
+                            .early-detection-intro h2 {
+                                font-size: 2em;
+                            }
+
+                            .understanding-section {
+                                padding: 30px 15px;
+                            }
+
+                            .early-detection-section {
+                                padding: 30px 0;
+                            }
+                        }
+                    </style>
     </head>
 <body>
     <div id="header-placeholder"></div>
     
-    <section class="page-header">
-        <div class="container">
-            <h1 class="page-title">Breast Cancer Treatment</h1>
-            <p>Comprehensive, personalized care for breast cancer patients.</p>
-        </div>
-    </section>
     
     <section class="main-content">
         <div class="container">
-            
 
-            <div class="content-section">
-                <p>Breast cancer affects 1 in 8 women in the United States. At New York Cancer & Blood Specialists, we provide comprehensive care with state-of-the-art treatments and compassionate support through every step of your journey.</p>
-                <div class="two-column">
-                    <div>
-<!-- Understanding -->
-                        <h2>Understanding Breast Cancer</h2>
-                        <p>Breast cancer occurs when cells in the breast grow out of control. Early detection with mammography and prompt treatment have dramatically improved survival rates over the last few decades. Our specialists work closely with you to develop a personalized treatment plan based on the specific characteristics of your cancer, your overall health, and your preferences.</p>
-                        <p>Different types of breast cancer include:</p>
-                        <ul>
-                            <li><strong>Ductal carcinoma in situ (DCIS)</strong> - Cancer cells are found in the lining of a duct but have not spread outside the duct</li>
-                            <li><strong>Invasive ductal carcinoma</strong> - The most common type of breast cancer, which starts in the milk ducts and spreads to surrounding breast tissue</li>
-                            <li><strong>Invasive lobular carcinoma</strong> - Cancer that begins in the lobules (milk-producing glands) and spreads to surrounding tissue</li>
-                            <li><strong>Inflammatory breast cancer</strong> - A rare but aggressive form of breast cancer</li>
-                            <li><strong>Triple-negative breast cancer</strong> - Cancer cells that lack estrogen receptors, progesterone receptors, and HER2 proteins</li>
-                            <li><strong>HER2-positive breast cancer</strong> - Cancer cells with high levels of HER2 protein</li>
-                        </ul>
-                    </div>
-                    <div style="border-radius: 4px;">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/dVFPgSK220g?si=Evcndg10JaA6er1q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </div>
+        </div>
+    </section>
+
+    <!-- Full Width Understanding Section -->
+    <section class="understanding-section">
+        <h2>Understanding Breast Cancer</h2>
+        <p>Breast cancer occurs when cells in breast tissue grow uncontrollably. Understanding your risk factors and the basics empowers you to take proactive steps for your health.</p>
+        
+        <div class="stats-visualization">
+            <p style="margin-bottom: 15px; font-size: 1.1em; color: #0066cc; font-weight: 600;">
+                1 in 8 women will be diagnosed with breast cancer in their lifetime
+            </p>
+            <div class="women-visual-container">
+                <div class="women-icons">
+                    <div class="woman-icon affected" title="Affected by breast cancer"></div>
+                    <div class="woman-icon unaffected" title="Not affected"></div>
+                    <div class="woman-icon unaffected" title="Not affected"></div>
+                    <div class="woman-icon unaffected" title="Not affected"></div>
+                    <div class="woman-icon unaffected" title="Not affected"></div>
+                    <div class="woman-icon unaffected" title="Not affected"></div>
+                    <div class="woman-icon unaffected" title="Not affected"></div>
+                    <div class="woman-icon unaffected" title="Not affected"></div>
                 </div>
             </div>
-            
-            <div class="content-section">
-                
-<!-- Screening -->
-                <h2>Breast Cancer Screening and Early Detection</h2>
-                <p>Regular screening is essential for early detection. We offer comprehensive screening options including:</p>
-                <ul>
-                    <li><strong>3D Mammography (Tomosynthesis)</strong> - Creates a three-dimensional picture of the breast using X-rays</li>
-                    <li><strong>Breast Ultrasound</strong> - Uses sound waves to create images of the breast tissue</li>
-                    <li><strong>Breast MRI</strong> - Uses magnetic fields to create detailed images of the breast</li>
-                    <li><strong>Clinical Breast Exams</strong> - Physical examination of the breast by a healthcare professional</li>
-                </ul>
-                <p>We follow the latest guidelines for breast cancer screening while personalizing recommendations based on your individual risk factors.</p>
-                <p><a href="#" class="cta-button">Learn More About Breast Cancer Screening</a></p>
+            <div class="stats-context">
+                <div class="stat-highlight">
+                    <strong>In the US:</strong> About 287,000 women will be diagnosed this year
+                </div>
             </div>
-            
-<!-- Treatment Options -->
-            <div class="content-section">
-                <h2>Treatment Options for Breast Cancer</h2>
-                <p>Our multidisciplinary approach ensures you receive the most effective treatments. Your personalized treatment plan may include one or more of the following options:</p>
-                
-                <h3>Surgery</h3>
-                <ul>
-                    <li><strong>Lumpectomy (breast-conserving surgery)</strong> - Removes the tumor and a small amount of surrounding tissue</li>
-                    <li><strong>Mastectomy</strong> - Removes the entire breast</li>
-                    <li><strong>Sentinel lymph node biopsy</strong> - Removes and examines the first lymph nodes where cancer cells are likely to spread</li>
-                    <li><strong>Axillary lymph node dissection</strong> - Removes multiple lymph nodes</li>
-                    <li><strong>Reconstruction options</strong> - Various techniques to rebuild the shape of the breast after mastectomy</li>
-                </ul>
-                
-                <h3>Radiation Therapy</h3>
-                <ul>
-                    <li><strong>External beam radiation</strong> - Precise X-rays target cancer cells</li>
-                    <li><strong>Partial breast irradiation</strong> - Focuses radiation on the area where the tumor was removed</li>
-                    <li><strong>Intraoperative radiation therapy</strong> - Delivers radiation during surgery</li>
-                </ul>
-                
-                <h3>Medical Oncology</h3>
-                <ul>
-                    <li><strong>Chemotherapy</strong> - Uses drugs to kill cancer cells</li>
-                    <li><strong>Hormone therapy</strong> - Blocks hormones that fuel hormone receptor-positive breast cancers</li>
-                    <li><strong>Targeted therapy</strong> - Targets specific features of cancer cells</li>
-                    <li><strong>Immunotherapy</strong> - Boosts the body's immune system to fight cancer</li>
-                </ul>
-                
-                <h3>Clinical Trials</h3>
-                <p>We offer access to innovative clinical trials testing the latest treatments for breast cancer. Ask your doctor if you might be eligible for a clinical trial.</p>
+        </div>
+    </section>
+
+    <!-- Split Screen Section with Text Wrapping -->
+    <section class="split-screen-section">
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/dVFPgSK220g?si=Evcndg10JaA6er1q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+        <div class="content-text">
+            <h3>Key Facts</h3>
+            <ul>
+                <li>Most common cancer in women after skin cancer</li>
+                <li>Can also occur in men, though rarely (about 1% of cases)</li>
+                <li>Not all breast lumps are cancerous - most are benign</li>
+                <li>Family history accounts for only 5-10% of cases</li>
+                <li>Risk increases with age, but can occur at any age</li>
+            </ul>
+
+            <h3>Types of Breast Cancer</h3>
+            <ul>
+                <li><strong>Ductal carcinoma in situ (DCIS)</strong> - Cancer cells are found in the lining of a duct but have not spread outside the duct</li>
+                <li><strong>Invasive ductal carcinoma</strong> - The most common type of breast cancer, which starts in the milk ducts and spreads to surrounding breast tissue</li>
+                <li><strong>Invasive lobular carcinoma</strong> - Cancer that begins in the lobules (milk-producing glands) and spreads to surrounding tissue</li>
+                <li><strong>Inflammatory breast cancer</strong> - A rare but aggressive form of breast cancer</li>
+                <li><strong>Triple-negative breast cancer</strong> - Cancer cells that lack estrogen receptors, progesterone receptors, and HER2 proteins</li>
+                <li><strong>HER2-positive breast cancer</strong> - Cancer cells with high levels of HER2 protein</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- NEW INTERACTIVE EARLY DETECTION SECTION -->
+    <section class="early-detection-section">
+        <div class="container">
+            <div class="early-detection-intro">
+                <h2>Early Detection Saves Lives</h2>
+                <p>Knowledge and proactive screening are your most powerful tools in the fight against breast cancer. Explore the essential information every woman should know.</p>
             </div>
-            
-            <div class="content-section">
-<!-- Our Providers -->
-                <h2>Our Breast Cancer Specialists</h2>
-                <p>Our team includes experienced surgeons, medical oncologists, radiation oncologists, plastic surgeons, and support staff dedicated to breast cancer care.</p>
+
+            <div class="cards-container">
                 
-                <div class="doctors-container">
-                    <div class="doctor-card">
-                        <div class="doctor-photo" style="background-image: url('/api/placeholder/300/300');"></div>
-                        <div class="doctor-info">
-                            <h3>Dr. Dwight De Risi</h3>
-                            <p>Surgical Oncology</p>
-                            <a href="#" class="cta-button">View Profile</a>
+                <!-- When to See Doctor Card -->
+                <div class="info-card" onclick="toggleCard('doctor')">
+                    <div class="expand-indicator">▼</div>
+                    <div class="card-header">
+                        <div class="card-icon">⚠️</div>
+                        <div>
+                            <div class="card-title">When to See a Doctor</div>
+                            <div class="card-subtitle">Recognizing signs and taking action</div>
                         </div>
                     </div>
-                    
-                    <div class="doctor-card">
-                        <div class="doctor-photo" style="background-image: url('/api/placeholder/300/300');"></div>
-                        <div class="doctor-info">
-                            <h3>Dr. Yelda Nouri</h3>
-                            <p>Medical Oncology & Hematology</p>
-                            <a href="#" class="cta-button">View Profile</a>
-                        </div>
+                    <div class="card-preview">
+                        While regular screening is essential, it's important to be aware of changes in your breasts and know when to contact your healthcare provider immediately.
                     </div>
-                    
-                    <div class="doctor-card">
-                        <div class="doctor-photo" style="background-image: url('/api/placeholder/300/300');"></div>
-                        <div class="doctor-info">
-                            <h3>Dr. David P. Mangiameli</h3>
-                            <p>Breast Surgery</p>
-                            <a href="#" class="cta-button">View Profile</a>
+                    <div class="card-content" id="doctor-content">
+                        <div class="content-subsection">
+                            <h4>Warning Signs</h4>
+                            <ul class="info-list">
+                                <li>New lump or mass in breast or underarm area</li>
+                                <li>Change in size or shape of breast</li>
+                                <li>Dimpling or puckering of breast skin</li>
+                                <li>Nipple turning inward or discharge (especially bloody)</li>
+                                <li>Redness, warmth, or swelling of breast</li>
+                                <li>Persistent breast or nipple pain</li>
+                            </ul>
                         </div>
-                    </div>
-                    
-                    <div class="doctor-card">
-                        <div class="doctor-photo" style="background-image: url('/api/placeholder/300/300');"></div>
-                        <div class="doctor-info">
-                            <h3>Dr. Craig B. Larsen</h3>
-                            <p>Breast Surgery</p>
-                            <a href="#" class="cta-button">View Profile</a>
+                        <div class="content-subsection">
+                            <h4>Risk Factors</h4>
+                            <ul class="info-list">
+                                <li>Family history of breast or ovarian cancer</li>
+                                <li>Personal history of breast or ovarian cancer</li>
+                                <li>BRCA1 or BRCA2 gene mutations</li>
+                                <li>Previous radiation therapy to chest area</li>
+                                <li>Taking hormone replacement therapy</li>
+                            </ul>
+                        </div>
+                        <div class="highlight-callout">
+                            <h5>Remember</h5>
+                            <p>Trust your instincts. If something feels different or concerning, don't hesitate to contact your healthcare provider.</p>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="content-section">
-<!-- Comprehensive Support -->
-                <h2>Comprehensive Support Services</h2>
-                <p>We believe in treating the whole person, not just the disease. Our support services include:</p>
-                <ul>
-                    <li><strong>Nutrition counseling</strong> to help maintain strength during treatment</li>
-                    <li><strong>Support groups</strong> for connecting with others on a similar journey</li>
-                    <li><strong>Physical therapy and rehabilitation</strong> to regain strength and mobility</li>
-                    <li><strong>Psychological support</strong> for emotional well-being</li>
-                    <li><strong>Financial counseling</strong> to navigate insurance and treatment costs</li>
-                </ul>
-                <p><a href="support-services.html" class="cta-button">Learn More About Our Support Services</a></p>
-            </div>
-            
-            <div class="content-section">
-<!-- Resources -->
-                <h2>Breast Cancer Resources</h2>
-                <div class="resources-container">
-                    <div class="resource-card">
-                        <h3>American Cancer Society Guidelines</h3>
-                        <p>Information on screening recommendations, treatment options, and support resources.</p>
-                        <a href="#">Learn More</a>
+                <!-- Benefits Card -->
+                <div class="info-card" onclick="toggleCard('benefits')">
+                    <div class="expand-indicator">▼</div>
+                    <div class="card-header">
+                        <div class="card-icon">🎯</div>
+                        <div>
+                            <div class="card-title">Benefits of Early Detection</div>
+                            <div class="card-subtitle">Why it makes all the difference</div>
+                        </div>
                     </div>
-                    
-                    <div class="resource-card">
-                        <h3>NCCN Resources</h3>
-                        <p>Evidence-based guidelines for breast cancer treatment and management.</p>
-                        <a href="#">Learn More</a>
+                    <div class="card-preview">
+                        Early detection opens doors to more treatment options and better outcomes. When found early, you have the greatest number of choices and the best chance for successful treatment.
                     </div>
-                    
-                    <div class="resource-card">
-                        <h3>New York Cancer & Blood Specialists Support Group</h3>
-                        <p>Join our breast cancer support group that meets every Tuesday at 6:00 PM.</p>
-                        <a href="#">Learn More</a>
+                    <div class="card-content" id="benefits-content">
+                        <div class="content-subsection">
+                            <h4>Treatment Advantages</h4>
+                            <ul class="info-list">
+                                <li>More treatment options to choose from</li>
+                                <li>Less invasive surgical procedures available</li>
+                                <li>Greater chance of breast-conserving surgery</li>
+                                <li>Potentially shorter treatment duration</li>
+                                <li>Better preservation of normal activities during treatment</li>
+                            </ul>
+                        </div>
+                        <div class="content-subsection">
+                            <h4>Quality of Life Benefits</h4>
+                            <ul class="info-list">
+                                <li>Maintain your normal routine more easily</li>
+                                <li>Faster return to activities you enjoy</li>
+                                <li>Less disruption to family and work commitments</li>
+                                <li>Greater peace of mind knowing you caught it early</li>
+                                <li>More energy and strength throughout treatment</li>
+                            </ul>
+                        </div>
+                        <div class="highlight-callout">
+                            <h5>Remember</h5>
+                            <p>Early detection empowers you with choices. The sooner we find it, the more options you have for treatment that fits your life.</p>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Screening Card -->
+                <div class="info-card" onclick="toggleCard('screening')">
+                    <div class="expand-indicator">▼</div>
+                    <div class="card-header">
+                        <div class="card-icon">🏥</div>
+                        <div>
+                            <div class="card-title">Screening Guidelines</div>
+                            <div class="card-subtitle">Your roadmap to effective screening</div>
+                        </div>
+                    </div>
+                    <div class="card-preview">
+                        Regular breast cancer screening is one of the most important steps you can take for your health. Our comprehensive program uses advanced technology to detect changes before you can feel them.
+                    </div>
+                    <div class="card-content" id="screening-content">
+                        <div class="content-subsection">
+                            <h4>Age Guidelines</h4>
+                            <ul class="info-list">
+                                <li>Ages 40-44: Annual mammograms recommended (discuss with your doctor)</li>
+                                <li>Ages 45-54: Annual mammograms strongly recommended</li>
+                                <li>Ages 55+: Mammograms every 1-2 years, or continue annually</li>
+                                <li>High-risk individuals: May start screening earlier with additional methods</li>
+                            </ul>
+                        </div>
+                        <div class="content-subsection">
+                            <h4>Screening Methods</h4>
+                            <ul class="info-list">
+                                <li>3D Mammography (Tomosynthesis) - our gold standard</li>
+                                <li>Breast MRI for high-risk patients</li>
+                                <li>Breast ultrasound as supplemental screening</li>
+                                <li>Clinical breast examination during regular check-ups</li>
+                                <li>Genetic counseling and testing when appropriate</li>
+                            </ul>
+                        </div>
+                        <div class="stats-highlight">
+                            <div class="stat-item">
+                                <span class="stat-number">15</span>
+                                <div class="stat-label">Minutes</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">1-3</span>
+                                <div class="stat-label">Years Earlier Detection</div>
+                            </div>
+                        </div>
+                        <div class="highlight-callout">
+                            <h5>Remember</h5>
+                            <p>Consistency saves lives. Regular screening according to guidelines gives you the best chance of catching cancer early.</p>
+                        </div>
+                    </div>
+                </div>
+
+                
             </div>
-            
+        </div>
+    </section>
+
+    <section class="main-content">
+        <div class="container">            
             <div class="content-section" style="text-align: center;">
-<!-- Schedule -->
                 <h2>Schedule Your Appointment</h2>
                 <p>If you've been diagnosed with breast cancer or need a screening, our team is here to help.</p>
                 <a href="#" class="cta-button">Request an Appointment</a>
@@ -188,5 +739,43 @@
 
     <!-- Scripts -->
     <script src="js/common.js"></script>
+    <script>
+        // ====== EASY CUSTOMIZATION SETTINGS ======
+        // Change these values to update the statistic visualization
+        const STATISTIC_CONFIG = {
+            affected: 1,           // Number affected (highlighted figures)
+            total: 8,             // Total number of figures to show
+            mainText: "1 in 8 women will be diagnosed with breast cancer in their lifetime",
+            supportingText: "About 287,000 women will be diagnosed this year"
+        };
+        // ==========================================
+
+        function toggleCard(cardId) {
+            const card = document.querySelector(`#${cardId}-content`).closest('.info-card');
+            const isExpanded = card.classList.contains('expanded');
+            
+            // Close all other cards
+            document.querySelectorAll('.info-card').forEach(c => {
+                if (c !== card) {
+                    c.classList.remove('expanded');
+                }
+            });
+            
+            // Toggle current card
+            if (isExpanded) {
+                card.classList.remove('expanded');
+            } else {
+                card.classList.add('expanded');
+                // Smooth scroll to card
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Initialize the visualization when page loads  
+        document.addEventListener('DOMContentLoaded', function() {
+            // The static visualization is now in the HTML, so we don't need to generate it
+            // Just keeping this function in case we want to add dynamic functionality later
+        });
+    </script>
 </body>
 </html>
