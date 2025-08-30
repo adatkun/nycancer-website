@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Playground</title>
+    <link rel="stylesheet" href="chat-navigator.css">
+    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -699,11 +704,7 @@
         <!-- RIGHT PANEL - Preview -->
         <div class="preview-panel" id="previewPanel">
             <h3 class="section-title">Live Preview</h3>
-            <div id="preview" style="border: 1px solid #ddd; padding: 20px; background: white; border-radius: 8px;">
-                <p style="text-align: center; color: #7f8c8d;">
-                    Preview will appear here...
-                </p>
-            </div>
+            <iframe id="preview" style="width: 100%; height: calc(100% - 60px); border: 1px solid #ddd; border-radius: 8px; background: white;" frameborder="0"></iframe>
         </div>
     </div>
     
@@ -1806,7 +1807,7 @@
             const dropZone = document.getElementById('dropZone');
             const elements = dropZone.querySelectorAll('.dropped-element');
             
-            let previewHTML = '<div class="container" style="padding: 0px 20px;">';
+            let bodyContent = '';
             
             elements.forEach((element, index) => {
                 const content = element.innerHTML;
@@ -1818,12 +1819,218 @@
                 
                 // Add spacing wrapper around each element (except the last one)
                 const spacing = index < elements.length - 1 ? ' style="margin-bottom: 20px;"' : '';
-                previewHTML += `<div${spacing}>${tempDiv.innerHTML}</div>`;
+                bodyContent += `<div${spacing}>${tempDiv.innerHTML}</div>`;
             });
             
-            previewHTML += '</div>';
-            
-            document.getElementById('preview').innerHTML = previewHTML;
+            // Create complete HTML document with all CSS links for iframe
+            const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview</title>
+    <link rel="stylesheet" href="chat-navigator.css">
+    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Include the inline styles from the main document for elements that need them */
+        :root {
+            --nycbs-purple: #6f42c1;
+        }
+        
+        .grid {
+            display: grid;
+        }
+        
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .info-card, .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-content {
+            height: 100%;
+        }
+        
+        .card-title {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        
+        .card-text {
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+        
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+        
+        .section {
+            padding: 40px 0;
+        }
+        
+        .section-light {
+            background-color: #f8f9fa;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .cta-content h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-blue {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-white {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-lg {
+            padding: 15px 30px;
+            font-size: 18px;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .btn-full {
+            width: 100%;
+            display: block;
+        }
+        
+        .btn-icon-only {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #fff;
+        }
+        
+        .container {
+            max-width: 100%;
+        }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .form-textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+        
+        .breadcrumb a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .breadcrumb i {
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        ${bodyContent || '<p style="text-align: center; color: #7f8c8d;">Preview will appear here...</p>'}
+    </div>
+</body>
+</html>`;
+
+            const iframe = document.getElementById('preview');
+            iframe.srcdoc = fullHTML;
         }
 
         function copyHTML() {
