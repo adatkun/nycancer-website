@@ -387,19 +387,20 @@
             --nycbs-purple: #6f42c1;
         }
         
-        .grid {
+        /* EDITOR ONLY STYLES - not for preview */
+        .editor-grid {
             display: grid;
         }
         
-        .grid-cols-2 {
+        .editor-grid-cols-2 {
             grid-template-columns: repeat(2, 1fr);
         }
         
-        .grid-cols-3 {
+        .editor-grid-cols-3 {
             grid-template-columns: repeat(3, 1fr);
         }
         
-        .info-card, .card {
+        .editor-info-card, .editor-card {
             background: white;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -407,51 +408,51 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .card-content {
+        .editor-card-content {
             height: 100%;
         }
         
-        .card-title {
+        .editor-card-title {
             margin: 0 0 10px 0;
             color: #2c3e50;
         }
         
-        .card-text {
+        .editor-card-text {
             margin: 0;
             line-height: 1.6;
         }
         
-        .text-center {
+        .editor-text-center {
             text-align: center;
         }
         
-        .mt-4 {
+        .editor-mt-4 {
             margin-top: 1.5rem;
         }
         
-        .mb-3 {
+        .editor-mb-3 {
             margin-bottom: 1rem;
         }
         
-        .section {
+        .editor-section {
             padding: 40px 0;
         }
         
-        .section-light {
+        .editor-section-light {
             background-color: #f8f9fa;
         }
         
-        .cta-section {
+        .editor-cta-section {
             text-align: center;
             padding: 40px 20px;
         }
         
-        .cta-content h3 {
+        .editor-cta-content h3 {
             margin-bottom: 15px;
             color: #2c3e50;
         }
         
-        .btn-lg {
+        .editor-btn-lg {
             padding: 15px 30px;
             font-size: 18px;
             text-decoration: none;
@@ -750,7 +751,7 @@
         let currentEditElement = null;
         let elementCounter = 0;
 
-        // Element templates
+        // Element templates - Updated to remove conflicting inline styles
         const templates = {
             'intro-section': {
                 html: `<section class="section">
@@ -763,7 +764,7 @@
             'info-grid-2': {
                 html: `<section class="section section-light">
                     <h3>{{title}}</h3>
-                    <div class="grid grid-cols-2" style="gap: 20px;">
+                    <div class="grid grid-cols-2">
                         <div class="info-card">
                             <h4>{{card1Title}}</h4>
                             <p>{{card1Content}}</p>
@@ -785,7 +786,7 @@
             'info-grid-3': {
                 html: `<section class="section">
                     <h3>{{title}}</h3>
-                    <div class="grid grid-cols-3 mt-4" style="gap: 20px;">
+                    <div class="grid grid-cols-3 mt-4">
                         <div class="card">
                             <div class="card-content">
                                 <h4 class="card-title text-center">{{card1Title}}</h4>
@@ -819,7 +820,7 @@
             'numbered-steps': {
                 html: `<section class="section">
                     <h3>{{title}}</h3>
-                    <div class="grid grid-cols-3 mt-4" style="gap: 20px;">
+                    <div class="grid grid-cols-3 mt-4">
                         <div class="card">
                             <div class="card-content">
                                 <div class="text-center mb-3">
@@ -878,7 +879,7 @@
                             <h3>{{title}}</h3>
                             <p>{{description}}</p>
                             <div class="cta-buttons">
-                                <a class="btn btn-primary btn-lg" href="{{link}}" target="{{target}}">{{buttonText}}</a>
+                                <a class="btn btn-lg" href="{{link}}" target="{{target}}">{{buttonText}}</a>
                             </div>
                         </div>
                     </div>
@@ -892,13 +893,13 @@
                 }
             },
             'section-header': {
-                html: `<h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin: 30px 0 20px 0;">{{title}}</h3>`,
+                html: `<h3>{{title}}</h3>`,
                 fields: {
                     title: { type: 'text', label: 'Header Text', default: 'Section Title' }
                 }
             },
             'btn-primary': {
-                html: `<a href="{{url}}" target="{{target}}" class="btn btn-primary">{{text}}</a>`,
+                html: `<a href="{{url}}" target="{{target}}" class="btn">{{text}}</a>`,
                 fields: {
                     text: { type: 'text', label: 'Button Text', default: 'Primary Button' },
                     url: { type: 'text', label: 'Button URL', default: '#' },
@@ -906,7 +907,7 @@
                 }
             },
             'btn-primary-large': {
-                html: `<a href="{{url}}" target="{{target}}" class="btn btn-primary btn-lg">{{text}}</a>`,
+                html: `<a href="{{url}}" target="{{target}}" class="btn btn-lg">{{text}}</a>`,
                 fields: {
                     text: { type: 'text', label: 'Button Text', default: 'Large Primary Button' },
                     url: { type: 'text', label: 'Button URL', default: '#' },
@@ -914,7 +915,7 @@
                 }
             },
             'btn-primary-small': {
-                html: `<a href="{{url}}" target="{{target}}" class="btn btn-primary btn-sm">{{text}}</a>`,
+                html: `<a href="{{url}}" target="{{target}}" class="btn btn-sm">{{text}}</a>`,
                 fields: {
                     text: { type: 'text', label: 'Button Text', default: 'Small Primary Button' },
                     url: { type: 'text', label: 'Button URL', default: '#' },
@@ -946,7 +947,7 @@
                 }
             },
             'btn-full': {
-                html: `<a href="{{url}}" target="{{target}}" class="btn btn-primary btn-full">{{text}}</a>`,
+                html: `<a href="{{url}}" target="{{target}}" class="btn btn-full">{{text}}</a>`,
                 fields: {
                     text: { type: 'text', label: 'Button Text', default: 'Full Width Button' },
                     url: { type: 'text', label: 'Button URL', default: '#' },
@@ -954,7 +955,7 @@
                 }
             },
             'btn-icon': {
-                html: `<a href="{{url}}" target="{{target}}" class="btn btn-primary btn-icon-only">
+                html: `<a href="{{url}}" target="{{target}}" class="btn btn-icon-only">
                     <i class="fas fa-{{icon}}"></i>
                 </a>`,
                 fields: {
@@ -994,10 +995,9 @@
                 }
             },
             'space': {
-                html: `<div style="height: {{height}}px; margin: {{margin}}px 0;"></div>`,
+                html: `<div class="spacer" style="height: {{height}}px;"></div>`,
                 fields: {
-                    height: { type: 'text', label: 'Space Height (pixels)', default: '20' },
-                    margin: { type: 'text', label: 'Additional Margin (pixels)', default: '0' }
+                    height: { type: 'text', label: 'Space Height (pixels)', default: '20' }
                 }
             },
             'form-text-input': {
@@ -1057,27 +1057,22 @@
                 }
             },
             'link': {
-                html: `<a href="{{url}}" style="color: var(--nycbs-purple); text-decoration: none;">{{text}}</a>`,
+                html: `<a href="{{url}}">{{text}}</a>`,
                 fields: {
                     text: { type: 'text', label: 'Link Text', default: 'Click here for more information' },
                     url: { type: 'text', label: 'Link URL', default: '#' }
                 }
             },
             'image': {
-                html: `<img src="{{src}}" alt="{{alt}}" style="max-width: 100%; height: auto; border-radius: {{borderRadius}}px;" />`,
+                html: `<img src="{{src}}" alt="{{alt}}" style="max-width: 100%; height: auto;" />`,
                 fields: {
                     src: { type: 'text', label: 'Image URL', default: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop' },
-                    alt: { type: 'text', label: 'Alt Text', default: 'Image description' },
-                    borderRadius: { type: 'text', label: 'Border Radius (pixels)', default: '8' }
+                    alt: { type: 'text', label: 'Alt Text', default: 'Image description' }
                 }
             },
             'divider': {
-                html: `<hr style="border: none; height: {{thickness}}px; background: {{color}}; margin: {{spacing}}px 0;" />`,
-                fields: {
-                    thickness: { type: 'text', label: 'Line Thickness (pixels)', default: '2' },
-                    color: { type: 'text', label: 'Line Color', default: '#dee2e6' },
-                    spacing: { type: 'text', label: 'Spacing (pixels)', default: '30' }
-                }
+                html: `<hr />`,
+                fields: {}
             },
             'card-with-image': {
                 html: `<div class="card">
@@ -1085,7 +1080,7 @@
                     <div class="card-content">
                         <h4 class="card-title">{{title}}</h4>
                         <p class="card-text">{{content}}</p>
-                        <a href="{{buttonLink}}" target="{{buttonTarget}}" class="btn btn-secondary btn-sm">{{buttonText}}</a>
+                        <a href="{{buttonLink}}" target="{{buttonTarget}}" class="btn btn-sm">{{buttonText}}</a>
                     </div>
                 </div>`,
                 fields: {
@@ -1102,11 +1097,11 @@
                 html: `<section class="section">
                     <h3>{{title}}</h3>
                     <p>{{description}}</p>
-                    <div class="grid grid-cols-4" style="gap: 16px;">
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 2px dashed #dee2e6;">{{col1}}</div>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 2px dashed #dee2e6;">{{col2}}</div>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 2px dashed #dee2e6;">{{col3}}</div>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 2px dashed #dee2e6;">{{col4}}</div>
+                    <div class="grid grid-cols-4">
+                        <div class="demo-column">{{col1}}</div>
+                        <div class="demo-column">{{col2}}</div>
+                        <div class="demo-column">{{col3}}</div>
+                        <div class="demo-column">{{col4}}</div>
                     </div>
                 </section>`,
                 fields: {
@@ -1121,7 +1116,7 @@
             'contact-form': {
                 html: `<section class="section">
                     <h3>{{title}}</h3>
-                    <div class="grid grid-cols-2" style="gap: 40px;">
+                    <div class="grid grid-cols-2">
                         <div class="card">
                             <div class="card-content">
                                 <h4 class="card-title">{{formTitle}}</h4>
@@ -1145,7 +1140,7 @@
                                     <label class="form-label">{{messageLabel}}</label>
                                     <textarea class="form-input form-textarea" placeholder="{{messagePlaceholder}}"></textarea>
                                 </div>
-                                <button class="btn btn-primary">{{submitBtn}}</button>
+                                <button class="btn">{{submitBtn}}</button>
                             </div>
                         </div>
                         <div>
@@ -1203,7 +1198,7 @@
             },
             'section-light': {
                 html: `<section class="section section-light">
-                    <div class="text-center" style="padding: 40px 0;">
+                    <div class="text-center">
                         <h4>{{title}}</h4>
                         <p>{{content}}</p>
                     </div>
@@ -1803,6 +1798,7 @@
             }
         }
 
+        // UPDATED PREVIEW FUNCTION - Now uses only your website's CSS
         function updatePreview() {
             const dropZone = document.getElementById('dropZone');
             const elements = dropZone.querySelectorAll('.dropped-element');
@@ -1817,18 +1813,17 @@
                 const controls = tempDiv.querySelector('.element-controls');
                 if (controls) controls.remove();
                 
-                // Add spacing wrapper around each element (except the last one)
-                const spacing = index < elements.length - 1 ? ' style="margin-bottom: 20px;"' : '';
-                bodyContent += `<div${spacing}>${tempDiv.innerHTML}</div>`;
+                bodyContent += tempDiv.innerHTML;
             });
             
-            // Create complete HTML document with all CSS links for iframe
+            // Create complete HTML document with ONLY your website's CSS files
             const fullHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preview</title>
+    <!-- Your actual website CSS files -->
     <link rel="stylesheet" href="chat-navigator.css">
     <link rel="stylesheet" href="chat.css">
     <link rel="stylesheet" href="footer.css">
@@ -1838,187 +1833,13 @@
     <link rel="stylesheet" href="styles2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Include the inline styles from the main document for elements that need them */
-        :root {
-            --nycbs-purple: #6f42c1;
-        }
-        
-        .grid {
-            display: grid;
-        }
-        
-        .grid-cols-2 {
-            grid-template-columns: repeat(2, 1fr);
-        }
-        
-        .grid-cols-3 {
-            grid-template-columns: repeat(3, 1fr);
-        }
-        
-        .grid-cols-4 {
-            grid-template-columns: repeat(4, 1fr);
-        }
-        
-        .info-card, .card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .card-content {
-            height: 100%;
-        }
-        
-        .card-title {
-            margin: 0 0 10px 0;
-            color: #2c3e50;
-        }
-        
-        .card-text {
-            margin: 0;
-            line-height: 1.6;
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .mt-4 {
-            margin-top: 1.5rem;
-        }
-        
-        .mb-3 {
-            margin-bottom: 1rem;
-        }
-        
-        .section {
-            padding: 40px 0;
-        }
-        
-        .section-light {
-            background-color: #f8f9fa;
-        }
-        
-        .cta-section {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        
-        .cta-content h3 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-        
-        .btn-blue {
-            background: #3498db;
-            color: white;
-        }
-        
-        .btn-white {
-            background: white;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-        
-        .btn-lg {
-            padding: 15px 30px;
-            font-size: 18px;
-        }
-        
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-        
-        .btn-full {
-            width: 100%;
-            display: block;
-        }
-        
-        .btn-icon-only {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-        
+        /* Only essential container styles - let your CSS handle the rest */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background: #fff;
         }
-        
         .container {
             max-width: 100%;
-        }
-        
-        .form-group {
-            margin: 15px 0;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .form-input, .form-textarea {
-            width: 100%;
-            padding: 8px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        
-        .form-textarea {
-            height: 100px;
-            resize: vertical;
-        }
-        
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 0;
-            font-size: 14px;
-        }
-        
-        .breadcrumb a {
-            color: #3498db;
-            text-decoration: none;
-        }
-        
-        .breadcrumb i {
-            color: #999;
-            font-size: 12px;
         }
     </style>
 </head>
@@ -2212,8 +2033,7 @@
             if (tagName === 'img') {
                 const src = element.getAttribute('src') || 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop';
                 const alt = element.getAttribute('alt') || 'Image description';
-                const borderRadius = '8'; // Default
-                return { type: 'image', values: { src, alt, borderRadius } };
+                return { type: 'image', values: { src, alt } };
             }
             
             // Match sections
@@ -2292,7 +2112,7 @@
             
             // Match dividers
             if (tagName === 'hr') {
-                return { type: 'divider', values: { thickness: '2', color: '#dee2e6', spacing: '30' } };
+                return { type: 'divider', values: {} };
             }
             
             // Match single cards
