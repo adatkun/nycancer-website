@@ -638,6 +638,11 @@
                     <h4>📊 4-Column Info Grid</h4>
                     <p>Grid layout with 4 columns</p>
                 </div>
+
+                <div class="element-item" draggable="true" data-type="image-text-layout" data-keywords="image text layout mixed card paragraph three column">
+    <h4>🖼️ Image + Text Layout</h4>
+    <p>Card with image + combined text section</p>
+</div>
                 
                 <div class="element-item" draggable="true" data-type="numbered-steps" data-keywords="steps process numbered circles workflow">
                     <h4>🔢 Numbered Steps</h4>
@@ -1080,7 +1085,7 @@
                     <div class="card-content">
                         <h4 class="card-title">{{title}}</h4>
                         <p class="card-text">{{content}}</p>
-                        <a href="{{buttonLink}}" target="{{buttonTarget}}" class="btn btn-sm">{{buttonText}}</a>
+                        <a href="{{buttonLink}}" target="{{buttonTarget}}" class="btn btn-primary btn-sm">{{buttonText}}</a>
                     </div>
                 </div>`,
                 fields: {
@@ -1208,6 +1213,39 @@
                     content: { type: 'textarea', label: 'Section Content', default: 'This section uses a light background color for visual variety and content organization.' }
                 }
             }
+
+            ,
+'image-text-layout': {
+    html: `<section class="section">
+        <div class="grid grid-cols-3">
+            <div class="card">
+                <img src="{{imageUrl}}" class="card-image" alt="{{imageAlt}}" />
+                <div class="card-content">
+                    <h4 class="card-title">{{cardTitle}}</h4>
+                    <p class="card-text">{{cardContent}}</p>
+                    <a href="{{buttonLink}}" target="{{buttonTarget}}" class="btn btn-primary btn-sm">{{buttonText}}</a>
+                </div>
+            </div>
+            <div style="grid-column: span 2;">
+                <div style="padding: 20px;">
+                    <h3>{{textTitle}}</h3>
+                    <p>{{textContent}}</p>
+                </div>
+            </div>
+        </div>
+    </section>`,
+    fields: {
+        cardTitle: { type: 'text', label: 'Card Title', default: 'Featured Service' },
+        cardContent: { type: 'textarea', label: 'Card Content', default: 'This card highlights a specific service or feature with an image and brief description.' },
+        imageUrl: { type: 'text', label: 'Card Image URL', default: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop' },
+        imageAlt: { type: 'text', label: 'Image Alt Text', default: 'Medical equipment' },
+        buttonText: { type: 'text', label: 'Card Button Text', default: 'Learn More' },
+        buttonLink: { type: 'text', label: 'Card Button Link', default: '#' },
+        buttonTarget: { type: 'select', label: 'Card Button Opens In', default: '_self', options: ['_self', '_blank'] },
+        textTitle: { type: 'text', label: 'Text Section Title', default: 'Detailed Information' },
+        textContent: { type: 'textarea', label: 'Text Section Content', default: 'This larger text area provides comprehensive information about the topic, service, or feature. You can include multiple paragraphs here to give readers a complete understanding of what you are offering. The layout combines visual appeal with detailed content to create an engaging user experience.' }
+    }
+}
         };
 
         // Drag and drop functionality
