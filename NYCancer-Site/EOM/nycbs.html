@@ -327,7 +327,7 @@
       
       const name = document.getElementById('nameInput').value.trim() || 'employee-of-the-month';
       const safeName = name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-      pdf.save(safeName + '.pdf');
+      pdf.save('NYCBS_' + safeName + '.pdf');
     }
   </script>
 </body>

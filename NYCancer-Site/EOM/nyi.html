@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee of the Month - NYH</title>
+  <title>Employee of the Month - NYI</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #0a1628;
+      background: #0a1f2e;
       color: #fff;
       min-height: 100vh;
       margin: 0;
       padding: 20px;
     }
-    h1 { text-align: center; color: #3b82f6; margin-bottom: 20px; }
+    h1 { text-align: center; color: #22b8cf; margin-bottom: 20px; }
     .container { max-width: 1000px; margin: 0 auto; }
     .controls {
-      background: #1e3a5f;
+      background: #1a3a4a;
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 20px;
@@ -52,7 +52,7 @@
       transition: transform 0.2s;
     }
     .btn:hover { transform: scale(1.05); }
-    .btn-upload { background: #3b82f6; color: #fff; }
+    .btn-upload { background: #22b8cf; color: #fff; }
     .btn-export { background: #22c55e; color: #fff; }
     .canvas-wrapper {
       display: flex;
@@ -73,30 +73,23 @@
       height: 1100px;
       transform: scale(0.5);
       transform-origin: top left;
-      background: linear-gradient(180deg, #1e5799 0%, #2989d8 50%, #207cca 100%);
+      background: linear-gradient(180deg, #1a3a5c 0%, #2a6a7a 50%, #3a8a8a 100%);
       overflow: hidden;
     }
-    .employee-name-container {
+    .curved-name-container {
       position: absolute;
-      bottom: 330px;
-      left: 85px;
-      width: 680px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      top: 153px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 655px;
+      height: 302px;
       z-index: 30;
-      overflow: hidden;
+      pointer-events: none;
     }
-    .employee-name {
-      white-space: nowrap;
-      text-align: center;
-      font-size: 48px;
-      font-weight: bold;
-      color: #fff;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-      font-family: 'Arial Black', sans-serif;
-      line-height: 1;
+    .curved-name-container svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
     }
     #employeePhoto {
       position: absolute;
@@ -131,7 +124,7 @@
     }
     .slider-label {
       font-size: 11px;
-      color: #3b82f6;
+      color: #22b8cf;
       min-width: 40px;
       text-align: right;
     }
@@ -139,7 +132,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Employee of the Month Creator - NYH</h1>
+    <h1>Employee of the Month Creator - NYI</h1>
     
     <div class="controls">
       <div class="control-group">
@@ -183,11 +176,18 @@
           <img id="employeePhoto" src="" alt="" style="display:none;">
           
           <div class="frame-layer" id="frameLayer">
-            <img src="img/EOM_NYH.png" alt="Frame">
+            <img src="img/EOM_NYI.png" alt="Frame">
           </div>
           
-          <div class="employee-name-container">
-            <div class="employee-name" id="employeeName">Employee Name</div>
+          <div class="curved-name-container">
+            <svg viewBox="0 0 655 302">
+              <defs>
+                <path id="nameCurve" d="M 50,228 Q 327.5,-42 605,228" fill="transparent"/>
+              </defs>
+              <text fill="#ffffff" font-family="Arial Black, sans-serif" font-size="48" font-weight="bold">
+                <textPath id="employeeName" href="#nameCurve" startOffset="50%" text-anchor="middle">Employee Name</textPath>
+              </text>
+            </svg>
           </div>
         </div>
       </div>
@@ -208,17 +208,25 @@
 
     function updateName() {
       const nameEl = document.getElementById('employeeName');
-      const container = nameEl.parentElement;
       const text = document.getElementById('nameInput').value || 'Employee Name';
       nameEl.textContent = text;
       
+      // Adjust font size based on text length
+      const svg = nameEl.closest('svg');
+      const textEl = nameEl.parentElement;
       let fontSize = 48;
-      nameEl.style.fontSize = fontSize + 'px';
       
-      while (nameEl.scrollWidth > container.offsetWidth && fontSize > 12) {
-        fontSize -= 2;
-        nameEl.style.fontSize = fontSize + 'px';
+      if (text.length > 20) {
+        fontSize = 36;
       }
+      if (text.length > 25) {
+        fontSize = 30;
+      }
+      if (text.length > 30) {
+        fontSize = 24;
+      }
+      
+      textEl.setAttribute('font-size', fontSize);
     }
 
     function uploadPhoto(e) {
@@ -318,7 +326,7 @@
       
       const name = document.getElementById('nameInput').value.trim() || 'employee-of-the-month';
       const safeName = name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-      pdf.save('NYH_' + safeName + '.pdf');
+      pdf.save('NYI_' + safeName + '.pdf');
     }
   </script>
 </body>

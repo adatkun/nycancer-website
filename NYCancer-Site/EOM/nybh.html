@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee of the Month - NYH</title>
+  <title>Employee of the Month - NYBH</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #0a1628;
+      background: #2d1a24;
       color: #fff;
       min-height: 100vh;
       margin: 0;
       padding: 20px;
     }
-    h1 { text-align: center; color: #3b82f6; margin-bottom: 20px; }
+    h1 { text-align: center; color: #e84a8a; margin-bottom: 20px; }
     .container { max-width: 1000px; margin: 0 auto; }
     .controls {
-      background: #1e3a5f;
+      background: #3d2a34;
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 20px;
@@ -52,7 +52,7 @@
       transition: transform 0.2s;
     }
     .btn:hover { transform: scale(1.05); }
-    .btn-upload { background: #3b82f6; color: #fff; }
+    .btn-upload { background: #e84a8a; color: #fff; }
     .btn-export { background: #22c55e; color: #fff; }
     .canvas-wrapper {
       display: flex;
@@ -73,15 +73,15 @@
       height: 1100px;
       transform: scale(0.5);
       transform-origin: top left;
-      background: linear-gradient(180deg, #1e5799 0%, #2989d8 50%, #207cca 100%);
+      background: linear-gradient(180deg, #c94b8a 0%, #d65c97 50%, #e084af 100%);
       overflow: hidden;
     }
     .employee-name-container {
       position: absolute;
-      bottom: 330px;
+      bottom: 75px;
       left: 85px;
       width: 680px;
-      height: 60px;
+      height: 70px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -94,7 +94,7 @@
       font-size: 48px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
       font-family: 'Arial Black', sans-serif;
       line-height: 1;
     }
@@ -131,7 +131,7 @@
     }
     .slider-label {
       font-size: 11px;
-      color: #3b82f6;
+      color: #e84a8a;
       min-width: 40px;
       text-align: right;
     }
@@ -139,7 +139,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Employee of the Month Creator - NYH</h1>
+    <h1>Employee of the Month Creator - NYBH</h1>
     
     <div class="controls">
       <div class="control-group">
@@ -183,7 +183,7 @@
           <img id="employeePhoto" src="" alt="" style="display:none;">
           
           <div class="frame-layer" id="frameLayer">
-            <img src="img/EOM_NYH.png" alt="Frame">
+            <img src="img/EOM_NYBH.png" alt="Frame">
           </div>
           
           <div class="employee-name-container">
@@ -318,7 +318,7 @@
       
       const name = document.getElementById('nameInput').value.trim() || 'employee-of-the-month';
       const safeName = name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-      pdf.save('NYH_' + safeName + '.pdf');
+      pdf.save('NYBH_' + safeName + '.pdf');
     }
   </script>
 </body>
