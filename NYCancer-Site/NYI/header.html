@@ -1,0 +1,100 @@
+<!-- ===== NYI HEADER COMPONENT WITH MOBILE MENU ===== -->
+
+<!-- ===== TOP BAR ===== -->
+<div class="eyebrow">
+  <div class="eyebrow-left">
+    <span class="tagline">The Future of Medical Imaging is Clear</span>
+  </div>
+  <div class="eyebrow-right">
+    <a href="tel:8332694624" class="call-button">
+      <i class="fas fa-phone"></i> Call (833) 269-4624
+    </a>
+    <a href="https://portal.nyimaging.com" class="portal-link desktop-only" target="_blank">
+      <i class="fas fa-user-circle"></i> Patient Portal
+    </a>
+  </div>
+</div>
+
+<!-- ===== MAIN HEADER WITH LOGO ===== -->
+<header class="main-header">
+  <div class="logo">
+    <a href="/"><img src="img/NYI_Logo.png" alt="New York Imaging Specialists" /></a>
+  </div>
+  <a href="/request-appointment" class="appointment-button desktop-only">
+    <i class="fas fa-calendar-check"></i> Request Appointment
+  </a>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- ===== DESKTOP NAVIGATION ===== -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-container">
+    <div class="nav-links">
+      <a href="/locations.html">Locations</a>
+      <a href="/services.html">Services</a>
+      
+      <div class="dropdown">
+        <a href="/about">About <i class="fas fa-chevron-down"></i></a>
+        <div class="dropdown-content">
+          <a href="/about/our-story"><i class="fas fa-book-open"></i> Our Story</a>
+          <a href="/about/billing"><i class="fas fa-file-invoice-dollar"></i> Billing</a>
+          <a href="/about/insurance"><i class="fas fa-shield-alt"></i> Insurance Info</a>
+          <a href="/about/news"><i class="fas fa-newspaper"></i> News</a>
+          <a href="/about/careers"><i class="fas fa-briefcase"></i> Careers</a>
+        </div>
+      </div>
+      
+      <div class="dropdown">
+        <a href="#">Portals <i class="fas fa-chevron-down"></i></a>
+        <div class="dropdown-content">
+          <a href="https://portal.nyimaging.com" target="_blank"><i class="fas fa-user-circle"></i> Patient Portal</a>
+          <a href="https://infinitt.nyimaging.com" target="_blank"><i class="fas fa-images"></i> INFINITT</a>
+          <a href="https://scriptsender.nyimaging.com" target="_blank"><i class="fas fa-paper-plane"></i> Scriptsender</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MOBILE NAVIGATION ===== -->
+<div class="mobile-nav" id="mobile-nav">
+  <a href="/locations.html">Locations</a>
+  <a href="/services.html">Services</a>
+  
+  <!-- About Section (Collapsible) -->
+  <div class="mobile-nav-section">
+    <button class="mobile-nav-toggle" data-target="about-submenu">
+      About <i class="fas fa-chevron-down"></i>
+    </button>
+    <div class="mobile-nav-submenu" id="about-submenu">
+      <a href="/about">About Overview</a>
+      <a href="/about/our-story">Our Story</a>
+      <a href="/about/billing">Billing</a>
+      <a href="/about/insurance">Insurance Info</a>
+      <a href="/about/news">News</a>
+      <a href="/about/careers">Careers</a>
+    </div>
+  </div>
+  
+  <!-- Portals Section (Collapsible) -->
+  <div class="mobile-nav-section">
+    <button class="mobile-nav-toggle" data-target="portals-submenu">
+      Portals <i class="fas fa-chevron-down"></i>
+    </button>
+    <div class="mobile-nav-submenu" id="portals-submenu">
+      <a href="https://portal.nyimaging.com" target="_blank">Patient Portal</a>
+      <a href="https://infinitt.nyimaging.com" target="_blank">INFINITT</a>
+      <a href="https://scriptsender.nyimaging.com" target="_blank">Scriptsender</a>
+    </div>
+  </div>
+  
+  <div class="mobile-nav-footer">
+    <a href="/request-appointment" class="mobile-appointment-btn">
+      <i class="fas fa-calendar-check"></i> Request Appointment
+    </a>
+  </div>
+</div>
+
+<!-- Mobile menu functionality is handled by js/navigation.js -->
