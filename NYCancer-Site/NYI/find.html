@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Care | New York Imaging Specialists</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://use.typekit.net/your-kit-id.css">
+  <style>
+    :root {
+      --nyi-navy: #1e3a5f;
+      --nyi-purple: #4c4189;
+      --nyi-navy-dark: #6b5b95;
+      --nyi-blue: #152a45;
+      --nyi-blue-light: #7d6da8;
+      --nyi-teal: #23738a;
+      --nyi-purple-accent: #00b4b4;
+      --text-primary: #1a1a1a;
+      --text-secondary: #5a5a5a;
+      --text-light: #7a7a7a;
+      --bg-white: #ffffff;
+      --bg-light: #f8f9fa;
+      --bg-gray: #f3f4f6;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+      --shadow-xl: 0 20px 25px rgba(0,0,0,0.1);
+      --transition: all 0.3s ease;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "myriad-pro", -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-primary); background: var(--bg-white); }
+    
+    /* Page Hero */
+    .page-hero {
+      background: linear-gradient(135deg, var(--nyi-navy) 0%, var(--nyi-navy-dark) 100%);
+      padding: 60px 5%;
+      color: white;
+      text-align: center;
+    }
+    .page-hero h1 { font-size: 48px; margin-bottom: 16px; }
+    .page-hero p { font-size: 20px; opacity: 0.95; max-width: 600px; margin: 0 auto; }
+    
+    /* Main Content */
+    .find-content { padding: 40px 5%; max-width: 1400px; margin: 0 auto; }
+    
+    /* Filter Section */
+    .filter-section {
+      background: var(--bg-light);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      margin-bottom: 40px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .filter-section h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .filter-section h3 i { color: var(--nyi-teal); }
+    
+    .filter-row {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .filter-group { flex: 1; min-width: 280px; }
+    .filter-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .filter-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+    .filter-btn {
+      background: var(--bg-white);
+      border: 2px solid #e2e8f0;
+      color: var(--text-secondary);
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .filter-btn:hover { border-color: var(--nyi-navy); color: var(--nyi-navy); }
+    .filter-btn.active { background: var(--nyi-navy); color: white; border-color: var(--nyi-navy); }
+    
+    /* Active Selection Banner */
+    .active-selection {
+      background: linear-gradient(135deg, var(--nyi-purple-accent), var(--nyi-teal));
+      color: white;
+      padding: 16px 24px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 32px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      animation: slideDown 0.3s ease;
+    }
+    .active-selection.visible { display: flex; }
+    .active-selection-text { display: flex; align-items: center; gap: 12px; font-weight: 500; }
+    .active-selection-text i { font-size: 20px; }
+    .clear-selection {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .clear-selection:hover { background: rgba(255,255,255,0.3); }
+    
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Slider Section */
+    .slider-section { margin-bottom: 48px; }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .slider-header h2 {
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider-header h2 i { color: var(--nyi-teal); }
+    .slider-count {
+      background: var(--bg-light);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .slider-nav {
+      display: flex;
+      gap: 8px;
+    }
+    .slider-nav button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid #e2e8f0;
+      background: white;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slider-nav button:hover { border-color: var(--nyi-navy); color: var(--nyi-navy); }
+    .slider-nav button:disabled { opacity: 0.4; cursor: not-allowed; }
+    
+    /* Slider Container */
+    .slider-container {
+      position: relative;
+      overflow: hidden;
+    }
+    .slider-track {
+      display: flex;
+      gap: 24px;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      padding: 16px 20px 12px;
+      min-height: 100px;
+      -webkit-overflow-scrolling: touch;
+      /* Hide native scrollbar - we'll use custom one */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .slider-track::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Custom scrollbar container */
+    .slider-container {
+      position: relative;
+    }
+    .custom-scrollbar {
+      height: 12px;
+      background: var(--bg-gray);
+      border-radius: 6px;
+      margin: 8px 20px 0;
+      position: relative;
+      cursor: pointer;
+    }
+    .custom-scrollbar-thumb {
+      height: 100%;
+      background: var(--nyi-teal);
+      border-radius: 6px;
+      position: absolute;
+      left: 0;
+      min-width: 40px;
+      cursor: grab;
+      transition: background 0.2s ease;
+    }
+    .custom-scrollbar-thumb:hover {
+      background: var(--nyi-navy);
+    }
+    .custom-scrollbar-thumb:active {
+      cursor: grabbing;
+      background: var(--nyi-navy);
+    }
+    
+    /* Location Card (Compact) */
+    .location-slide {
+      position: relative;
+      background: white;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 3px solid transparent;
+    }
+    .location-slide:hover { transform: translateY(-5px); box-shadow: var(--shadow-xl); }
+    .location-slide.selected, .provider-slide.selected { border-color: var(--nyi-purple-accent); }
+    
+    /* Learn More Button */
+    .learn-more-btn {
+      display: none;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -20px;
+      background: var(--nyi-purple-accent);
+      color: white;
+      padding: 10px 24px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+      z-index: 10;
+    }
+    .learn-more-btn:hover {
+      background: var(--nyi-teal);
+      transform: translateX(-50%) translateY(-2px);
+      color: white;
+    }
+    .learn-more-btn i { margin-left: 6px; }
+    .slide-wrapper { position: relative; padding-bottom: 24px; flex-shrink: 0; }
+    .slide-wrapper.selected .learn-more-btn { display: inline-flex; align-items: center; animation: fadeUp 0.3s ease; }
+    
+    /* Adjust card widths inside wrapper */
+    .slide-wrapper .location-slide { flex: none; width: 320px; }
+    .slide-wrapper .provider-slide { flex: none; width: 280px; }
+    
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .location-slide.dimmed { opacity: 0.4; }
+    .location-slide-image {
+      height: 140px;
+      background: linear-gradient(135deg, var(--nyi-navy), var(--nyi-teal));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .location-slide-image i { font-size: 48px; color: rgba(255,255,255,0.3); }
+    .location-region-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: white;
+      color: var(--nyi-navy);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .location-slide-content { padding: 20px; }
+    .location-slide-name { font-size: 18px; font-weight: 600; color: var(--nyi-teal); margin-bottom: 8px; }
+    .location-slide-address { font-size: 14px; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 8px; }
+    .location-slide-address i { color: var(--nyi-teal); margin-top: 2px; }
+    .location-slide-services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .service-mini-tag {
+      background: var(--bg-light);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      color: var(--nyi-navy);
+      font-weight: 500;
+    }
+    
+    /* Provider Card (Compact) */
+    .provider-slide {
+      position: relative;
+      background: white;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 3px solid transparent;
+    }
+    .provider-slide:hover { transform: translateY(-5px); box-shadow: var(--shadow-xl); }
+    .provider-slide.selected { border-color: var(--nyi-purple-accent); }
+    .provider-slide.dimmed { opacity: 0.4; }
+    .provider-slide-image {
+      height: 180px;
+      background: linear-gradient(135deg, var(--nyi-purple), var(--nyi-navy-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .provider-slide-image i { font-size: 64px; color: rgba(255,255,255,0.3); }
+    .provider-slide-content { padding: 20px; }
+    .provider-slide-name { font-size: 18px; font-weight: 600; color: var(--nyi-teal); margin-bottom: 4px; }
+    .provider-slide-title { font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; }
+    .provider-slide-locations {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+    .provider-slide-locations i { color: var(--nyi-teal); }
+    
+    /* No Results */
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+    .no-results i { font-size: 48px; color: #ddd; margin-bottom: 16px; }
+    .no-results h3 { color: var(--text-primary); margin-bottom: 8px; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-hero { padding: 40px 20px; }
+      .page-hero h1 { font-size: 32px; }
+      .page-hero p { font-size: 16px; }
+      .find-content { padding: 24px 16px; }
+      
+      /* Filter section */
+      .filter-section { padding: 20px 16px; }
+      .filter-section h3 { font-size: 16px; margin-bottom: 16px; }
+      .filter-row { flex-direction: column; gap: 20px; }
+      .filter-group { min-width: 100%; }
+      .filter-label { font-size: 13px; margin-bottom: 10px; }
+      .filter-buttons { gap: 8px; }
+      .filter-btn { padding: 8px 14px; font-size: 13px; }
+      
+      /* Active selection banner */
+      .active-selection { 
+        flex-direction: column; 
+        gap: 12px; 
+        text-align: center;
+        padding: 14px 16px;
+      }
+      .active-selection-text { 
+        flex-direction: column; 
+        gap: 8px;
+        font-size: 14px;
+      }
+      .active-selection-text span { 
+        display: block;
+        margin-left: 0 !important;
+      }
+      
+      /* Slider sections */
+      .slider-section { margin-bottom: 32px; }
+      .slider-header { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .slider-header h2 { font-size: 20px; }
+      .slider-count { font-size: 13px; }
+      .slider-nav { display: none; }
+      
+      /* Slider track */
+      .slider-track { 
+        padding: 12px 16px 8px;
+        gap: 16px;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* Custom scrollbar - thinner on mobile */
+      .custom-scrollbar {
+        height: 6px;
+        margin: 6px 16px 0;
+      }
+      
+      /* Location cards - smaller on mobile */
+      .slide-wrapper { padding-bottom: 8px; }
+      .slide-wrapper .location-slide { width: 260px; }
+      .location-slide-image { height: 110px; }
+      .location-region-badge { font-size: 10px; padding: 3px 10px; }
+      .location-slide-content { padding: 16px; }
+      .location-slide-name { font-size: 16px; margin-bottom: 6px; }
+      .location-slide-address { font-size: 13px; }
+      .location-slide-services { margin-top: 10px; gap: 4px; }
+      .service-mini-tag { font-size: 10px; padding: 3px 8px; }
+      
+      /* Provider cards - smaller on mobile */
+      .slide-wrapper .provider-slide { width: 220px; }
+      .provider-slide-image { height: 140px; }
+      .provider-slide-content { padding: 16px; }
+      .provider-slide-name { font-size: 16px; margin-bottom: 3px; }
+      .provider-slide-title { font-size: 13px; margin-bottom: 10px; }
+      .provider-slide-locations { font-size: 12px; }
+      
+      /* Click to view hint - adjust for mobile */
+      .slide-wrapper.selected .location-slide::after,
+      .slide-wrapper.selected .provider-slide::after {
+        font-size: 10px;
+        padding: 3px 10px;
+        bottom: 6px;
+      }
+      
+      /* No results */
+      .no-results { padding: 40px 16px; }
+      .no-results i { font-size: 36px; }
+      .no-results h3 { font-size: 18px; }
+      .no-results p { font-size: 14px; }
+    }
+    
+    @media (max-width: 480px) {
+      .page-hero { padding: 30px 16px; }
+      .page-hero h1 { font-size: 26px; }
+      .page-hero p { font-size: 15px; }
+      
+      .filter-section { padding: 16px; }
+      .filter-btn { padding: 7px 12px; font-size: 12px; }
+      
+      .slider-header h2 { font-size: 18px; }
+      
+      .slide-wrapper .location-slide { width: 240px; }
+      .slide-wrapper .provider-slide { width: 200px; }
+      
+      .location-slide-image { height: 100px; }
+      .provider-slide-image { height: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <h1>Find Care</h1>
+    <p>Discover our locations and connect with our expert radiologists</p>
+  </section>
+  
+  <div class="find-content">
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <h3><i class="fas fa-sliders-h"></i> Filter Results</h3>
+      <div class="filter-row">
+        <div class="filter-group">
+          <span class="filter-label">Service Type</span>
+          <div class="filter-buttons" id="service-filters">
+            <button class="filter-btn active" data-service="all">All Services</button>
+            <button class="filter-btn" data-service="mri">MRI</button>
+            <button class="filter-btn" data-service="ct">CT Scan</button>
+            <button class="filter-btn" data-service="pet">PET/CT</button>
+            <button class="filter-btn" data-service="xray">X-Ray</button>
+            <button class="filter-btn" data-service="ultrasound">Ultrasound</button>
+            <button class="filter-btn" data-service="mammography">Mammography</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Region</span>
+          <div class="filter-buttons" id="region-filters">
+            <button class="filter-btn active" data-region="all">All Regions</button>
+            <button class="filter-btn" data-region="manhattan">Manhattan</button>
+            <button class="filter-btn" data-region="brooklyn">Brooklyn</button>
+            <button class="filter-btn" data-region="queens">Queens</button>
+            <button class="filter-btn" data-region="bronx">Bronx</button>
+            <button class="filter-btn" data-region="long-island">Long Island</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Active Selection Banner -->
+    <div class="active-selection" id="active-selection">
+      <div class="active-selection-text">
+        <i class="fas fa-filter"></i>
+        <span id="selection-text">Showing providers at Midtown Manhattan</span>
+      </div>
+      <button class="clear-selection" onclick="clearSelection()">
+        <i class="fas fa-times"></i> Clear
+      </button>
+    </div>
+    
+    <!-- Locations Slider -->
+    <section class="slider-section" id="locations-section">
+      <div class="slider-header">
+        <h2><i class="fas fa-map-marker-alt"></i> Locations <span class="slider-count" id="location-count">16 locations</span></h2>
+        <div class="slider-nav">
+          <button onclick="scrollSlider('locations', -1)"><i class="fas fa-chevron-left"></i></button>
+          <button onclick="scrollSlider('locations', 1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="slider-container">
+        <div class="slider-track" id="locations-track"></div>
+        <div class="custom-scrollbar" id="locations-scrollbar">
+          <div class="custom-scrollbar-thumb" id="locations-thumb"></div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Providers Slider -->
+    <section class="slider-section" id="providers-section">
+      <div class="slider-header">
+        <h2><i class="fas fa-user-md"></i> Providers <span class="slider-count" id="provider-count">12 providers</span></h2>
+        <div class="slider-nav">
+          <button onclick="scrollSlider('providers', -1)"><i class="fas fa-chevron-left"></i></button>
+          <button onclick="scrollSlider('providers', 1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="slider-container">
+        <div class="slider-track" id="providers-track"></div>
+        <div class="custom-scrollbar" id="providers-scrollbar">
+          <div class="custom-scrollbar-thumb" id="providers-thumb"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+// Sample Data
+const locations = [
+  { id: 1, name: "Midtown Manhattan", address: "530 5th Avenue, New York, NY", region: "manhattan", services: ["mri", "ct", "xray", "ultrasound"], providers: [1, 2, 3, 5] },
+  { id: 2, name: "Upper East Side", address: "1421 3rd Avenue, New York, NY", region: "manhattan", services: ["mri", "ct", "mammography", "ultrasound"], providers: [1, 4, 6] },
+  { id: 3, name: "Downtown Brooklyn", address: "250 Livingston Street, Brooklyn, NY", region: "brooklyn", services: ["mri", "ct", "pet", "xray"], providers: [2, 3, 7] },
+  { id: 4, name: "Bay Ridge", address: "9020 5th Avenue, Brooklyn, NY", region: "brooklyn", services: ["mri", "xray", "ultrasound"], providers: [3, 8] },
+  { id: 5, name: "Forest Hills", address: "102-11 Queens Blvd, Queens, NY", region: "queens", services: ["mri", "ct", "xray", "mammography"], providers: [4, 5, 9] },
+  { id: 6, name: "Flushing", address: "136-20 38th Avenue, Queens, NY", region: "queens", services: ["ct", "pet", "ultrasound"], providers: [5, 10] },
+  { id: 7, name: "Riverdale", address: "3050 Corlear Avenue, Bronx, NY", region: "bronx", services: ["mri", "ct", "xray"], providers: [6, 7, 11] },
+  { id: 8, name: "Garden City", address: "1000 Franklin Avenue, Garden City, NY", region: "long-island", services: ["mri", "ct", "pet", "mammography"], providers: [8, 9, 12] },
+  { id: 9, name: "Huntington", address: "180 E Pulaski Road, Huntington, NY", region: "long-island", services: ["mri", "ct", "xray", "ultrasound"], providers: [10, 11, 12] },
+  { id: 10, name: "Financial District", address: "80 Maiden Lane, New York, NY", region: "manhattan", services: ["mri", "ct", "ultrasound"], providers: [1, 2, 4] }
+];
+
+const providers = [
+  { id: 1, name: "Dr. Sarah Chen", title: "Neuroradiology", locations: [1, 2, 10] },
+  { id: 2, name: "Dr. Michael Roberts", title: "Body Imaging", locations: [1, 3, 10] },
+  { id: 3, name: "Dr. Emily Watson", title: "Musculoskeletal", locations: [1, 3, 4] },
+  { id: 4, name: "Dr. James Park", title: "Breast Imaging", locations: [2, 5, 10] },
+  { id: 5, name: "Dr. Lisa Thompson", title: "PET/CT Specialist", locations: [1, 5, 6] },
+  { id: 6, name: "Dr. David Kim", title: "Interventional", locations: [2, 7] },
+  { id: 7, name: "Dr. Amanda Foster", title: "Pediatric Imaging", locations: [3, 7] },
+  { id: 8, name: "Dr. Robert Martinez", title: "Cardiac Imaging", locations: [4, 8] },
+  { id: 9, name: "Dr. Jennifer Lee", title: "Nuclear Medicine", locations: [5, 8] },
+  { id: 10, name: "Dr. William Chang", title: "Body Imaging", locations: [6, 9] },
+  { id: 11, name: "Dr. Patricia Brown", title: "Neuroradiology", locations: [7, 9] },
+  { id: 12, name: "Dr. Christopher Davis", title: "Musculoskeletal", locations: [8, 9] }
+];
+
+const serviceLabels = { mri: "MRI", ct: "CT", pet: "PET/CT", xray: "X-Ray", ultrasound: "Ultrasound", mammography: "Mammography" };
+
+let activeFilters = { service: "all", region: "all" };
+let selectedLocation = null;
+let selectedProvider = null;
+
+// Initialize
+function init() {
+  renderLocations();
+  renderProviders();
+  setupFilterListeners();
+  
+  // Setup custom scrollbars
+  setupScrollbar('locations');
+  setupScrollbar('providers');
+}
+
+function renderLocations() {
+  const track = document.getElementById('locations-track');
+  let filtered = locations.filter(loc => {
+    const serviceMatch = activeFilters.service === "all" || loc.services.includes(activeFilters.service);
+    const regionMatch = activeFilters.region === "all" || loc.region === activeFilters.region;
+    return serviceMatch && regionMatch;
+  });
+  
+  // If provider selected, filter to their locations
+  if (selectedProvider) {
+    const provider = providers.find(p => p.id === selectedProvider);
+    filtered = filtered.filter(loc => provider.locations.includes(loc.id));
+  }
+  
+  document.getElementById('location-count').textContent = `${filtered.length} location${filtered.length !== 1 ? 's' : ''}`;
+  
+  if (filtered.length === 0) {
+    track.innerHTML = `<div class="no-results"><i class="fas fa-map-marker-alt"></i><h3>No locations found</h3><p>Try adjusting your filters</p></div>`;
+    return;
+  }
+  
+  track.innerHTML = filtered.map(loc => {
+    const isSelected = selectedLocation === loc.id;
+    const isDimmed = selectedLocation && !isSelected;
+    return `
+      <div class="slide-wrapper ${isSelected ? 'selected' : ''}">
+        <div class="location-slide ${isSelected ? 'selected' : ''} ${isDimmed ? 'dimmed' : ''}" onclick="event.stopPropagation(); selectLocation(${loc.id})">
+          <div class="location-slide-image">
+            <span class="location-region-badge">${loc.region.charAt(0).toUpperCase() + loc.region.slice(1).replace('-', ' ')}</span>
+            <i class="fas fa-hospital"></i>
+          </div>
+          <div class="location-slide-content">
+            <h3 class="location-slide-name">${loc.name}</h3>
+            <div class="location-slide-address"><i class="fas fa-map-pin"></i><span>${loc.address}</span></div>
+            <div class="location-slide-services">
+              ${loc.services.slice(0, 4).map(s => `<span class="service-mini-tag">${serviceLabels[s]}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Update scrollbar after render
+  setTimeout(() => updateScrollbar('locations'), 50);
+}
+
+function renderProviders() {
+  const track = document.getElementById('providers-track');
+  let filtered = providers.filter(prov => {
+    // Get provider's locations
+    const provLocs = locations.filter(loc => prov.locations.includes(loc.id));
+    // Check if any match filters
+    return provLocs.some(loc => {
+      const serviceMatch = activeFilters.service === "all" || loc.services.includes(activeFilters.service);
+      const regionMatch = activeFilters.region === "all" || loc.region === activeFilters.region;
+      return serviceMatch && regionMatch;
+    });
+  });
+  
+  // If location selected, filter to providers at that location
+  if (selectedLocation) {
+    const location = locations.find(l => l.id === selectedLocation);
+    filtered = filtered.filter(prov => location.providers.includes(prov.id));
+  }
+  
+  document.getElementById('provider-count').textContent = `${filtered.length} provider${filtered.length !== 1 ? 's' : ''}`;
+  
+  if (filtered.length === 0) {
+    track.innerHTML = `<div class="no-results"><i class="fas fa-user-md"></i><h3>No providers found</h3><p>Try adjusting your filters</p></div>`;
+    return;
+  }
+  
+  track.innerHTML = filtered.map(prov => {
+    const isSelected = selectedProvider === prov.id;
+    const isDimmed = selectedProvider && !isSelected;
+    const locCount = prov.locations.length;
+    return `
+      <div class="slide-wrapper ${isSelected ? 'selected' : ''}">
+        <div class="provider-slide ${isSelected ? 'selected' : ''} ${isDimmed ? 'dimmed' : ''}" onclick="event.stopPropagation(); selectProvider(${prov.id})">
+          <div class="provider-slide-image">
+            <i class="fas fa-user-md"></i>
+          </div>
+          <div class="provider-slide-content">
+            <h3 class="provider-slide-name">${prov.name}</h3>
+            <p class="provider-slide-title">${prov.title}</p>
+            <div class="provider-slide-locations"><i class="fas fa-map-marker-alt"></i> ${locCount} location${locCount !== 1 ? 's' : ''}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Update scrollbar after render
+  setTimeout(() => updateScrollbar('providers'), 50);
+}
+
+function selectLocation(id) {
+  if (selectedLocation === id) {
+    // Already selected - navigate to location page
+    const loc = locations.find(l => l.id === id);
+    const slug = loc.name.toLowerCase().replace(/\s+/g, '-');
+    window.location.href = `locations/${slug}.html`;
+    return;
+  }
+  selectedLocation = id;
+  selectedProvider = null;
+  updateSelectionBanner();
+  renderLocations();
+  renderProviders();
+}
+
+function selectProvider(id) {
+  if (selectedProvider === id) {
+    // Already selected - navigate to provider page
+    const prov = providers.find(p => p.id === id);
+    const slug = prov.name.toLowerCase().replace(/\s+/g, '-').replace('dr.-', '');
+    window.location.href = `providers/${slug}.html`;
+    return;
+  }
+  selectedProvider = id;
+  selectedLocation = null;
+  updateSelectionBanner();
+  renderLocations();
+  renderProviders();
+}
+
+function updateSelectionBanner() {
+  const banner = document.getElementById('active-selection');
+  const text = document.getElementById('selection-text');
+  
+  if (selectedLocation) {
+    const loc = locations.find(l => l.id === selectedLocation);
+    text.innerHTML = `<i class="fas fa-map-marker-alt"></i> Showing providers at <strong>${loc.name}</strong> <span style="opacity: 0.7; font-size: 13px; margin-left: 8px;">(click anywhere to clear)</span>`;
+    banner.classList.add('visible');
+  } else if (selectedProvider) {
+    const prov = providers.find(p => p.id === selectedProvider);
+    text.innerHTML = `<i class="fas fa-user-md"></i> Showing locations for <strong>${prov.name}</strong> <span style="opacity: 0.7; font-size: 13px; margin-left: 8px;">(click anywhere to clear)</span>`;
+    banner.classList.add('visible');
+  } else {
+    banner.classList.remove('visible');
+  }
+}
+
+function clearSelection() {
+  selectedLocation = null;
+  selectedProvider = null;
+  updateSelectionBanner();
+  renderLocations();
+  renderProviders();
+}
+
+// Clear selection when clicking empty space anywhere on page
+document.addEventListener('click', function(event) {
+  // Don't clear if clicking on a card, filter button, banner, slider nav, or scrollbar
+  const clickedCard = event.target.closest('.location-slide, .provider-slide');
+  const clickedFilter = event.target.closest('.filter-btn');
+  const clickedBanner = event.target.closest('.active-selection');
+  const clickedSliderNav = event.target.closest('.slider-nav');
+  const clickedScrollbar = event.target.closest('.custom-scrollbar');
+  
+  if (!clickedCard && !clickedFilter && !clickedBanner && !clickedSliderNav && !clickedScrollbar) {
+    if (selectedLocation || selectedProvider) {
+      clearSelection();
+    }
+  }
+});
+
+function setupFilterListeners() {
+  document.querySelectorAll('#service-filters .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#service-filters .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilters.service = btn.dataset.service;
+      clearSelection();
+    });
+  });
+  
+  document.querySelectorAll('#region-filters .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#region-filters .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilters.region = btn.dataset.region;
+      clearSelection();
+    });
+  });
+}
+
+function scrollSlider(type, direction) {
+  const track = document.getElementById(`${type}-track`);
+  // Card width + gap, multiplied by 3 cards
+  // Use smaller card widths on mobile
+  const isMobile = window.innerWidth <= 768;
+  const cardWidth = type === 'locations' 
+    ? (isMobile ? 260 : 320) 
+    : (isMobile ? 220 : 280);
+  const gap = isMobile ? 16 : 24;
+  const scrollAmount = (cardWidth + gap) * 3 * direction;
+  track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+}
+
+// Custom scrollbar functionality
+function updateScrollbar(type) {
+  const track = document.getElementById(`${type}-track`);
+  const thumb = document.getElementById(`${type}-thumb`);
+  
+  if (!track || !thumb) return;
+  
+  const scrollWidth = track.scrollWidth;
+  const clientWidth = track.clientWidth;
+  const scrollLeft = track.scrollLeft;
+  
+  // Calculate thumb width as percentage of visible area
+  const thumbWidth = Math.max((clientWidth / scrollWidth) * 100, 10);
+  thumb.style.width = `${thumbWidth}%`;
+  
+  // Calculate thumb position
+  const maxScroll = scrollWidth - clientWidth;
+  const scrollPercent = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+  const maxThumbLeft = 100 - thumbWidth;
+  thumb.style.left = `${scrollPercent * maxThumbLeft}%`;
+}
+
+function setupScrollbar(type) {
+  const track = document.getElementById(`${type}-track`);
+  const thumb = document.getElementById(`${type}-thumb`);
+  const scrollbar = document.getElementById(`${type}-scrollbar`);
+  
+  if (!track || !thumb || !scrollbar) return;
+  
+  // Sync scrollbar when track scrolls
+  track.addEventListener('scroll', () => updateScrollbar(type));
+  
+  // Click on track to jump
+  scrollbar.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (e.target === thumb) return;
+    
+    const rect = scrollbar.getBoundingClientRect();
+    const clickPercent = (e.clientX - rect.left) / rect.width;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    
+    track.scrollTo({ left: clickPercent * maxScroll, behavior: 'smooth' });
+  });
+  
+  // Drag thumb (mouse)
+  let isDragging = false;
+  let startX = 0;
+  let startScrollLeft = 0;
+  
+  thumb.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    isDragging = true;
+    startX = e.clientX;
+    startScrollLeft = track.scrollLeft;
+    thumb.style.cursor = 'grabbing';
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    
+    const deltaX = e.clientX - startX;
+    const scrollbarWidth = scrollbar.clientWidth;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    const thumbWidthPercent = track.clientWidth / track.scrollWidth;
+    const effectiveScrollbarWidth = scrollbarWidth * (1 - thumbWidthPercent);
+    
+    const scrollDelta = (deltaX / effectiveScrollbarWidth) * maxScroll;
+    track.scrollLeft = startScrollLeft + scrollDelta;
+  });
+  
+  document.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      thumb.style.cursor = 'grab';
+    }
+  });
+  
+  // Touch support for scrollbar
+  thumb.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    startScrollLeft = track.scrollLeft;
+  }, { passive: true });
+  
+  document.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    
+    const deltaX = e.touches[0].clientX - startX;
+    const scrollbarWidth = scrollbar.clientWidth;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    const thumbWidthPercent = track.clientWidth / track.scrollWidth;
+    const effectiveScrollbarWidth = scrollbarWidth * (1 - thumbWidthPercent);
+    
+    const scrollDelta = (deltaX / effectiveScrollbarWidth) * maxScroll;
+    track.scrollLeft = startScrollLeft + scrollDelta;
+  }, { passive: true });
+  
+  document.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+  
+  // Initial update
+  setTimeout(() => updateScrollbar(type), 100);
+}
+
+init();
+</script>
+</body>
+</html>

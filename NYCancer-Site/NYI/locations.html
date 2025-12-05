@@ -8,6 +8,181 @@
   <link rel="stylesheet" href="https://use.typekit.net/ike4wxa.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/header.css">
+  
+  <style>
+    /* ================================================
+       COLLAPSIBLE MOBILE FILTERS
+       ================================================ */
+    
+    /* Mobile filter toggle button - hidden on desktop */
+    .filter-toggle-mobile {
+      display: none;
+      width: 100%;
+      background: var(--nyi-navy);
+      color: white;
+      border: none;
+      padding: 16px 24px;
+      border-radius: var(--radius-lg);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      margin-bottom: 0;
+    }
+    
+    .filter-toggle-mobile:hover {
+      background: var(--nyi-navy-dark);
+    }
+    
+    .filter-toggle-mobile i {
+      transition: transform 0.3s ease;
+    }
+    
+    .filter-toggle-mobile.active {
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      margin-bottom: 0;
+    }
+    
+    .filter-toggle-mobile.active i {
+      transform: rotate(180deg);
+    }
+    
+    .filter-toggle-mobile .filter-count {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .filter-toggle-mobile .toggle-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* Filter content wrapper for mobile collapse */
+    .filter-content-wrapper {
+      display: block;
+    }
+    
+    /* Active filter pills shown on mobile when collapsed */
+    .active-filter-summary {
+      display: none;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .active-filter-pill {
+      background: var(--bg-light);
+      color: var(--nyi-navy);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .active-filter-pill i {
+      font-size: 10px;
+      color: var(--nyi-blue);
+    }
+    
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+      .filter-toggle-mobile {
+        display: flex;
+      }
+      
+      .filter-content-wrapper {
+        display: none;
+        background: var(--bg-light);
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-top: none;
+      }
+      
+      .filter-content-wrapper.open {
+        display: block;
+        animation: slideDown 0.3s ease;
+      }
+      
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .filter-bar {
+        border-radius: 0;
+        margin-bottom: 0;
+        background: white;
+        border: none;
+        box-shadow: none;
+      }
+      
+      .filter-group {
+        padding: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+      
+      .filter-group:last-child {
+        border-bottom: none;
+      }
+      
+      .filter-buttons {
+        gap: 8px;
+      }
+      
+      .filter-btn {
+        padding: 8px 14px;
+        font-size: 13px;
+      }
+      
+      /* Show active filter summary when filters are collapsed */
+      .active-filter-summary.has-filters {
+        display: flex;
+      }
+      
+      .filter-content-wrapper.open + .active-filter-summary {
+        display: none !important;
+      }
+      
+      /* Adjust filter bar container on mobile */
+      .filter-bar-container {
+        margin-bottom: 24px;
+      }
+    }
+    
+    /* Desktop - ensure everything displays normally */
+    @media (min-width: 769px) {
+      .filter-toggle-mobile {
+        display: none !important;
+      }
+      
+      .filter-content-wrapper {
+        display: block !important;
+      }
+      
+      .active-filter-summary {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -32,35 +207,55 @@
 <section class="section">
   <div class="container">
     
-    <!-- Filters -->
-    <div class="filter-bar">
-      <div class="filter-group">
-        <div class="filter-label">Filter by Region:</div>
-        <div class="filter-buttons" id="region-filters">
-          <button class="filter-btn active" data-filter="all">All Regions</button>
-          <button class="filter-btn" data-filter="bronx">Bronx</button>
-          <button class="filter-btn" data-filter="brooklyn">Brooklyn</button>
-          <button class="filter-btn" data-filter="manhattan">Manhattan</button>
-          <button class="filter-btn" data-filter="nassau">Nassau</button>
-          <button class="filter-btn" data-filter="queens">Queens</button>
-          <button class="filter-btn" data-filter="staten-island">Staten Island</button>
-          <button class="filter-btn" data-filter="suffolk">Suffolk</button>
+    <!-- Filter Bar Container -->
+    <div class="filter-bar-container">
+      <!-- Mobile Toggle Button -->
+      <button class="filter-toggle-mobile" id="filter-toggle" aria-expanded="false" aria-controls="filter-content">
+        <span class="toggle-text">
+          <i class="fas fa-sliders"></i>
+          Filter Locations
+        </span>
+        <span class="filter-count" id="filter-count">All</span>
+        <i class="fas fa-chevron-down"></i>
+      </button>
+      
+      <!-- Collapsible Filter Content -->
+      <div class="filter-content-wrapper" id="filter-content">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <div class="filter-label">Filter by Region:</div>
+            <div class="filter-buttons" id="region-filters">
+              <button class="filter-btn active" data-filter="all">All Regions</button>
+              <button class="filter-btn" data-filter="bronx">Bronx</button>
+              <button class="filter-btn" data-filter="brooklyn">Brooklyn</button>
+              <button class="filter-btn" data-filter="manhattan">Manhattan</button>
+              <button class="filter-btn" data-filter="nassau">Nassau</button>
+              <button class="filter-btn" data-filter="queens">Queens</button>
+              <button class="filter-btn" data-filter="staten-island">Staten Island</button>
+              <button class="filter-btn" data-filter="suffolk">Suffolk</button>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <div class="filter-label">Filter by Service:</div>
+            <div class="filter-buttons" id="service-filters">
+              <button class="filter-btn active" data-filter="all">All Services</button>
+              <button class="filter-btn" data-filter="mri">MRI</button>
+              <button class="filter-btn" data-filter="ct">CT</button>
+              <button class="filter-btn" data-filter="pet-ct">PET/CT</button>
+              <button class="filter-btn" data-filter="mammography">Mammography</button>
+              <button class="filter-btn" data-filter="ultrasound">Ultrasound</button>
+              <button class="filter-btn" data-filter="bone-density">Bone Density</button>
+              <button class="filter-btn" data-filter="x-ray">X-Ray</button>
+              <button class="filter-btn" data-filter="interventional-radiology">Interventional Radiology</button>
+            </div>
+          </div>
         </div>
       </div>
       
-      <div class="filter-group" style="margin-top: 20px;">
-        <div class="filter-label">Filter by Service:</div>
-        <div class="filter-buttons" id="service-filters">
-          <button class="filter-btn active" data-filter="all">All Services</button>
-          <button class="filter-btn" data-filter="mri">MRI</button>
-          <button class="filter-btn" data-filter="ct">CT</button>
-          <button class="filter-btn" data-filter="pet-ct">PET/CT</button>
-          <button class="filter-btn" data-filter="mammography">Mammography</button>
-          <button class="filter-btn" data-filter="ultrasound">Ultrasound</button>
-          <button class="filter-btn" data-filter="bone-density">Bone Density</button>
-          <button class="filter-btn" data-filter="x-ray">X-Ray</button>
-          <button class="filter-btn" data-filter="interventional-radiology">Interventional Radiology</button>
-        </div>
+      <!-- Active Filter Summary (shown when collapsed on mobile) -->
+      <div class="active-filter-summary" id="active-filter-summary">
+        <!-- Dynamically populated -->
       </div>
     </div>
     
@@ -468,8 +663,29 @@
 <script src="js/components.js"></script>
 
 <script>
-// Location filtering functionality
+// Mobile filter toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
+  const filterToggle = document.getElementById('filter-toggle');
+  const filterContent = document.getElementById('filter-content');
+  const filterCountBadge = document.getElementById('filter-count');
+  const activeFilterSummary = document.getElementById('active-filter-summary');
+  
+  // Toggle filter visibility on mobile
+  filterToggle.addEventListener('click', function() {
+    const isOpen = filterContent.classList.contains('open');
+    
+    if (isOpen) {
+      filterContent.classList.remove('open');
+      filterToggle.classList.remove('active');
+      filterToggle.setAttribute('aria-expanded', 'false');
+    } else {
+      filterContent.classList.add('open');
+      filterToggle.classList.add('active');
+      filterToggle.setAttribute('aria-expanded', 'true');
+    }
+  });
+
+  // Location filtering functionality
   const regionButtons = document.querySelectorAll('#region-filters .filter-btn');
   const serviceButtons = document.querySelectorAll('#service-filters .filter-btn');
   const locationCards = document.querySelectorAll('.location-card-link');
@@ -479,6 +695,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
   let activeRegion = 'all';
   let activeService = 'all';
+  
+  // Display name mapping for filters
+  const filterDisplayNames = {
+    'bronx': 'Bronx',
+    'brooklyn': 'Brooklyn',
+    'manhattan': 'Manhattan',
+    'nassau': 'Nassau',
+    'queens': 'Queens',
+    'staten-island': 'Staten Island',
+    'suffolk': 'Suffolk',
+    'mri': 'MRI',
+    'ct': 'CT',
+    'pet-ct': 'PET/CT',
+    'mammography': 'Mammography',
+    'ultrasound': 'Ultrasound',
+    'bone-density': 'Bone Density',
+    'x-ray': 'X-Ray',
+    'interventional-radiology': 'Interventional Radiology'
+  };
+
+  function updateFilterSummary() {
+    let summaryHTML = '';
+    let activeCount = 0;
+    
+    if (activeRegion !== 'all') {
+      summaryHTML += `<span class="active-filter-pill"><i class="fas fa-map-marker-alt"></i> ${filterDisplayNames[activeRegion]}</span>`;
+      activeCount++;
+    }
+    
+    if (activeService !== 'all') {
+      summaryHTML += `<span class="active-filter-pill"><i class="fas fa-x-ray"></i> ${filterDisplayNames[activeService]}</span>`;
+      activeCount++;
+    }
+    
+    activeFilterSummary.innerHTML = summaryHTML;
+    
+    // Update the badge on the toggle button
+    if (activeCount > 0) {
+      filterCountBadge.textContent = activeCount + ' active';
+      activeFilterSummary.classList.add('has-filters');
+    } else {
+      filterCountBadge.textContent = 'All';
+      activeFilterSummary.classList.remove('has-filters');
+    }
+  }
 
   function filterLocations() {
     let visibleCount = 0;
@@ -510,8 +771,9 @@ document.addEventListener('DOMContentLoaded', function() {
       locationsGrid.style.display = 'grid';
     }
     
-    // Update available filters
+    // Update available filters and summary
     updateAvailableFilters();
+    updateFilterSummary();
   }
 
   function updateAvailableFilters() {
@@ -595,6 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initial filter update
   updateAvailableFilters();
+  updateFilterSummary();
 });
 
 // Reset filters function
