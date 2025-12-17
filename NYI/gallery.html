@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery | New York Imaging Specialists</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://use.typekit.net/ike4wxa.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/footer.css">
+  
+  <style>
+    /* ================================================
+       MODERN GALLERY PAGE
+       ================================================ */
+    
+    /* Custom Hero */
+    .gallery-hero {
+      position: relative;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #23738a 100%);
+    }
+    
+    .gallery-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+    
+    /* Animated gradient orbs */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    .hero-orb-1 {
+      width: 500px;
+      height: 500px;
+      background: linear-gradient(135deg, #4c4189, #23738a);
+      top: -20%;
+      right: -10%;
+      animation-delay: 0s;
+    }
+    
+    .hero-orb-2 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #00b4b4, #4c4189);
+      bottom: -15%;
+      left: -5%;
+      animation-delay: -7s;
+    }
+    
+    .hero-orb-3 {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, #23738a, #1e3a5f);
+      top: 40%;
+      left: 30%;
+      animation-delay: -14s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(30px, -30px) scale(1.05); }
+      50% { transform: translate(-20px, 20px) scale(0.95); }
+      75% { transform: translate(20px, 30px) scale(1.02); }
+    }
+    
+    .gallery-hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px 20px;
+      max-width: 900px;
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .hero-badge i {
+      color: #00b4b4;
+    }
+    
+    .gallery-hero h1 {
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 700;
+      color: white;
+      margin: 0 0 20px 0;
+      line-height: 1.1;
+      letter-spacing: -2px;
+    }
+    
+    .gallery-hero h1 span {
+      background: linear-gradient(135deg, #00b4b4, #4c4189);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .gallery-hero p {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.8);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+    
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    
+    .scroll-indicator i {
+      font-size: 20px;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* ================================================
+       MODERN MASONRY GRID
+       ================================================ */
+    .gallery-section {
+      background: #fafbfc;
+      padding: 100px 5%;
+      position: relative;
+    }
+    
+    .gallery-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(to bottom, #0f172a, transparent);
+      pointer-events: none;
+    }
+    
+    .masonry-grid {
+      columns: 4;
+      column-gap: 24px;
+      max-width: 1600px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 24px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      background: #e2e8f0;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    
+    .masonry-item:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+    
+    .masonry-item img {
+      width: 100%;
+      display: block;
+      transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    
+    .masonry-item:hover img {
+      transform: scale(1.1);
+    }
+    
+    /* Glassmorphism overlay */
+    .masonry-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 80px 24px 24px;
+      background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.6) 60%, transparent 100%);
+      transform: translateY(100%);
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    
+    .masonry-item:hover .masonry-overlay {
+      transform: translateY(0);
+    }
+    
+    .masonry-overlay h4 {
+      color: white;
+      font-size: 20px;
+      margin: 0 0 8px 0;
+      font-weight: 600;
+    }
+    
+    .masonry-overlay p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      margin: 0;
+      line-height: 1.5;
+    }
+    
+    /* Corner accent */
+    .corner-accent {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 40px;
+      height: 40px;
+      border-left: 3px solid rgba(255, 255, 255, 0.8);
+      border-top: 3px solid rgba(255, 255, 255, 0.8);
+      border-radius: 4px 0 0 0;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.4s ease;
+    }
+    
+    .masonry-item:hover .corner-accent {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    /* View icon */
+    .view-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0f172a;
+      font-size: 20px;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .masonry-item:hover .view-icon {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* ================================================
+       MODERN LIGHTBOX
+       ================================================ */
+    .lightbox-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 15, 30, 0.98);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(20px);
+    }
+    
+    .lightbox-overlay.open {
+      display: flex;
+      animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .lightbox-image {
+      max-width: 100%;
+      max-height: 75vh;
+      border-radius: 16px;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+      animation: scaleIn 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    .lightbox-caption {
+      text-align: center;
+      margin-top: 30px;
+    }
+    
+    .lightbox-caption h4 {
+      font-size: 26px;
+      margin: 0 0 10px 0;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .lightbox-caption p {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.6);
+      margin: 0;
+    }
+    
+    .lightbox-close {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg);
+    }
+    
+    .lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .lightbox-nav:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .lightbox-prev { left: 30px; }
+    .lightbox-next { right: 30px; }
+    
+    .lightbox-counter {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+
+    /* ================================================
+       BOTTOM CTA
+       ================================================ */
+    .gallery-cta {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      padding: 120px 5%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .gallery-cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+    
+    .gallery-cta .cta-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .gallery-cta h2 {
+      font-size: clamp(32px, 5vw, 48px);
+      color: white;
+      margin: 0 0 20px 0;
+      font-weight: 700;
+    }
+    
+    .gallery-cta p {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.8);
+      margin: 0 0 40px 0;
+      line-height: 1.6;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 36px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .cta-btn-primary {
+      background: linear-gradient(135deg, #00b4b4, #23738a);
+      color: white;
+      box-shadow: 0 10px 40px rgba(0, 180, 180, 0.3);
+    }
+    
+    .cta-btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 50px rgba(0, 180, 180, 0.4);
+      color: white;
+    }
+    
+    .cta-btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+    
+    .cta-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+      color: white;
+    }
+
+    /* ================================================
+       RESPONSIVE
+       ================================================ */
+    @media (max-width: 1200px) {
+      .masonry-grid {
+        columns: 3;
+      }
+    }
+    
+    @media (max-width: 900px) {
+      .masonry-grid {
+        columns: 2;
+        column-gap: 16px;
+      }
+      
+      .masonry-item {
+        margin-bottom: 16px;
+        border-radius: 16px;
+      }
+      
+      .gallery-hero {
+        min-height: 60vh;
+      }
+      
+      .lightbox-nav {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+      }
+      
+      .lightbox-prev { left: 15px; }
+      .lightbox-next { right: 15px; }
+      
+      .lightbox-close {
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .masonry-grid {
+        columns: 1;
+        max-width: 400px;
+      }
+      
+      .gallery-section {
+        padding: 80px 20px;
+      }
+      
+      .gallery-hero {
+        min-height: 50vh;
+      }
+      
+      .scroll-indicator {
+        display: none;
+      }
+      
+      .masonry-overlay {
+        transform: translateY(0);
+        padding: 60px 20px 20px;
+      }
+      
+      .view-icon {
+        display: none;
+      }
+      
+      .corner-accent {
+        opacity: 1;
+        transform: scale(1);
+      }
+      
+      .lightbox-caption h4 {
+        font-size: 20px;
+      }
+      
+      .cta-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div id="header-placeholder"></div>
+
+<!-- ===== GALLERY HERO ===== -->
+<section class="gallery-hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  
+  <div class="gallery-hero-content">
+    <div class="hero-badge">
+      <i class="fas fa-images"></i>
+      Visual Tour
+    </div>
+    <h1>See Our <span>World-Class</span> Facilities</h1>
+    <p>Step inside our state-of-the-art imaging centers and meet the dedicated team behind your care.</p>
+  </div>
+  
+  <div class="scroll-indicator">
+    <span>Scroll to explore</span>
+    <i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ===== GALLERY GRID ===== -->
+<section class="gallery-section">
+  <div class="masonry-grid" id="gallery-grid">
+    
+    <div class="masonry-item" data-title="Lake Success Reception" data-description="Our flagship location featuring a modern, welcoming reception area designed for patient comfort.">
+      <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=800&fit=crop" alt="Lake Success Reception">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Lake Success Reception</h4>
+        <p>Modern, welcoming patient area</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Advanced MRI Suite" data-description="State-of-the-art 3T MRI scanner delivering exceptional image quality with patient comfort in mind.">
+      <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&h=400&fit=crop" alt="MRI Scanner">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Advanced MRI Suite</h4>
+        <p>3T MRI scanner technology</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Expert Radiologists" data-description="Our board-certified radiologists collaborating to ensure accurate, timely diagnostic interpretations.">
+      <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=600&h=700&fit=crop" alt="Radiologist Team">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Expert Radiologists</h4>
+        <p>Board-certified specialists</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Patient Consultation" data-description="Compassionate care and clear communication are at the heart of every patient interaction.">
+      <img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=600&h=500&fit=crop" alt="Patient Care">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Patient Consultation</h4>
+        <p>Compassionate, personalized care</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Brooklyn Imaging Center" data-description="Bright, contemporary waiting area designed to put patients at ease before their appointments.">
+      <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=450&fit=crop" alt="Brooklyn Waiting Area">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Brooklyn Imaging Center</h4>
+        <p>Comfortable, modern waiting area</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="PET/CT Scanner" data-description="Advanced hybrid imaging technology for comprehensive oncology and cardiology diagnostics.">
+      <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?w=600&h=600&fit=crop" alt="PET CT Scanner">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>PET/CT Scanner</h4>
+        <p>Hybrid imaging technology</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Technologist Team" data-description="Skilled imaging technologists ensuring quality results while maintaining patient comfort throughout every scan.">
+      <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&h=850&fit=crop" alt="Technologist">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Technologist Team</h4>
+        <p>Skilled imaging professionals</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Manhattan Location" data-description="Convenient Upper East Side location offering easy access to premium diagnostic imaging services.">
+      <img src="https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=600&h=400&fit=crop" alt="Manhattan Location">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Manhattan Location</h4>
+        <p>Upper East Side imaging center</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Patient Welcome" data-description="Friendly staff greet every patient with warmth and efficiency at check-in.">
+      <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=500&fit=crop" alt="Patient Welcome">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Patient Welcome</h4>
+        <p>Warm, efficient check-in</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Digital Mammography" data-description="Low-dose 3D mammography for early detection and comprehensive breast health screening.">
+      <img src="https://images.unsplash.com/photo-1530497610245-94d3c16cda28?w=600&h=700&fit=crop" alt="Mammography Suite">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Digital Mammography</h4>
+        <p>3D breast imaging technology</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Administrative Team" data-description="Dedicated team handling scheduling, insurance coordination, and patient support services.">
+      <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=500&fit=crop" alt="Admin Team">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Administrative Team</h4>
+        <p>Seamless patient coordination</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Port Jefferson Center" data-description="Spacious Suffolk County location offering comprehensive imaging services with convenient parking.">
+      <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=600&h=450&fit=crop" alt="Port Jefferson">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Port Jefferson Center</h4>
+        <p>Full-service Suffolk location</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="CT Scanning Suite" data-description="High-speed CT scanner with advanced low-dose radiation technology for patient safety.">
+      <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&h=500&fit=crop" alt="CT Scanner">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>CT Scanning Suite</h4>
+        <p>Low-dose CT technology</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Patient Comfort" data-description="Amenities and environment designed to ease anxiety and ensure a positive imaging experience.">
+      <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&h=600&fit=crop" alt="Patient Comfort">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Patient Comfort</h4>
+        <p>Patient-centered environment</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Nursing Staff" data-description="Registered nurses providing IV contrast administration and compassionate patient support.">
+      <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&h=750&fit=crop" alt="Nursing Staff">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Nursing Staff</h4>
+        <p>Compassionate RN support</p>
+      </div>
+    </div>
+    
+    <div class="masonry-item" data-title="Ultrasound Suite" data-description="Advanced ultrasound imaging for diagnostic and prenatal care with real-time visualization.">
+      <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?w=600&h=550&fit=crop" alt="Ultrasound">
+      <div class="corner-accent"></div>
+      <div class="view-icon"><i class="fas fa-expand"></i></div>
+      <div class="masonry-overlay">
+        <h4>Ultrasound Suite</h4>
+        <p>Advanced sonography imaging</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== LIGHTBOX ===== -->
+<div class="lightbox-overlay" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close" aria-label="Close">
+    <i class="fas fa-times"></i>
+  </button>
+  <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+  <div class="lightbox-content">
+    <img src="" alt="" class="lightbox-image" id="lightbox-image">
+    <div class="lightbox-caption">
+      <h4 id="lightbox-title"></h4>
+      <p id="lightbox-description"></p>
+    </div>
+  </div>
+  <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+  <div class="lightbox-counter" id="lightbox-counter"></div>
+</div>
+
+<!-- ===== CTA SECTION ===== -->
+<section class="gallery-cta">
+  <div class="cta-content">
+    <h2>Experience the Difference</h2>
+    <p>Schedule your appointment at one of our state-of-the-art imaging centers and see why patients trust NY Imaging Specialists.</p>
+    <div class="cta-buttons">
+      <a href="/locations" class="cta-btn cta-btn-primary">
+        <i class="fas fa-map-marker-alt"></i> Find a Location
+      </a>
+      <a href="/request-appointment" class="cta-btn cta-btn-secondary">
+        <i class="fas fa-calendar-check"></i> Request Appointment
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<div id="footer-placeholder"></div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script src="js/navigation.js"></script>
+<script src="js/components.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const galleryItems = document.querySelectorAll('.masonry-item');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightbox-image');
+  const lightboxTitle = document.getElementById('lightbox-title');
+  const lightboxDescription = document.getElementById('lightbox-description');
+  const lightboxCounter = document.getElementById('lightbox-counter');
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxPrev = document.getElementById('lightbox-prev');
+  const lightboxNext = document.getElementById('lightbox-next');
+  
+  let currentIndex = 0;
+  const items = Array.from(galleryItems);
+
+  // Open lightbox
+  galleryItems.forEach(function(item, index) {
+    item.addEventListener('click', function() {
+      currentIndex = index;
+      openLightbox(item);
+    });
+  });
+
+  function openLightbox(item) {
+    const imgSrc = item.querySelector('img').src;
+    const highResSrc = imgSrc.replace(/w=\d+/, 'w=1400').replace(/h=\d+/, 'h=1400');
+    const title = item.getAttribute('data-title');
+    const description = item.getAttribute('data-description');
+    
+    lightboxImage.src = highResSrc;
+    lightboxImage.alt = title;
+    lightboxTitle.textContent = title;
+    lightboxDescription.textContent = description;
+    lightboxCounter.textContent = `${currentIndex + 1} / ${items.length}`;
+    
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    updateNavButtons();
+  }
+
+  function updateNavButtons() {
+    lightboxPrev.style.opacity = currentIndex > 0 ? '1' : '0.3';
+    lightboxPrev.style.pointerEvents = currentIndex > 0 ? 'auto' : 'none';
+    lightboxNext.style.opacity = currentIndex < items.length - 1 ? '1' : '0.3';
+    lightboxNext.style.pointerEvents = currentIndex < items.length - 1 ? 'auto' : 'none';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function showPrev() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      openLightbox(items[currentIndex]);
+    }
+  }
+
+  function showNext() {
+    if (currentIndex < items.length - 1) {
+      currentIndex++;
+      openLightbox(items[currentIndex]);
+    }
+  }
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxPrev.addEventListener('click', showPrev);
+  lightboxNext.addEventListener('click', showNext);
+  
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showPrev();
+    if (e.key === 'ArrowRight') showNext();
+  });
+
+  // Touch swipe
+  let touchStartX = 0;
+  lightbox.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, { passive: true });
+  lightbox.addEventListener('touchend', function(e) {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) diff > 0 ? showNext() : showPrev();
+  }, { passive: true });
+});
+</script>
+
+</body>
+</html>

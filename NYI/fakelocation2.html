@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garden City Imaging Center | New York Imaging Specialists</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Your existing stylesheets -->
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/header.css">
+  
+  <style>
+    /* =====================
+       GALLERY SELECTOR
+       ===================== */
+    .gallery-selector {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      gap: 8px;
+      padding: 16px 20px;
+      background: rgba(30,58,95,0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .gallery-selector button {
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    
+    .gallery-selector button:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .gallery-selector button.active {
+      background: #23738a;
+    }
+    
+    /* Hide all galleries by default */
+    .gallery-option {
+      display: none;
+    }
+    
+    .gallery-option.active {
+      display: block;
+    }
+
+    /* =====================
+       OPTION 1: PARALLAX
+       ===================== */
+    .parallax-section {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .parallax-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(30,58,95,0.7) 0%, rgba(76,65,137,0.5) 100%);
+    }
+    
+    .parallax-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: white;
+      padding: 40px;
+      max-width: 600px;
+    }
+    
+    .parallax-content h2 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+      color: white;
+    }
+    
+    .parallax-content p {
+      font-size: 18px;
+      opacity: 0.9;
+      line-height: 1.7;
+      color: white;
+    }
+
+    /* =====================
+       OPTION 2: SCROLL SNAP
+       ===================== */
+    .scrollsnap-container {
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+    }
+    
+    .scrollsnap-section {
+      height: 100vh;
+      scroll-snap-align: start;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      padding: 60px;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .scrollsnap-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+    }
+    
+    .scrollsnap-content {
+      position: relative;
+      z-index: 2;
+      color: white;
+    }
+    
+    .scrollsnap-counter {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+      opacity: 0.7;
+    }
+    
+    .scrollsnap-content h2 {
+      font-size: 48px;
+      font-weight: 700;
+      margin: 0;
+      color: white;
+    }
+
+    /* =====================
+       OPTION 3: CROSSFADE
+       ===================== */
+    .crossfade-container {
+      height: 100vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .crossfade-bg {
+      position: fixed;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 0;
+    }
+    
+    .crossfade-bg.active {
+      opacity: 1;
+    }
+    
+    .crossfade-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30,58,95,0.4);
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    .crossfade-scroll-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .crossfade-section {
+      height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    
+    .crossfade-text {
+      text-align: center;
+      color: white;
+      opacity: 0.3;
+      transform: scale(0.95);
+      transition: all 0.5s ease;
+    }
+    
+    .crossfade-text.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    .crossfade-text h2 {
+      font-size: 52px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: white;
+    }
+    
+    .crossfade-dots {
+      position: fixed;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 10;
+    }
+    
+    .crossfade-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .crossfade-dot.active {
+      background: white;
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    /* =====================
+       OPTION 4: KEN BURNS
+       ===================== */
+    .kenburns-container {
+      height: 100vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .kenburns-bg {
+      position: fixed;
+      inset: -10%;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 1.5s ease, transform 0.1s linear;
+      z-index: 0;
+    }
+    
+    .kenburns-vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(30,58,95,0.3) 0%, rgba(30,58,95,0.8) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    .kenburns-scroll-content {
+      position: relative;
+      z-index: 2;
+      padding: 100vh 40px;
+    }
+    
+    .kenburns-sticky {
+      max-width: 500px;
+      color: white;
+      position: sticky;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .kenburns-label {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+      opacity: 0.6;
+    }
+    
+    .kenburns-sticky h2 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.1;
+      color: white;
+    }
+    
+    .kenburns-sticky p {
+      font-size: 18px;
+      opacity: 0.8;
+      line-height: 1.7;
+      color: white;
+    }
+    
+    .kenburns-progress {
+      margin-top: 40px;
+      height: 2px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    .kenburns-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: white;
+      transition: width 0.1s linear;
+    }
+    
+    .kenburns-spacer {
+      height: 200vh;
+    }
+
+    /* =====================
+       SCROLL HINT
+       ===================== */
+    .scroll-hint {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0.7;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .scroll-hint-mouse {
+      width: 20px;
+      height: 30px;
+      border: 2px solid rgba(255,255,255,0.5);
+      border-radius: 10px;
+      position: relative;
+    }
+    
+    .scroll-hint-wheel {
+      width: 4px;
+      height: 8px;
+      background: white;
+      border-radius: 2px;
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: scrollHint 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes scrollHint {
+      0%, 100% { opacity: 1; top: 6px; }
+      50% { opacity: 0.3; top: 14px; }
+    }
+
+    /* =====================
+       RESPONSIVE
+       ===================== */
+    @media (max-width: 768px) {
+      .gallery-selector {
+        padding: 12px;
+        gap: 6px;
+      }
+      
+      .gallery-selector button {
+        padding: 8px 14px;
+        font-size: 12px;
+      }
+      
+      .parallax-content h2,
+      .scrollsnap-content h2,
+      .crossfade-text h2,
+      .kenburns-sticky h2 {
+        font-size: 32px;
+      }
+      
+      .parallax-section,
+      .scrollsnap-section {
+        background-attachment: scroll;
+      }
+      
+      .crossfade-dots {
+        right: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Gallery Type Selector -->
+  <div class="gallery-selector">
+    <button class="active" data-gallery="parallax">Parallax Sections</button>
+    <button data-gallery="scrollsnap">Scroll Snap</button>
+    <button data-gallery="crossfade">Crossfade</button>
+    <button data-gallery="kenburns">Ken Burns</button>
+  </div>
+
+  <!-- Scroll Hint -->
+  <div class="scroll-hint">
+    <span>Scroll to explore</span>
+    <div class="scroll-hint-mouse">
+      <div class="scroll-hint-wheel"></div>
+    </div>
+  </div>
+
+  <!-- =====================
+       OPTION 1: PARALLAX
+       ===================== -->
+  <div class="gallery-option active" id="parallax">
+    <section class="parallax-section" style="background-image: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600');">
+      <div class="parallax-overlay"></div>
+      <div class="parallax-content">
+        <h2>Modern Reception & Lobby</h2>
+        <p>State-of-the-art facilities designed for your comfort and care.</p>
+      </div>
+    </section>
+    <section class="parallax-section" style="background-image: url('https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1600');">
+      <div class="parallax-overlay"></div>
+      <div class="parallax-content">
+        <h2>Wide-Bore 3T MRI Suite</h2>
+        <p>Advanced imaging technology with maximum patient comfort.</p>
+      </div>
+    </section>
+    <section class="parallax-section" style="background-image: url('https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600');">
+      <div class="parallax-overlay"></div>
+      <div class="parallax-content">
+        <h2>Comfortable Waiting Area</h2>
+        <p>Relax in our modern, welcoming environment.</p>
+      </div>
+    </section>
+    <section class="parallax-section" style="background-image: url('https://images.unsplash.com/photo-1551076805-e1869033e561?w=1600');">
+      <div class="parallax-overlay"></div>
+      <div class="parallax-content">
+        <h2>128-Slice CT Scanner</h2>
+        <p>Low-dose technology for precise diagnostics.</p>
+      </div>
+    </section>
+    <section class="parallax-section" style="background-image: url('https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=1600');">
+      <div class="parallax-overlay"></div>
+      <div class="parallax-content">
+        <h2>Building Exterior</h2>
+        <p>Convenient location with free on-site parking.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- =====================
+       OPTION 2: SCROLL SNAP
+       ===================== -->
+  <div class="gallery-option" id="scrollsnap">
+    <div class="scrollsnap-container">
+      <section class="scrollsnap-section" style="background-image: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600');">
+        <div class="scrollsnap-content">
+          <div class="scrollsnap-counter">01 / 05</div>
+          <h2>Modern Reception & Lobby</h2>
+        </div>
+      </section>
+      <section class="scrollsnap-section" style="background-image: url('https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1600');">
+        <div class="scrollsnap-content">
+          <div class="scrollsnap-counter">02 / 05</div>
+          <h2>Wide-Bore 3T MRI Suite</h2>
+        </div>
+      </section>
+      <section class="scrollsnap-section" style="background-image: url('https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600');">
+        <div class="scrollsnap-content">
+          <div class="scrollsnap-counter">03 / 05</div>
+          <h2>Comfortable Waiting Area</h2>
+        </div>
+      </section>
+      <section class="scrollsnap-section" style="background-image: url('https://images.unsplash.com/photo-1551076805-e1869033e561?w=1600');">
+        <div class="scrollsnap-content">
+          <div class="scrollsnap-counter">04 / 05</div>
+          <h2>128-Slice CT Scanner</h2>
+        </div>
+      </section>
+      <section class="scrollsnap-section" style="background-image: url('https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=1600');">
+        <div class="scrollsnap-content">
+          <div class="scrollsnap-counter">05 / 05</div>
+          <h2>Building Exterior</h2>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- =====================
+       OPTION 3: CROSSFADE
+       ===================== -->
+  <div class="gallery-option" id="crossfade">
+    <div class="crossfade-container">
+      <!-- Background images -->
+      <div class="crossfade-bg active" data-index="0" style="background-image: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600');"></div>
+      <div class="crossfade-bg" data-index="1" style="background-image: url('https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1600');"></div>
+      <div class="crossfade-bg" data-index="2" style="background-image: url('https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600');"></div>
+      <div class="crossfade-bg" data-index="3" style="background-image: url('https://images.unsplash.com/photo-1551076805-e1869033e561?w=1600');"></div>
+      <div class="crossfade-bg" data-index="4" style="background-image: url('https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=1600');"></div>
+      
+      <div class="crossfade-overlay"></div>
+      
+      <!-- Progress dots -->
+      <div class="crossfade-dots">
+        <div class="crossfade-dot active" data-index="0"></div>
+        <div class="crossfade-dot" data-index="1"></div>
+        <div class="crossfade-dot" data-index="2"></div>
+        <div class="crossfade-dot" data-index="3"></div>
+        <div class="crossfade-dot" data-index="4"></div>
+      </div>
+      
+      <!-- Scrollable content -->
+      <div class="crossfade-scroll-content">
+        <div class="crossfade-section" data-index="0">
+          <div class="crossfade-text active">
+            <h2>Modern Reception & Lobby</h2>
+          </div>
+        </div>
+        <div class="crossfade-section" data-index="1">
+          <div class="crossfade-text">
+            <h2>Wide-Bore 3T MRI Suite</h2>
+          </div>
+        </div>
+        <div class="crossfade-section" data-index="2">
+          <div class="crossfade-text">
+            <h2>Comfortable Waiting Area</h2>
+          </div>
+        </div>
+        <div class="crossfade-section" data-index="3">
+          <div class="crossfade-text">
+            <h2>128-Slice CT Scanner</h2>
+          </div>
+        </div>
+        <div class="crossfade-section" data-index="4">
+          <div class="crossfade-text">
+            <h2>Building Exterior</h2>
+          </div>
+        </div>
+        <div style="height: 20vh;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================
+       OPTION 4: KEN BURNS
+       ===================== -->
+  <div class="gallery-option" id="kenburns">
+    <div class="kenburns-container">
+      <div class="kenburns-bg" style="background-image: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600');"></div>
+      <div class="kenburns-vignette"></div>
+      
+      <div class="kenburns-scroll-content">
+        <div class="kenburns-sticky">
+          <div class="kenburns-label">Garden City Imaging Center</div>
+          <h2 class="kenburns-title">Modern Reception & Lobby</h2>
+          <p>Scroll to explore our state-of-the-art facility</p>
+          <div class="kenburns-progress">
+            <div class="kenburns-progress-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="kenburns-spacer"></div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // Image data
+      const images = [
+        { src: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600', caption: 'Modern Reception & Lobby' },
+        { src: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1600', caption: 'Wide-Bore 3T MRI Suite' },
+        { src: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600', caption: 'Comfortable Waiting Area' },
+        { src: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=1600', caption: '128-Slice CT Scanner' },
+        { src: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=1600', caption: 'Building Exterior' },
+      ];
+
+      // Gallery selector
+      const selectorButtons = document.querySelectorAll('.gallery-selector button');
+      const galleryOptions = document.querySelectorAll('.gallery-option');
+      
+      selectorButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const targetGallery = this.dataset.gallery;
+          
+          selectorButtons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          galleryOptions.forEach(g => g.classList.remove('active'));
+          document.getElementById(targetGallery).classList.add('active');
+          
+          // Reset scroll positions
+          document.querySelectorAll('.scrollsnap-container, .crossfade-container, .kenburns-container').forEach(c => {
+            c.scrollTop = 0;
+          });
+        });
+      });
+
+      // Crossfade scroll handler
+      const crossfadeContainer = document.querySelector('.crossfade-container');
+      if (crossfadeContainer) {
+        crossfadeContainer.addEventListener('scroll', function() {
+          const scrollTop = this.scrollTop;
+          const sectionHeight = this.clientHeight * 0.8;
+          const activeIndex = Math.min(Math.floor(scrollTop / sectionHeight), images.length - 1);
+          
+          // Update backgrounds
+          document.querySelectorAll('.crossfade-bg').forEach((bg, i) => {
+            bg.classList.toggle('active', i === activeIndex);
+          });
+          
+          // Update dots
+          document.querySelectorAll('.crossfade-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === activeIndex);
+          });
+          
+          // Update text
+          document.querySelectorAll('.crossfade-text').forEach((text, i) => {
+            text.classList.toggle('active', i === activeIndex);
+          });
+        });
+      }
+
+      // Ken Burns scroll handler
+      const kenburnsContainer = document.querySelector('.kenburns-container');
+      const kenburnsBg = document.querySelector('.kenburns-bg');
+      const kenburnsTitle = document.querySelector('.kenburns-title');
+      const kenburnsProgressBar = document.querySelector('.kenburns-progress-bar');
+      
+      if (kenburnsContainer && kenburnsBg) {
+        kenburnsContainer.addEventListener('scroll', function() {
+          const scrollTop = this.scrollTop;
+          const maxScroll = this.scrollHeight - this.clientHeight;
+          const progress = scrollTop / maxScroll;
+          
+          // Calculate current image index
+          const currentIndex = Math.min(Math.floor(progress * images.length), images.length - 1);
+          
+          // Update background image
+          kenburnsBg.style.backgroundImage = `url(${images[currentIndex].src})`;
+          
+          // Update title
+          if (kenburnsTitle) {
+            kenburnsTitle.textContent = images[currentIndex].caption;
+          }
+          
+          // Ken Burns effect - zoom and pan
+          const zoom = 1 + (progress * 0.3);
+          const panX = progress * 10;
+          kenburnsBg.style.transform = `scale(${zoom}) translateX(${panX}px)`;
+          
+          // Update progress bar
+          if (kenburnsProgressBar) {
+            kenburnsProgressBar.style.width = `${progress * 100}%`;
+          }
+        });
+      }
+
+    });
+  </script>
+
+</body>
+</html>

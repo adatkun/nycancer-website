@@ -1,0 +1,274 @@
+/* ================================================
+   NEW YORK IMAGING SPECIALISTS
+   Footer Styles - Light Modern Design
+   footer.css
+   ================================================ */
+
+/* ================================================
+   FOOTER BASE STYLES
+   ================================================ */
+.site-footer {
+  background: var(--bg-light, #f8f9fa);
+  color: var(--text-primary, #1a1a1a);
+  margin-top: 80px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.footer-main {
+  padding: 60px 5% 40px;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 50px;
+}
+
+/* ================================================
+   FOOTER COLUMN HEADINGS
+   ================================================ */
+.footer-column h4 {
+  color: var(--nyi-teal, #23738a);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.footer-column h4::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: var(--nyi-purple, #4c4189);
+  border-radius: 2px;
+}
+
+/* ================================================
+   FOOTER LINKS
+   ================================================ */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 12px;
+}
+
+.footer-link {
+  color: var(--text-secondary, #5a5a5a);
+  font-size: 15px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  position: relative;
+}
+
+.footer-link:hover {
+  color: var(--nyi-teal, #23738a);
+  transform: translateX(3px);
+}
+
+.footer-link::before {
+  content: "";
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--nyi-purple, #4c4189);
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover::before {
+  width: 8px;
+}
+
+/* ================================================
+   SOCIAL LINKS
+   ================================================ */
+.social-links {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: white;
+  border: 2px solid rgba(35, 115, 138, 0.2);
+  border-radius: 50%;
+  color: var(--nyi-teal, #23738a);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.social-link:hover {
+  background: var(--nyi-teal, #23738a);
+  border-color: var(--nyi-teal, #23738a);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(35, 115, 138, 0.3);
+}
+
+/* ================================================
+   FOOTER LOGO & TAGLINE
+   ================================================ */
+.footer-logo {
+  margin-bottom: 20px;
+}
+
+.footer-logo a {
+  display: inline-block;
+}
+
+.company-logo {
+  max-width: 200px;
+  height: auto;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.company-logo:hover {
+  opacity: 1;
+}
+
+.footer-tagline {
+  font-style: italic;
+  color: var(--text-secondary, #5a5a5a);
+  font-size: 15px;
+}
+
+.footer-tagline p {
+  margin: 0;
+  font-size: 15px;
+}
+
+/* ================================================
+   FOOTER BOTTOM BAR
+   ================================================ */
+.footer-bottom {
+  background: white;
+  padding: 20px 5%;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.footer-bottom p {
+  margin: 0;
+  color: var(--text-secondary, #5a5a5a);
+  font-size: 14px;
+}
+
+/* ================================================
+   MOBILE RESPONSIVE
+   ================================================ */
+@media (max-width: 1024px) {
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-footer {
+    margin-top: 60px;
+  }
+
+  .footer-main {
+    padding: 40px 20px 30px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-column {
+    text-align: center;
+  }
+
+  .footer-column h4::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-link::before {
+    display: none;
+  }
+
+  .footer-link:hover {
+    transform: none;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+
+  .footer-logo {
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer-tagline {
+    text-align: center;
+  }
+
+  .footer-bottom {
+    padding: 15px 20px;
+  }
+}
+
+/* ================================================
+   ALTERNATIVE FOOTER STYLES (Optional)
+   ================================================ */
+
+/* Option 1: Teal Gradient Footer */
+.footer-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(35, 115, 138, 0.05) 0%,
+    rgba(76, 65, 137, 0.05) 100%
+  );
+}
+
+/* Option 2: Clean White Footer */
+.footer-white {
+  background: white;
+  border-top: 3px solid var(--nyi-teal, #23738a);
+}
+
+.footer-white .footer-bottom {
+  background: var(--bg-light, #f8f9fa);
+}
+
+/* Option 3: Navy Accent Footer */
+.footer-navy-accent .footer-column h4 {
+  color: var(--nyi-navy, #1e3a5f);
+}
+
+.footer-navy-accent .footer-column h4::after {
+  background: var(--nyi-teal, #23738a);
+}
