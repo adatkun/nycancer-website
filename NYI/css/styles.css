@@ -832,6 +832,331 @@ nav.navbar {
 }
 
 /* ================================================
+   LOCATION DETAIL PAGE STYLES
+   Add to styles.css
+   ================================================ */
+
+/* =====================
+   HERO GALLERY
+   ===================== */
+.location-hero {
+  position: relative;
+  height: 70vh;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+.location-hero .hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.location-hero .hero-bg.active {
+  opacity: 1;
+}
+
+.location-hero .hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(30,58,95,0.3) 0%, rgba(30,58,95,0.7) 100%);
+}
+
+.location-hero .hero-content {
+  position: absolute;
+  bottom: 60px;
+  left: 5%;
+  right: 5%;
+  z-index: 10;
+  color: white;
+  text-align: left;
+}
+
+.location-hero .hero-content h1 {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.location-hero .hero-content p {
+  font-size: 20px;
+  opacity: 0.9;
+  color: white;
+}
+
+/* Gallery Dots */
+.hero-dots {
+  position: absolute;
+  bottom: 30px;
+  right: 5%;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.hero-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.hero-dot:hover {
+  background: rgba(255,255,255,0.7);
+}
+
+.hero-dot.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+/* =====================
+   MAIN CONTENT LAYOUT
+   ===================== */
+.location-detail-content {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 60px;
+  padding: 60px 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Left Column - About */
+.location-about h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.location-about > p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+}
+
+.location-about h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+/* Service Pills */
+.services-pill-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.service-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  background: var(--bg-white);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.service-pill:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.service-pill i {
+  font-size: 24px;
+  color: var(--nyi-purple);
+}
+
+/* =====================
+   RIGHT COLUMN - INFO CARD
+   ===================== */
+.location-info-card {
+  background: var(--bg-white);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  box-shadow: var(--shadow-sm);
+}
+
+.info-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--nyi-teal);
+  margin-bottom: 24px;
+}
+
+.info-card-header i {
+  font-size: 20px;
+  color: var(--nyi-teal);
+}
+
+.info-card-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.info-item {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.info-item i {
+  font-size: 18px;
+  color: var(--nyi-teal);
+  margin-top: 3px;
+  width: 20px;
+  text-align: center;
+}
+
+.info-item-content {
+  flex: 1;
+}
+
+.info-item-content p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.info-item-content .label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.info-item-content .hours-detail {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+/* CTA Buttons */
+.info-card-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.info-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: var(--radius-full);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.info-btn-primary {
+  background: var(--nyi-teal);
+  color: white;
+}
+
+.info-btn-primary:hover {
+  background: var(--nyi-navy);
+  transform: translateY(-2px);
+  color: white;
+}
+
+.info-btn-secondary {
+  background: var(--nyi-purple);
+  color: white;
+}
+
+.info-btn-secondary:hover {
+  background: var(--nyi-navy);
+  transform: translateY(-2px);
+  color: white;
+}
+
+.info-btn-outline {
+  background: transparent;
+  border-color: var(--nyi-purple);
+  color: var(--nyi-purple);
+}
+
+.info-btn-outline:hover {
+  background: var(--nyi-purple);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* =====================
+   RESPONSIVE
+   ===================== */
+@media (max-width: 1024px) {
+  .location-detail-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .location-info-card {
+    position: static;
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .location-hero {
+    height: 50vh;
+    min-height: 350px;
+  }
+  
+  .location-hero .hero-content h1 {
+    font-size: 32px;
+  }
+  
+  .location-hero .hero-content p {
+    font-size: 16px;
+  }
+  
+  .location-detail-content {
+    padding: 40px 20px;
+  }
+  
+  .location-about h2 {
+    font-size: 26px;
+  }
+  
+  .services-pill-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .service-pill {
+    padding: 16px 20px;
+  }
+}
+
+/* ================================================
    14. PROVIDER/STAFF CARDS
    ================================================ */
 .provider-card {

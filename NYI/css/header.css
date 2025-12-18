@@ -405,12 +405,12 @@ nav.navbar {
 
 .mobile-appointment-btn {
   background: var(--nyi-blue);
-  color: white !important;
+  color: var(--text-primary) !important;
 }
 
 .mobile-appointment-btn:hover {
   background: var(--nyi-blue-light);
-  color: white !important;
+
 }
 
 .mobile-portal-btn {
