@@ -1,0 +1,113 @@
+<!-- ================================================
+   NEW YORK IMAGING SPECIALISTS
+   Header Component - The Scan Line Design
+   header2.html
+   ================================================ -->
+
+<!-- Main Header -->
+<header class="scan-header">
+  <!-- Animated scan line (wrapped to contain overflow) -->
+  <div class="scan-line-container">
+    <div class="scan-line"></div>
+  </div>
+  
+  <div class="scan-header-container">
+    <!-- Logo Section -->
+    <div class="scan-logo-section">
+      <a href="/" class="scan-logo-link">
+        <img src="/img/NYI_Logo_forDark.png" alt="NY Imaging Specialists" class="scan-logo-img">
+      </a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="scan-nav desktop-only">
+      <div class="scan-nav-links">
+        <a href="/locations">Locations</a>
+        
+        <a href="/services">Services</a>
+
+        <div class="dropdown">
+          <a href="/about.html">About <i class="fas fa-chevron-down"></i></a>
+          <div class="scan-dropdown-content">
+            <a href="/about.html"><i class="fas fa-book-open"></i> Our Story</a>
+            <a href="/billing-insurance.html"><i class="fas fa-file-invoice-dollar"></i> Billing & Insurance</a>
+            <a href="https://oneoncology.wd1.myworkdayjobs.com/NYI"><i class="fas fa-briefcase"></i> Careers</a>
+            <a href="/gallery.html"><i class="fa-solid fa-camera"></i> Gallery</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="#">Portal <i class="fas fa-chevron-down"></i></a>
+          <div class="scan-dropdown-content">
+            <a href="https://accounts.flatiron.com/account/login/?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fclient_id%3Dfh.patient_portal%26nonce%3D17h7jA8gPTj9SJMK%26redirect_uri%3Dhttps%253A%252F%252Fcarespaceportal.com%252Fcb%26response_type%3Dcode%26scope%3Dopenid%2520profile%26state%3DxcuQzpriokHxgTi1" target="_blank"><i class="fas fa-user-circle"></i> Patient Portal</a>
+            <a href="https://nycbs.infinittna.com/IPHY/Pages/Login" target="_blank"><i class="fas fa-images"></i> INFINITT</a>
+            <a href="https://scriptsender.nycancer.com/" target="_blank"><i class="fas fa-paper-plane"></i> ScriptSender</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Right Side Actions -->
+    <div class="scan-header-actions">
+      <a href="tel:8332694624" class="scan-phone-link desktop-only">
+        <i class="fas fa-phone"></i>
+        (833) 269-4624
+      </a>
+      <a href="https://secure.nyimaging.com/img" class="scan-cta-btn">
+        <span>Appointment</span>
+        <div class="btn-shine"></div>
+      </a>
+      
+      <!-- Hamburger Menu (Mobile) -->
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Navigation -->
+<nav class="mobile-nav" id="mobile-nav">
+  <!-- Locations - Direct Link -->
+  <a href="/locations" class="mobile-nav-link">Locations</a>
+
+  <!-- Services - Direct Link -->
+  <a href="/services" class="mobile-nav-link">Services</a>
+
+  <!-- About -->
+  <div class="mobile-nav-section">
+    <button class="mobile-nav-toggle" data-target="mobile-about">
+      About <i class="fas fa-chevron-down"></i>
+    </button>
+    <div class="mobile-nav-submenu" id="mobile-about">
+      <a href="/about.html">Our Story</a>
+      <a href="/billing-insurance.html">Billing & Insurance</a>
+      <a href="https://oneoncology.wd1.myworkdayjobs.com/NYI">Careers</a>
+      <a href="/gallery.html">Gallery</a>
+    </div>
+  </div>
+
+  <!-- Portal -->
+  <div class="mobile-nav-section">
+    <button class="mobile-nav-toggle" data-target="mobile-portal">
+      Portal <i class="fas fa-chevron-down"></i>
+    </button>
+    <div class="mobile-nav-submenu" id="mobile-portal">
+      <a href="https://accounts.flatiron.com/account/login/?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fclient_id%3Dfh.patient_portal%26nonce%3D17h7jA8gPTj9SJMK%26redirect_uri%3Dhttps%253A%252F%252Fcarespaceportal.com%252Fcb%26response_type%3Dcode%26scope%3Dopenid%2520profile%26state%3DxcuQzpriokHxgTi1" target="_blank">Patient Portal</a>
+      <a href="https://nycbs.infinittna.com/IPHY/Pages/Login" target="_blank">INFINITT</a>
+      <a href="https://scriptsender.nycancer.com/" target="_blank">ScriptSender</a>
+    </div>
+  </div>
+
+  <!-- Mobile Nav Footer -->
+  <div class="mobile-nav-footer">
+    <a href="https://secure.nyimaging.com/img" class="mobile-appointment-btn">
+      <i class="fas fa-calendar-check"></i> Request Appointment
+    </a>
+    <a href="https://accounts.flatiron.com/account/login/?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fclient_id%3Dfh.patient_portal%26nonce%3D17h7jA8gPTj9SJMK%26redirect_uri%3Dhttps%253A%252F%252Fcarespaceportal.com%252Fcb%26response_type%3Dcode%26scope%3Dopenid%2520profile%26state%3DxcuQzpriokHxgTi1" class="mobile-portal-btn" target="_blank">
+      <i class="fas fa-user-circle"></i> Patient Portal
+    </a>
+  </div>
+</nav>

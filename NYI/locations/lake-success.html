@@ -7,10 +7,11 @@
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://use.typekit.net/ike4wxa.css">
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/header2.css">
   <link rel="stylesheet" href="/css/footer.css">
 </head>
 <body>
@@ -28,10 +29,26 @@
 
     <div class="hero-overlay"></div>
 
+    <nav class="breadcrumb location-breadcrumb">
+    <a href="/">Home</a>
+    <i class="fas fa-chevron-right"></i>
+    <a href="/locations">Locations</a>
+    <i class="fas fa-chevron-right"></i>
+    <span>NY Imaging Lake Success</span>
+  </nav>
+
     <div class="hero-content">
       <h1>NY Imaging Lake Success</h1>
       <p>Advanced diagnostic imaging in Lake Success, NY</p>
     </div>
+
+    <!-- NEW: Navigation Arrows -->
+    <button class="hero-arrow prev">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="hero-arrow next">
+      <i class="fas fa-chevron-right"></i>
+    </button>
 
     <div class="hero-dots">
       <button class="hero-dot active" data-index="0"></button>
@@ -139,56 +156,9 @@
   <!-- JavaScript -->
   <script src="/js/navigation.js"></script>
   <script src="/js/components.js"></script>
+  <script src="/js/location-hero.js"></script>
+  <script src="/js/header-scroll.js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const backgrounds = document.querySelectorAll('.hero-bg');
-      const dots = document.querySelectorAll('.hero-dot');
-      let currentIndex = 0;
-      let autoPlayInterval;
-
-      function showSlide(index) {
-        backgrounds.forEach((bg, i) => {
-          bg.classList.toggle('active', i === index);
-        });
-        dots.forEach((dot, i) => {
-          dot.classList.toggle('active', i === index);
-        });
-        currentIndex = index;
-      }
-
-      function nextSlide() {
-        const next = (currentIndex + 1) % backgrounds.length;
-        showSlide(next);
-      }
-
-      // Dot click handlers
-      dots.forEach(dot => {
-        dot.addEventListener('click', function() {
-          const index = parseInt(this.dataset.index);
-          showSlide(index);
-          resetAutoPlay();
-        });
-      });
-
-      // Auto-advance
-      function startAutoPlay() {
-        autoPlayInterval = setInterval(nextSlide, 5000);
-      }
-
-      function resetAutoPlay() {
-        clearInterval(autoPlayInterval);
-        startAutoPlay();
-      }
-
-      startAutoPlay();
-
-      // Pause on hover
-      const hero = document.querySelector('.location-hero');
-      hero.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
-      hero.addEventListener('mouseleave', startAutoPlay);
-    });
-  </script>
-
+  
 </body>
 </html>

@@ -673,9 +673,11 @@ nav.navbar {
    13. PAGE COMPONENTS
    ================================================ */
 
-/* Page Hero */
+/* Page hero with background image support */
 .page-hero {
   background: linear-gradient(135deg, var(--nyi-navy) 0%, var(--nyi-navy-dark) 100%);
+  background-size: cover;
+  background-position: center;
   padding: 60px 5%;
   color: white;
   position: relative;
@@ -684,19 +686,24 @@ nav.navbar {
   align-items: center;
 }
 
+/* Semi-transparent overlay for readability */
 .page-hero-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(45deg, var(--nyi-navy-dark) 0%, var(--nyi-teal) 100%);
-
+  background: linear-gradient(135deg, rgba(30, 58, 95, 0.85) 0%, rgba(35, 115, 138, 0.75) 100%);
   z-index: 1;
 }
-
 
 .page-hero .container,
 .page-hero-content {
   position: relative;
   z-index: 2;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 5%;
+  text-align: left;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .page-hero h1 {
@@ -755,8 +762,15 @@ nav.navbar {
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 900px;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 0 5%;
+  box-sizing: border-box;
+}
+
+/* Homepage hero stays centered */
+.hero-section .hero-content {
+  text-align: center;
 }
 
 .hero-content h1 {
@@ -846,6 +860,19 @@ nav.navbar {
   overflow: hidden;
 }
 
+/* Breadcrumb at top of location hero */
+.location-hero .location-breadcrumb {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 5%;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
 .location-hero .hero-bg {
   position: absolute;
   inset: 0;
@@ -868,11 +895,15 @@ nav.navbar {
 .location-hero .hero-content {
   position: absolute;
   bottom: 60px;
-  left: 5%;
-  right: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 5%;
   z-index: 10;
   color: white;
   text-align: left;
+  box-sizing: border-box;
 }
 
 .location-hero .hero-content h1 {
@@ -886,6 +917,8 @@ nav.navbar {
   font-size: 20px;
   opacity: 0.9;
   color: white;
+  text-align: left;
+  margin: 0;
 }
 
 /* Gallery Dots */
@@ -915,6 +948,41 @@ nav.navbar {
 .hero-dot.active {
   background: white;
   transform: scale(1.2);
+}
+
+/* Gallery Arrows */
+.hero-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--nyi-navy);
+  transition: all 0.3s ease;
+  z-index: 5;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.hero-arrow:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.hero-arrow.prev {
+  left: 20px;
+}
+
+.hero-arrow.next {
+  right: 20px;
 }
 
 /* =====================
@@ -1131,12 +1199,32 @@ nav.navbar {
     min-height: 350px;
   }
   
+  .location-hero .location-breadcrumb {
+    top: 20px;
+    padding: 0 20px;
+    font-size: 13px;
+  }
+  
   .location-hero .hero-content h1 {
     font-size: 32px;
   }
   
   .location-hero .hero-content p {
     font-size: 16px;
+  }
+  
+  .hero-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  .hero-arrow.prev {
+    left: 10px;
+  }
+  
+  .hero-arrow.next {
+    right: 10px;
   }
   
   .location-detail-content {

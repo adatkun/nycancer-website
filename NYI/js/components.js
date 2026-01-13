@@ -58,9 +58,11 @@ async function initializeSite() {
     console.warn("Node.js: npx http-server");
   }
 
+
+  
   // Load header (if placeholder exists)
   if (document.getElementById("header-placeholder")) {
-    await loadComponent("header-placeholder", "/header.html");
+    await loadComponent("header-placeholder", "/header2.html");
   }
 
 

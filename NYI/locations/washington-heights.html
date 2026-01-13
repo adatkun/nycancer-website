@@ -7,10 +7,11 @@
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://use.typekit.net/ike4wxa.css">
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/css/styles.css" />
-  <link rel="stylesheet" href="/css/header.css" />
+  <link rel="stylesheet" href="/css/header2.css" />
   <link rel="stylesheet" href="/css/footer.css" />
 </head>
 <body>
@@ -20,18 +21,35 @@
 
   <!-- Hero Gallery -->
   <section class="location-hero">
-    <div class="hero-bg active" style="background-image: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600');"></div>
-    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1600');"></div>
-    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600');"></div>
-    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1551076805-e1869033e561?w=1600');"></div>
-    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=1600');"></div>
+    <div class="hero-bg active" style="background-image: url('/img/location-washingtonHeights/washingtonHeights0.jpeg');"></div>
+    <div class="hero-bg" style="background-image: url('/img/location-washingtonHeights/washingtonHeights1.jpeg');"></div>
+    <div class="hero-bg" style="background-image: url('/img/location-washingtonHeights/washingtonHeights3.jpeg');"></div>
+    <div class="hero-bg" style="background-image: url('/img/location-washingtonHeights/washingtonHeights4.jpeg');"></div>
+    <div class="hero-bg" style="background-image: url('/img/location-washingtonHeights/washingtonHeights5.jpeg');"></div>
+    <div class="hero-bg" style="background-image: url('/img/location-washingtonHeights/washingtonHeights6.jpeg');"></div>
 
     <div class="hero-overlay"></div>
+
+    <nav class="breadcrumb location-breadcrumb">
+    <a href="/">Home</a>
+    <i class="fas fa-chevron-right"></i>
+    <a href="/locations">Locations</a>
+    <i class="fas fa-chevron-right"></i>
+    <span>NY Imaging Washington Heights</span>
+  </nav>
 
     <div class="hero-content">
       <h1>NY Imaging Washington Heights</h1>
       <p>Advanced diagnostic imaging close to home</p>
     </div>
+
+    <!-- NEW: Navigation Arrows -->
+    <button class="hero-arrow prev">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="hero-arrow next">
+      <i class="fas fa-chevron-right"></i>
+    </button>
 
     <div class="hero-dots">
       <button class="hero-dot active" data-index="0"></button>
@@ -39,6 +57,7 @@
       <button class="hero-dot" data-index="2"></button>
       <button class="hero-dot" data-index="3"></button>
       <button class="hero-dot" data-index="4"></button>
+      <button class="hero-dot" data-index="5"></button>
     </div>
   </section>
 
@@ -122,56 +141,9 @@
   <!-- JavaScript -->
   <script src="/js/navigation.js"></script>
   <script src="/js/components.js"></script>
+  <script src="/js/location-hero.js"></script>
+  <script src="/js/header-scroll.js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const backgrounds = document.querySelectorAll('.hero-bg');
-      const dots = document.querySelectorAll('.hero-dot');
-      let currentIndex = 0;
-      let autoPlayInterval;
-
-      function showSlide(index) {
-        backgrounds.forEach((bg, i) => {
-          bg.classList.toggle('active', i === index);
-        });
-        dots.forEach((dot, i) => {
-          dot.classList.toggle('active', i === index);
-        });
-        currentIndex = index;
-      }
-
-      function nextSlide() {
-        const next = (currentIndex + 1) % backgrounds.length;
-        showSlide(next);
-      }
-
-      // Dot click handlers
-      dots.forEach(dot => {
-        dot.addEventListener('click', function() {
-          const index = parseInt(this.dataset.index);
-          showSlide(index);
-          resetAutoPlay();
-        });
-      });
-
-      // Auto-advance
-      function startAutoPlay() {
-        autoPlayInterval = setInterval(nextSlide, 5000);
-      }
-
-      function resetAutoPlay() {
-        clearInterval(autoPlayInterval);
-        startAutoPlay();
-      }
-
-      startAutoPlay();
-
-      // Pause on hover
-      const hero = document.querySelector('.location-hero');
-      hero.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
-      hero.addEventListener('mouseleave', startAutoPlay);
-    });
-  </script>
-
+  
 </body>
 </html>

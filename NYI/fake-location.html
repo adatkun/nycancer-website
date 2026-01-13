@@ -7,10 +7,11 @@
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://use.typekit.net/ike4wxa.css">
   
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/header2.css">
   <link rel="stylesheet" href="/css/footer.css">
 </head>
 <body>
@@ -32,6 +33,14 @@
       <h1>Garden City Imaging Center</h1>
       <p>Advanced diagnostic imaging in Nassau County</p>
     </div>
+    
+    <!-- Navigation Arrows -->
+    <button class="hero-arrow prev" id="heroPrev">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="hero-arrow next" id="heroNext">
+      <i class="fas fa-chevron-right"></i>
+    </button>
     
     <div class="hero-dots">
       <button class="hero-dot active" data-index="0"></button>
@@ -143,8 +152,11 @@
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      const hero = document.querySelector('.location-hero');
       const backgrounds = document.querySelectorAll('.hero-bg');
       const dots = document.querySelectorAll('.hero-dot');
+      const prevBtn = document.getElementById('heroPrev');
+      const nextBtn = document.getElementById('heroNext');
       let currentIndex = 0;
       let autoPlayInterval;
       
@@ -163,6 +175,22 @@
         showSlide(next);
       }
       
+      function prevSlide() {
+        const prev = (currentIndex - 1 + backgrounds.length) % backgrounds.length;
+        showSlide(prev);
+      }
+      
+      // Arrow click handlers
+      nextBtn.addEventListener('click', function() {
+        nextSlide();
+        resetAutoPlay();
+      });
+      
+      prevBtn.addEventListener('click', function() {
+        prevSlide();
+        resetAutoPlay();
+      });
+      
       // Dot click handlers
       dots.forEach(dot => {
         dot.addEventListener('click', function() {
@@ -171,6 +199,46 @@
           resetAutoPlay();
         });
       });
+      
+      // Keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') {
+          nextSlide();
+          resetAutoPlay();
+        } else if (e.key === 'ArrowLeft') {
+          prevSlide();
+          resetAutoPlay();
+        }
+      });
+      
+      // Touch/Swipe support for mobile
+      let touchStartX = 0;
+      let touchEndX = 0;
+      
+      hero.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      
+      hero.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, { passive: true });
+      
+      function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+          if (diff > 0) {
+            // Swiped left - go to next
+            nextSlide();
+          } else {
+            // Swiped right - go to previous
+            prevSlide();
+          }
+          resetAutoPlay();
+        }
+      }
       
       // Auto-advance
       function startAutoPlay() {
@@ -184,8 +252,7 @@
       
       startAutoPlay();
       
-      // Pause on hover
-      const hero = document.querySelector('.location-hero');
+      // Pause on hover (desktop only)
       hero.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
       hero.addEventListener('mouseleave', startAutoPlay);
     });

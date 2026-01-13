@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://use.typekit.net/ike4wxa.css">
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/header2.css">
   <link rel="stylesheet" href="/css/footer.css">
 </head>
 <body>
@@ -159,6 +159,7 @@
   <!-- JavaScript -->
   <script src="/js/navigation.js"></script>
   <script src="/js/components.js"></script>
+  <script src="/js/header-scroll.js"></script>
   <script>
     // Insurance list data
     const insurances = [
@@ -222,10 +223,10 @@
           let displayName = insurance;
           let noteStyle = '';
           if (insurance.includes('*')) {
-            noteStyle = 'color: var(--nyi-teal); font-size: 14px;';
+            noteStyle = 'color: var(--nyi-teal); font-size: 18px;';
           }
           
-          card.innerHTML = `<h4 style="font-size: 15px; font-weight: 500; margin: 0; ${noteStyle}">${displayName}</h4>`;
+          card.innerHTML = `<h4 style="font-size: 18px; font-weight: 500; margin: 0; ${noteStyle}">${displayName}</h4>`;
           grid.appendChild(card);
         });
       }

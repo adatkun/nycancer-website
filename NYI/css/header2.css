@@ -1,0 +1,695 @@
+/* ================================================
+   NEW YORK IMAGING SPECIALISTS
+   Header 2 Styles - The Scan Line Design
+   header2.css
+   ================================================ */
+
+/* ================================================
+   MAIN HEADER
+   ================================================ */
+.scan-header {
+  background: var(--nyi-navy);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1002;
+  will-change: transform;
+}
+
+.scan-header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1003;
+}
+
+/* Add padding to body to account for fixed header */
+body {
+  padding-top: 95px;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 77px;
+  }
+}
+
+/* ================================================
+   ANIMATED SCAN LINE (10 second gap between scans)
+   ================================================ */
+.scan-line-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scan-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--nyi-purple-accent) 20%,
+    var(--nyi-purple-accent) 80%,
+    transparent 100%
+  );
+  box-shadow: 
+    0 0 20px 5px rgba(0, 180, 180, 0.3),
+    0 0 40px 10px rgba(0, 180, 180, 0.15);
+  opacity: 0.7;
+  animation: scanMove 14s ease-in-out infinite;
+}
+
+/* Animation: 4s scan + 10s gap = 14s total
+   Scan portion: 4/14 = ~28.5% */
+@keyframes scanMove {
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+  1.5% {
+    opacity: 0.7;
+  }
+  27% {
+    opacity: 0.7;
+  }
+  28.5% {
+    left: 100%;
+    opacity: 0;
+  }
+  28.6% {
+    left: 0%;
+    opacity: 0;
+  }
+  100% {
+    left: 0%;
+    opacity: 0;
+  }
+}
+
+/* ================================================
+   LOGO SECTION
+   ================================================ */
+.scan-logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.scan-logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.scan-logo-img {
+  height: 55px;
+  width: auto;
+  transition: all 0.3s ease;
+}
+
+.scan-logo-link:hover .scan-logo-img {
+  transform: scale(1.02);
+  filter: brightness(1.1);
+}
+
+/* ================================================
+   NAVIGATION (larger, whiter text)
+   ================================================ */
+.scan-nav {
+  display: flex;
+  align-items: center;
+}
+
+.scan-nav-links {
+  display: flex;
+  gap: 40px;
+}
+
+.scan-nav-links > .dropdown > a,
+.scan-nav-links > a {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+  font-size: 17px;
+  padding: 10px 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.scan-nav-links > .dropdown > a:hover,
+.scan-nav-links > a:hover {
+  color: #fff;
+}
+
+/* Underline effect */
+.scan-nav-links > .dropdown > a::after,
+.scan-nav-links > a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--nyi-purple-accent);
+  transition: width 0.3s ease;
+}
+
+.scan-nav-links > .dropdown > a:hover::after,
+.scan-nav-links > a:hover::after {
+  width: 100%;
+}
+
+/* ================================================
+   MENU CARET ICONS (dropdown arrows)
+   These rotate on hover
+   ================================================ */
+.scan-nav-links .dropdown > a > i.fa-chevron-down {
+  font-size: 10px;
+  transition: transform 0.3s ease, color 0.3s ease;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.scan-nav-links .dropdown:hover > a > i.fa-chevron-down {
+  transform: rotate(180deg);
+  color: var(--nyi-purple-accent);
+}
+
+/* ================================================
+   DROPDOWN MENUS
+   ================================================ */
+.scan-dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(15px);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  padding: 16px;
+  min-width: 220px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  z-index: 9999;
+}
+
+.scan-dropdown-content.dropdown-wide {
+  min-width: 280px;
+}
+
+.dropdown:hover .scan-dropdown-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(8px);
+}
+
+/* Arrow */
+.scan-dropdown-content::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #fff;
+}
+
+.scan-dropdown-content a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.scan-dropdown-content a:hover {
+  background: var(--bg-light);
+  color: var(--nyi-teal);
+  transform: translateX(5px);
+}
+
+/* ================================================
+   SUBMENU ICONS (icons inside dropdown items)
+   Static teal color, no hover effects, no rotation
+   ================================================ */
+.scan-dropdown-content a i {
+  color: var(--nyi-teal) !important;
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  /* Force static - no animations or transforms */
+  transition: none !important;
+  transform: rotate(0deg) !important;
+}
+
+/* Ensure submenu icons stay static on all hover states */
+.scan-dropdown-content a:hover i,
+.dropdown:hover .scan-dropdown-content a i,
+.scan-dropdown-content a i:hover {
+  color: var(--nyi-teal) !important;
+  transform: rotate(0deg) !important;
+}
+
+/* ================================================
+   RIGHT SIDE ACTIONS
+   ================================================ */
+.scan-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Phone Link (larger, whiter) */
+.scan-phone-link {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.scan-phone-link:hover {
+  color: #fff;
+}
+
+.scan-phone-link i {
+  color: var(--nyi-purple-accent);
+  font-size: 14px;
+}
+
+/* CTA Button (unchanged) */
+.scan-cta-btn {
+  position: relative;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--nyi-purple-accent), var(--nyi-purple));
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 180, 180, 0.3);
+}
+
+.scan-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 180, 180, 0.4);
+  color: #fff;
+}
+
+.scan-cta-btn span {
+  position: relative;
+  z-index: 2;
+}
+
+/* Shine effect on hover */
+.btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.scan-cta-btn:hover .btn-shine {
+  left: 100%;
+}
+
+/* ================================================
+   HAMBURGER MENU
+   ================================================ */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.hamburger:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background: #fff;
+  margin: 3px 0;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Hamburger animation when active */
+.hamburger.active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.hamburger.active:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* ================================================
+   MOBILE NAVIGATION (Light Gray Background)
+   ================================================ */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f5f6f8;
+  z-index: 1000;
+  padding: 100px 20px 20px;
+  overflow-y: auto;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mobile-nav.open {
+  display: flex;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.mobile-nav a {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: transparent;
+  transition: all 0.2s ease;
+  display: block;
+  text-decoration: none;
+}
+
+.mobile-nav a:hover,
+.mobile-nav a:active {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--nyi-teal);
+}
+
+.mobile-nav a.active {
+  color: var(--nyi-teal);
+  background: rgba(35, 115, 138, 0.08);
+}
+
+/* Mobile nav footer */
+.mobile-nav-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.mobile-appointment-btn,
+.mobile-portal-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px !important;
+  margin: 8px 0;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  text-align: center;
+}
+
+.mobile-appointment-btn {
+  background: linear-gradient(135deg, var(--nyi-purple-accent), var(--nyi-purple)) !important;
+  color: #fff !important;
+  border-bottom: none !important;
+}
+
+.mobile-appointment-btn:hover {
+  opacity: 0.9;
+  color: #fff !important;
+}
+
+.mobile-portal-btn {
+  background: var(--nyi-navy) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.mobile-portal-btn:hover {
+  background: var(--nyi-purple) !important;
+  color: #fff !important;
+}
+
+/* Dark overlay when menu is open */
+body.mobile-menu-open::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Prevent body scroll when menu is open */
+body.mobile-menu-open {
+  overflow: hidden;
+}
+
+/* Mobile nav section container */
+.mobile-nav-section {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Toggle button for collapsible sections */
+.mobile-nav-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.mobile-nav-toggle:hover,
+.mobile-nav-toggle:active,
+.mobile-nav-toggle.active {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--nyi-teal);
+}
+
+.mobile-nav-toggle i {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+  color: var(--text-secondary);
+}
+
+.mobile-nav-toggle.active i {
+  color: var(--nyi-teal);
+}
+
+/* Submenu (hidden by default) */
+.mobile-nav-submenu {
+  display: none;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+.mobile-nav-submenu.open {
+  display: flex;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Submenu links */
+.mobile-nav-submenu a {
+  padding: 14px 20px 14px 36px !important;
+  font-size: 16px !important;
+  color: var(--text-secondary) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.mobile-nav-submenu a:hover,
+.mobile-nav-submenu a:active {
+  color: var(--nyi-teal) !important;
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+.mobile-nav-submenu a:last-child {
+  border-bottom: none !important;
+}
+
+/* Mobile direct links (non-collapsible) */
+.mobile-nav-link {
+  display: block;
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link:active {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--nyi-teal);
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 1100px) {
+  .scan-nav-links {
+    gap: 28px;
+  }
+}
+
+@media (max-width: 992px) {
+  .scan-nav {
+    display: none;
+  }
+  
+  .scan-header .hamburger {
+    display: flex !important;
+  }
+  
+  .scan-phone-link {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .scan-header-container {
+    padding: 16px 20px;
+  }
+  
+  .scan-logo-img {
+    height: 45px;
+  }
+  
+  .scan-cta-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  /* Adjust scan line animation on mobile */
+  .scan-line {
+    animation-duration: 14s;
+  }
+}
+ 
+
+@media (max-width: 480px) {
+  .scan-logo-img {
+    height: 40px;
+  }
+  
+  .scan-cta-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+/* Desktop - ensure mobile nav hidden */
+@media (min-width: 993px) {
+  .scan-header ~ .mobile-nav {
+    display: none !important;
+  }
+  
+  .scan-header .hamburger {
+    display: none !important;
+  }
+}

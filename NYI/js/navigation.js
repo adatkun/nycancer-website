@@ -103,6 +103,36 @@ window.setupMobileMenu = function() {
     });
   });
 
+// ================================================
+// SCROLL-AWARE HEADER
+// Moves with scroll - 1:1 with page movement
+// ================================================
+
+(function() {
+  const header = document.querySelector('.scan-header');
+  if (!header) return;
+
+  let lastScrollY = window.scrollY;
+  let headerOffset = 0;
+  const headerHeight = header.offsetHeight;
+
+  window.addEventListener('scroll', function() {
+    const currentScrollY = window.scrollY;
+    const scrollDelta = currentScrollY - lastScrollY;
+
+    // Update header offset based on scroll direction
+    headerOffset = headerOffset - scrollDelta;
+
+    // Clamp the offset between -headerHeight and 0
+    headerOffset = Math.min(0, Math.max(-headerHeight, headerOffset));
+
+    // Apply the transform
+    header.style.transform = `translateY(${headerOffset}px)`;
+
+    lastScrollY = currentScrollY;
+  }, { passive: true });
+})();
+
   console.log('✓ Mobile menu event listeners attached');
   console.log('✓ Found', toggleButtons.length, 'collapsible sections');
 };

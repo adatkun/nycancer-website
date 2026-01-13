@@ -8,8 +8,102 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="https://use.typekit.net/ike4wxa.css" />
   <link rel="stylesheet" href="/css/styles.css" />
-  <link rel="stylesheet" href="/css/header.css" />
-    <link rel="stylesheet" href="/css/footer.css" />
+  <link rel="stylesheet" href="/css/header2.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+
+  <style>
+    /* Clickable Prep Card Link */
+    .prep-card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .prep-card-link:hover {
+      text-decoration: none;
+    }
+
+    .prep-card-link .prep-card {
+      border: 2px solid rgba(35, 115, 138, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .prep-card-link:hover .prep-card {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--nyi-teal);
+    }
+
+    .prep-card-link .prep-card .cta-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--nyi-teal);
+      font-weight: 600;
+      font-size: 16px;
+      margin-top: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .prep-card-link:hover .prep-card .cta-arrow {
+      color: var(--nyi-navy);
+    }
+
+    .prep-card-link:hover .prep-card .cta-arrow i {
+      transform: translateX(4px);
+    }
+
+    .prep-card-link .prep-card .cta-arrow i {
+      transition: transform 0.3s ease;
+    }
+
+    /* Procedure Links List */
+    .procedure-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 12px;
+    }
+
+    .procedure-link-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--bg-white);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .procedure-link-item:hover {
+      background: var(--bg-light);
+      border-color: var(--nyi-teal);
+      color: var(--nyi-teal);
+      transform: translateX(5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .procedure-link-item i.fa-arrow-right {
+      margin-left: auto;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .procedure-link-item:hover i.fa-arrow-right {
+      opacity: 1;
+    }
+
+    .procedure-link-item i.fa-circle-dot {
+      color: var(--nyi-teal);
+      font-size: 10px;
+    }
+  </style>
 </head>
 <body>
 
@@ -54,7 +148,7 @@
 
         <div class="image-block">
           <img
-            src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800"
+            src="/img/ir_drabkin2.jpg"
             alt="Interventional Radiology Procedure"
           />
         </div>
@@ -68,7 +162,7 @@
       <div class="content-image-grid">
         <div class="image-block">
           <img
-            src="https://images.unsplash.com/photo-1580281657527-47f249e8f6f1?w=800"
+            src="/img/ir_person.jpeg"
             alt="Image-Guided Treatment Technology"
           />
         </div>
@@ -117,7 +211,7 @@
     </div>
   </section>
 
-  <!-- Procedures Section -->
+  <!-- Procedures Section - REVISED -->
   <section class="section section-white">
     <div class="container">
       <h2 class="section-heading">About Our Procedures</h2>
@@ -125,48 +219,78 @@
         Explore common interventional radiology procedures and pre-procedural instructions.
       </p>
 
-      <div class="grid grid-cols-2 mt-4">
+      <!-- Full-width clickable Pre-Procedural Instructions card -->
+      <a href="/services/interventional-radiology/pre-procedural-instructions.html" class="prep-card-link">
         <div class="prep-card">
           <h4><i class="fas fa-clipboard-list"></i> IR Pre-Procedural Instructions</h4>
-          <p>Important preparation details to help your visit go smoothly.</p>
-          <a class="btn btn-outline" href="/services/interventional-radiology/pre-procedural-instructions">
-            View Instructions
-          </a>
+          <p>Important preparation details to help your visit go smoothly. Review what to do before your procedure, including medications, fasting guidelines, and what to bring.</p>
+          <span class="cta-arrow">View Instructions <i class="fas fa-arrow-right"></i></span>
         </div>
+      </a>
 
-        <div class="prep-card">
-          <h4><i class="fas fa-syringe"></i> Interventional Radiology Procedures</h4>
-          <p>Learn about image-guided treatments offered through our IR & Oncology program.</p>
-          <a class="btn btn-outline" href="#procedures-list">
-            View Procedures
-          </a>
-        </div>
-      </div>
-
+      <!-- Unified Procedures List -->
       <div id="procedures-list" class="mt-5">
-        <div class="grid grid-cols-2">
-          <div class="prep-card">
-            <h4><i class="fas fa-stethoscope"></i> Common Procedures</h4>
-            <ul class="prep-list">
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/hepatic-arterial-embolization">Hepatic Arterial Embolization</a></li>
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/ivc-filter-placement">IVC Filter Placement</a></li>
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/joint-injections">Joint Injections</a></li>
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/mediport-placement">Mediport Placement</a></li>
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/nephrostomy-tube-placement">Nephrostomy Tube Placement</a></li>
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/paracentesis">Paracentesis</a></li>
-            </ul>
-          </div>
+        <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 24px; color: var(--nyi-navy);">
+          <i class="fas fa-syringe" style="color: var(--nyi-teal); margin-right: 12px;"></i>
+          Interventional Radiology Procedures
+        </h3>
 
-          <div class="prep-card">
-            <h4><i class="fas fa-radiation"></i> Oncology & Advanced Treatments</h4>
-            <ul class="prep-list">
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/percutaneous-needle-biopsy">Percutaneous Needle Biopsy</a></li>
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/prostate-artery-embolization">Prostate Artery Embolization (PAE)</a></li>
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/thermal-ablation">Thermal Ablation</a></li>
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/thoracentesis">Thoracentesis</a></li>
-              <li><i class="fas fa-check"></i> <a href="/services/interventional-radiology/uterine-fibroid-embolization">Uterine Fibroid Embolization</a></li>
-            </ul>
-          </div>
+        <div class="procedure-links-grid">
+          <a href="/services/interventional-radiology/hepatic-arterial-embolization.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Hepatic Arterial Embolization
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/ivc-filter-placement.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            IVC Filter Placement
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/joint-injections.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Joint Injections
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/mediport-placement.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Mediport Placement
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/nephrostomy-tube-placement.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Nephrostomy Tube Placement
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/paracentesis.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Paracentesis
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/percutaneous-needle-biopsy.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Percutaneous Needle Biopsy
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/prostate-artery-embolization.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Prostate Artery Embolization (PAE)
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/thermal-ablation.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Thermal Ablation
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/thoracentesis.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Thoracentesis
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="/services/interventional-radiology/uterine-fibroid-embolization.html" class="procedure-link-item">
+            <i class="fas fa-circle-dot"></i>
+            Uterine Fibroid Embolization
+            <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
       </div>
 
@@ -183,7 +307,7 @@
   <!-- IR Details Section -->
   <section class="section section-light">
     <div class="container">
-      <h2 class="section-heading">Interventional Radiology Procedures</h2>
+      <h2 class="section-heading">Interventional Radiology Treatments</h2>
       <p class="section-subheading">
         Image-guided procedures that support diagnosis, treatment, and symptom relief.
       </p>
@@ -237,7 +361,7 @@
 
         <div class="image-block">
           <img
-            src="https://images.unsplash.com/photo-1582719478185-2f6f0e45f58f?w=800"
+            src="/img/ir_machine.jpg"
             alt="Advanced Image-Guided Therapy System"
           />
         </div>
@@ -247,36 +371,6 @@
 
   <!-- Why Choose NYI (loaded by components.js) -->
   <div id="why-choose-nyi-placeholder"></div>
-
-  <!-- Safety / Comfort Section -->
-  <section class="section section-light">
-    <div class="container">
-      <h2 class="section-heading">Why NY Imaging?</h2>
-      <p class="section-subheading">
-        A patient-centered approach, advanced technology, and a comfortable environment designed to help you feel at ease.
-      </p>
-
-      <div class="grid grid-cols-2 mt-4">
-        <div class="prep-card">
-          <h4><i class="fas fa-spa"></i> Patient Comfort</h4>
-          <p>
-            Our spa-like setting helps to put patients’ minds at ease. We have anesthesiologists available to make procedures as painless as possible, as well as a dedicated recovery room for patients to relax following their procedures.
-          </p>
-        </div>
-
-        <div class="prep-card">
-          <h4><i class="fas fa-shield-heart"></i> Safety & Care</h4>
-          <p>
-            The overall experience is one that hooking feels easier and more pleasant than a hospital visit while at the same time maintaining the highest levels of safety and care.
-          </p>
-          <div class="warning-box mt-4">
-            <h3><i class="fas fa-exclamation-triangle"></i> Covid Safety</h3>
-            <p>We maintain strict Covid safety precautions.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- CTA Section -->
   <section class="provider-cta-section">
@@ -303,6 +397,7 @@
   <!-- JavaScript -->
   <script src="/js/navigation.js"></script>
   <script src="/js/components.js"></script>
+  <script src="/js/header-scroll.js"></script>
 
 </body>
 </html>
