@@ -127,20 +127,24 @@ window.setupMobileMenu = function() {
     const headerHeight = header.offsetHeight;
 
     window.addEventListener('scroll', function() {
-      const currentScrollY = window.scrollY;
-      const scrollDelta = currentScrollY - lastScrollY;
+  const currentScrollY = window.scrollY;
+  const scrollDelta = currentScrollY - lastScrollY;
 
-      // Move at 3/4 speed
-      headerOffset = headerOffset - (scrollDelta * 0.75);
+  // Force header fully visible at top of page
+  if (currentScrollY <= 0) {
+    headerOffset = 0;
+  } else {
+    // Move at 3/4 speed
+    headerOffset = headerOffset - (scrollDelta * 0.75);
+    // Clamp the offset between -headerHeight and 0
+    headerOffset = Math.min(0, Math.max(-headerHeight, headerOffset));
+  }
 
-      // Clamp the offset between -headerHeight and 0
-      headerOffset = Math.min(0, Math.max(-headerHeight, headerOffset));
+  // Apply the transform
+  header.style.transform = `translateY(${headerOffset}px)`;
 
-      // Apply the transform
-      header.style.transform = `translateY(${headerOffset}px)`;
-
-      lastScrollY = currentScrollY;
-    }, { passive: true });
+  lastScrollY = currentScrollY;
+}, { passive: true });
 
     console.log('✓ Scroll-aware header initialized');
   }

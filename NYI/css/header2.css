@@ -355,6 +355,24 @@ body {
   left: 100%;
 }
 
+/* Mobile Phone Icon */
+.scan-phone-btn {
+  display: none;
+  color: #fff;
+  text-decoration: none;
+  padding: 0;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.scan-phone-btn:hover {
+  color: var(--nyi-purple-accent);
+}
+
+.scan-phone-btn i {
+  font-size: 20px;
+}
+
 /* ================================================
    HAMBURGER MENU
    ================================================ */
@@ -653,6 +671,15 @@ body.mobile-menu-open {
   }
   
   .scan-phone-link {
+    display: none !important;
+  }
+  
+  /* Show mobile phone button, hide appointment */
+  .scan-phone-btn {
+    display: block !important;
+  }
+  
+  .scan-cta-btn.desktop-only {
     display: none !important;
   }
 }
