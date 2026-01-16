@@ -72,8 +72,8 @@ body {
   box-shadow: 
     0 0 20px 5px rgba(0, 180, 180, 0.3),
     0 0 40px 10px rgba(0, 180, 180, 0.15);
-  opacity: 0.7;
-  animation: scanMove 14s ease-in-out infinite;
+  opacity: 0;
+  animation: scanMove 14s ease-in-out 1s infinite;
 }
 
 /* Animation: 4s scan + 10s gap = 14s total

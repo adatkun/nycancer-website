@@ -237,31 +237,6 @@
       position: relative;
     }
     
-    /* Enable flex ordering for distance-sorted results */
-    #locations-grid {
-      display: grid;
-    }
-    
-    #locations-grid.distance-sorted {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 32px;
-    }
-    
-    #locations-grid.distance-sorted .location-card-link {
-      flex: 1 1 calc(50% - 16px);
-      min-width: 400px;
-      max-width: calc(50% - 16px);
-    }
-    
-    @media (max-width: 900px) {
-      #locations-grid.distance-sorted .location-card-link {
-        flex: 1 1 100%;
-        min-width: 100%;
-        max-width: 100%;
-      }
-    }
-    
     .distance-badge {
       position: absolute;
       top: 16px;
@@ -500,7 +475,7 @@
         </button>
       </div>
       <div class="search-suggestions-dropdown" id="suggestions-dropdown" role="listbox"></div>
-      <p class="search-hint"><i class="fas fa-lightbulb"></i> Try "PET/CT", "Port Jefferson", "11772", or nearby towns like "Deer Park"</p>
+      <p class="search-hint"><i class="fas fa-lightbulb"></i> Try "PET/CT", "Port Jefferson", "11772", or nearby towns</p>
     </div>
     
     <!-- Filter Bar Container -->
@@ -1221,7 +1196,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Show closest locations for a town
   function showClosestLocations(town) {
     const closest = town.closestLocations;
-    const closestHrefs = closest.map(l => l.href);
     const contextBanner = document.getElementById('search-context-banner');
     const contextCount = document.getElementById('context-count');
     const contextLocation = document.getElementById('context-location');
@@ -1229,20 +1203,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // First, hide all cards and remove old distance badges
     locationCards.forEach(card => {
       card.style.display = 'none';
-      card.style.order = '0';
       const oldBadge = card.querySelector('.distance-badge');
       if (oldBadge) oldBadge.remove();
     });
-    
-    // Add distance-sorted class to grid for flex ordering
-    locationsGrid.classList.add('distance-sorted');
 
-    // Show and order matching cards with distance badges
-    closest.forEach((loc, index) => {
+    // Reorder DOM elements by distance (closest first)
+    closest.forEach((loc) => {
       const card = Array.from(locationCards).find(c => c.getAttribute('href') === loc.href);
       if (card) {
+        // Move card to end of grid (maintains sorted order since we iterate in order)
+        locationsGrid.appendChild(card);
         card.style.display = 'flex';
-        card.style.order = index; // Order by distance (closest first)
         
         // Create and add distance badge
         const badge = document.createElement('div');
@@ -1320,8 +1291,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function filterLocations() {
     let visibleCount = 0;
     
-    // Remove distance sorting when using regular filters
-    locationsGrid.classList.remove('distance-sorted');
+    // Hide context banner when using regular filters
     document.getElementById('search-context-banner')?.classList.remove('visible');
     
     locationCards.forEach(card => {
@@ -1333,7 +1303,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       if (matchesRegion && matchesService) {
         card.style.display = 'flex';
-        card.style.order = '0';
         visibleCount++;
         // Remove any distance badges
         const badge = card.querySelector('.distance-badge');
@@ -1391,13 +1360,9 @@ function resetFilters() {
   // Hide context banner
   document.getElementById('search-context-banner')?.classList.remove('visible');
   
-  // Remove distance-sorted class from grid
-  document.getElementById('locations-grid')?.classList.remove('distance-sorted');
-  
-  // Remove all distance badges and reset order
+  // Remove all distance badges and show all cards
   document.querySelectorAll('.location-card-link').forEach(card => {
     card.style.display = 'flex';
-    card.style.order = '0';
     const badge = card.querySelector('.distance-badge');
     if (badge) badge.remove();
   });
