@@ -291,8 +291,8 @@ body {
 /* Phone Link (larger, whiter) */
 .scan-phone-link {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
