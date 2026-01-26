@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Locations & Providers | NY Health</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; }
+    
+    .header { background: linear-gradient(135deg, #2b3990, #0074b8); color: white; padding: 32px 24px; }
+    .header h1 { font-size: 1.75rem; margin-bottom: 6px; }
+    .header p { opacity: 0.9; font-size: 0.95rem; }
+    
+    .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+    
+    .filter-bar { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .filter-label { font-size: 0.8rem; font-weight: 600; color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .filter-label i { color: #0074b8; }
+    .filter-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+    .filter-btn { padding: 6px 14px; border: 2px solid #e2e8f0; background: white; border-radius: 20px; font-size: 0.8rem; font-weight: 500; color: #666; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .filter-btn:hover { border-color: #0074b8; color: #0074b8; }
+    .filter-btn.active { background: #2b3990; border-color: #2b3990; color: white; }
+    
+    @media (max-width: 900px) {
+      .header { 
+        padding: 20px 16px; 
+        background: #f8f9fa;
+        color: #333;
+      }
+      .header h1 { 
+        font-size: 1.4rem; 
+        color: #2b3990;
+      }
+      .header h1 i {
+        color: #0074b8;
+      }
+      .header p { 
+        font-size: 0.85rem; 
+        color: #666;
+      }
+      .container { padding: 12px; }
+      .filter-bar { display: none; }
+    }
+    
+    .active-filter-banner { background: #f0f9ff; border: 1px solid #0074b8; border-radius: 8px; padding: 10px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .active-filter-banner.hidden { display: none; }
+    .active-filter-text { font-size: 0.85rem; color: #2b3990; font-weight: 500; }
+    .active-filter-text i { margin-right: 8px; }
+    .clear-filter-btn { background: #2b3990; color: white; border: none; padding: 6px 14px; border-radius: 16px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+    .clear-filter-btn:hover { background: #1e2a6b; }
+    
+    @media (max-width: 900px) {
+      .active-filter-banner { margin-bottom: 12px; padding: 8px 12px; }
+      .active-filter-text { font-size: 0.75rem; }
+      .clear-filter-btn { padding: 5px 12px; font-size: 0.75rem; }
+    }
+    
+    .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; height: calc(100vh - 300px); min-height: 400px; max-height: 600px; }
+    
+    .map-and-locations { display: flex; flex-direction: column; position: relative; }
+    
+    .map-section { flex: 1; position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    #map { height: 100%; width: 100%; }
+    
+    .locations-panel { 
+      position: absolute; 
+      top: 16px; 
+      left: 16px; 
+      bottom: 16px; 
+      width: 320px; 
+      background: white; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
+      z-index: 1000; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    .locations-panel .panel-header { padding: 14px 18px; border-bottom: 1px solid #e2e8f0; flex-shrink: 0; }
+    .locations-panel .search-box { flex-shrink: 0; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }
+    .locations-panel .panel-content { flex: 1; overflow-y: auto; }
+    
+    .providers-section { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow: hidden; }
+    .providers-section .panel-header { padding: 14px 18px; border-bottom: 1px solid #e2e8f0; flex-shrink: 0; }
+    .providers-section .search-box { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; flex-shrink: 0; }
+    .providers-section .panel-content { flex: 1; overflow-y: auto; }
+    
+    /* Mobile Styles */
+    .mobile-controls { display: none; }
+    
+    @media (max-width: 900px) { 
+      .main-grid { 
+        display: none;
+      }
+      
+      .mobile-controls {
+        display: block;
+      }
+      
+      .mobile-search-bar {
+        background: white;
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      }
+      
+      .mobile-search-bar .search-wrapper {
+        margin-bottom: 12px;
+      }
+      
+      .mobile-filter-select {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 0 12px;
+        border: 1px solid #e2e8f0;
+      }
+      
+      .mobile-filter-select > i:first-child {
+        color: #0074b8;
+        font-size: 0.85rem;
+        margin-right: 10px;
+      }
+      
+      .mobile-filter-select > i:last-child {
+        color: #666;
+        font-size: 0.7rem;
+        pointer-events: none;
+      }
+      
+      .mobile-filter-select select {
+        flex: 1;
+        padding: 12px 0;
+        border: none;
+        background: transparent;
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        cursor: pointer;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        outline: none;
+      }
+      
+      .mobile-filter-select select option {
+        font-size: 16px;
+        padding: 12px;
+      }
+      
+      .mobile-toggle {
+        display: flex;
+        background: #e2e8f0;
+        border-radius: 25px;
+        padding: 4px;
+        margin-bottom: 12px;
+      }
+      
+      .toggle-btn {
+        flex: 1;
+        padding: 10px 16px;
+        border: none;
+        background: transparent;
+        border-radius: 22px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      
+      .toggle-btn.active {
+        background: white;
+        color: #2b3990;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+      
+      .toggle-btn i { font-size: 0.85rem; }
+      
+      .mobile-results {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow: hidden;
+      }
+      
+      .mobile-results .panel-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      
+      .mobile-results .panel-content {
+        max-height: calc(100vh - 380px);
+        overflow-y: auto;
+      }
+      
+      .mobile-map-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        background: #2b3990;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(43,57,144,0.4);
+        cursor: pointer;
+        z-index: 1001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+      
+      .mobile-map-toggle:hover {
+        background: #1e2a6b;
+      }
+      
+      .mobile-map-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 2000;
+        background: white;
+      }
+      
+      .mobile-map-overlay.active {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .mobile-map-header {
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #e2e8f0;
+        flex-shrink: 0;
+      }
+      
+      .mobile-map-header h3 {
+        font-size: 1.1rem;
+        color: #2b3990;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .mobile-map-close {
+        width: 36px;
+        height: 36px;
+        border: none;
+        background: #f1f1f1;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1rem;
+        color: #666;
+      }
+      
+      .mobile-map-container {
+        flex: 1;
+        position: relative;
+      }
+      
+      #mobileMapContainer {
+        height: 100%;
+        width: 100%;
+      }
+    }
+    
+    .panel { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+    .panel-header { padding: 14px 18px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; }
+    .panel-title { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .panel-title i { color: #0074b8; }
+    .panel-count { font-size: 0.85rem; color: #666; font-weight: 400; margin-left: 6px; }
+    
+    .panel-content { overflow-y: scroll; }
+    .panel-content::-webkit-scrollbar { -webkit-appearance: none; width: 8px; }
+    .panel-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+    .panel-content::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px; min-height: 40px; }
+    .panel-content::-webkit-scrollbar-thumb:hover { background: #999; }
+    @supports (scrollbar-width: thin) {
+      .panel-content { scrollbar-width: thin; scrollbar-color: #bbb #f1f1f1; }
+    }
+    #map { height: 100%; min-height: 300px; }
+    
+    .search-box { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }
+    .search-input { width: 100%; padding: 10px 14px 10px 36px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.85rem; outline: none; transition: all 0.2s; }
+    .search-input:focus { border-color: #0074b8; box-shadow: 0 0 0 3px rgba(0,116,184,0.1); }
+    .search-wrapper { position: relative; }
+    .search-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; font-size: 0.85rem; }
+    .search-clear { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #999; cursor: pointer; font-size: 0.8rem; padding: 4px; }
+    .search-clear:hover { color: #666; }
+    
+    .list-item { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: all 0.2s; }
+    .list-item:hover { background: #f8f9fa; }
+    .list-item.active { background: #f0f9ff; border-left: 3px solid #2b3990; }
+    .list-item.dimmed { opacity: 0.4; }
+    
+    @media (max-width: 900px) {
+      .list-item { padding: 12px 14px; }
+    }
+    
+    .location-name { font-size: 0.9rem; font-weight: 600; color: #2b3990; margin-bottom: 6px; line-height: 1.3; }
+    .location-address { font-size: 0.8rem; color: #666; display: flex; align-items: flex-start; gap: 6px; }
+    .location-address i { color: #0074b8; margin-top: 2px; flex-shrink: 0; }
+    .location-meta { display: flex; gap: 12px; margin-top: 8px; font-size: 0.75rem; color: #888; }
+    .location-meta span { display: flex; align-items: center; gap: 4px; }
+    .location-meta i { color: #0074b8; }
+    
+    .provider-item { display: flex; gap: 12px; }
+    .provider-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #2b3990, #0074b8); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1rem; flex-shrink: 0; overflow: hidden; }
+    .provider-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .provider-info { flex: 1; min-width: 0; }
+    .provider-name { font-size: 0.9rem; font-weight: 600; color: #2b3990; margin-bottom: 2px; }
+    .provider-specialty { font-size: 0.8rem; color: #0074b8; margin-bottom: 4px; }
+    .provider-locations { font-size: 0.75rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .view-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: #0074b8; color: white; border-radius: 20px; font-size: 0.75rem; font-weight: 500; text-decoration: none; margin-top: 10px; transition: all 0.2s; }
+    .view-btn:hover { background: #2b3990; transform: translateY(-1px); }
+    .view-btn i { font-size: 0.7rem; }
+    
+    @media (max-width: 900px) {
+      .view-btn { padding: 8px 16px; font-size: 0.8rem; }
+      .search-input { font-size: 16px !important; } /* Prevents zoom on iOS */
+      .mobile-search-bar .search-input { font-size: 16px; }
+    }
+    
+    .loading { padding: 40px; text-align: center; color: #666; }
+    .loading i { font-size: 20px; margin-bottom: 10px; display: block; }
+    
+    .no-results { padding: 30px; text-align: center; color: #888; font-size: 0.85rem; }
+    .no-results i { font-size: 32px; margin-bottom: 12px; display: block; color: #ccc; }
+    
+    .no-results { padding: 30px; text-align: center; color: #888; font-size: 0.85rem; }
+    .no-results i { font-size: 32px; margin-bottom: 12px; display: block; color: #ccc; }
+    
+    .leaflet-popup-content-wrapper { border-radius: 8px; }
+    .leaflet-popup-content { margin: 10px 12px; }
+    .leaflet-popup-content h4 { color: #2b3990; margin: 0 0 4px 0; font-size: 13px; }
+    .leaflet-popup-content p { color: #666; margin: 0; font-size: 11px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="container">
+    <h1><i class="fas fa-map-marker-alt"></i> Locations & Providers</h1>
+    <p>Find NY Health locations and providers near you</p>
+  </div>
+  
+  <!-- Mobile View -->
+  <div class="mobile-controls">
+    <div class="mobile-search-bar">
+      <div class="search-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" class="search-input" id="mobileSearch" placeholder="Search providers or locations...">
+        <button class="search-clear" id="mobileSearchClear" style="display:none;"><i class="fas fa-times"></i></button>
+      </div>
+      
+      <div class="mobile-filter-select">
+        <i class="fas fa-filter"></i>
+        <select id="mobileDeptSelect">
+          <option value="All">All Departments</option>
+          <option value="Primary Care">Primary Care</option>
+          <option value="Surgery">Surgery</option>
+          <option value="OBGYN">OBGYN</option>
+          <option value="Nephrology">Nephrology</option>
+          <option value="Urology">Urology</option>
+          <option value="Pain Management">Pain Management</option>
+          <option value="Physical Therapy">Physical Therapy</option>
+          <option value="Rheumatology">Rheumatology</option>
+          <option value="Endocrinology">Endocrinology</option>
+        </select>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </div>
+    
+    <div class="mobile-toggle">
+      <button class="toggle-btn active" id="toggleProviders" data-mode="providers">
+        <i class="fas fa-user-md"></i> Providers
+      </button>
+      <button class="toggle-btn" id="toggleLocations" data-mode="locations">
+        <i class="fas fa-hospital"></i> Locations
+      </button>
+    </div>
+    
+    <div class="mobile-results">
+      <div class="panel-header">
+        <span class="panel-title">
+          <i class="fas fa-user-md" id="mobileResultIcon"></i> 
+          <span id="mobileResultLabel">Providers</span>
+          <span class="panel-count" id="mobileResultCount"></span>
+        </span>
+      </div>
+      <div class="panel-content" id="mobileResultList">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i>Loading...</div>
+      </div>
+    </div>
+    
+    <button class="mobile-map-toggle" id="openMobileMap">
+      <i class="fas fa-map"></i>
+    </button>
+  </div>
+  
+  <!-- Mobile Map Overlay -->
+  <div class="mobile-map-overlay" id="mobileMapOverlay">
+    <div class="mobile-map-header">
+      <h3><i class="fas fa-map"></i> Map View</h3>
+      <button class="mobile-map-close" id="closeMobileMap"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mobile-map-container" id="mobileMapContainer"></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="filter-bar">
+    <div class="filter-label"><i class="fas fa-filter"></i> Filter by Department</div>
+    <div class="filter-buttons" id="filterButtons"></div>
+  </div>
+  
+  <div class="active-filter-banner hidden" id="activeFilterBanner">
+    <span class="active-filter-text" id="activeFilterText"></span>
+    <button class="clear-filter-btn" id="clearFilterBtn"><i class="fas fa-times"></i> Clear</button>
+  </div>
+  
+  <div class="main-grid">
+    <div class="map-and-locations">
+      <div class="map-section">
+        <div id="map"></div>
+      </div>
+      <div class="locations-panel">
+        <div class="panel-header">
+          <span class="panel-title"><i class="fas fa-hospital"></i> Locations <span class="panel-count" id="locationCount"></span></span>
+        </div>
+        <div class="search-box">
+          <div class="search-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" id="locationSearch" placeholder="Search locations...">
+            <button class="search-clear" id="locationSearchClear" style="display:none;"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+        <div class="panel-content" id="locationList">
+          <div class="loading"><i class="fas fa-spinner fa-spin"></i>Loading locations...</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="providers-section">
+      <div class="panel-header">
+        <span class="panel-title"><i class="fas fa-user-md"></i> Providers <span class="panel-count" id="providerCount"></span></span>
+      </div>
+      <div class="search-box">
+        <div class="search-wrapper">
+          <i class="fas fa-search"></i>
+          <input type="text" class="search-input" id="providerSearch" placeholder="Search by name or location...">
+          <button class="search-clear" id="searchClear" style="display:none;"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+      <div class="panel-content" id="providerList">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i>Loading providers...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const LOCATIONS_API = 'https://api.nycancer.com/open/directory/locations/all';
+
+let map = null;
+let markers = {};
+let locations = [];
+let providers = [];
+let selectedDepartment = 'All';
+const departments = ['All', 'Primary Care', 'Surgery', 'OBGYN', 'Nephrology', 'Urology', 'Pain Management', 'Physical Therapy', 'Rheumatology', 'Endocrinology'];
+
+// Map raw department names to bundled categories
+const departmentMapping = {
+  // Primary Care
+  'Family Medicine': 'Primary Care',
+  'Internal Medicine': 'Primary Care',
+  'Internal & Geriatric Medicine': 'Primary Care',
+  'Primary Care': 'Primary Care',
+  'Primary Care & Geriatric Medicine': 'Primary Care',
+  
+  // Surgery
+  'Breast Surgery': 'Surgery',
+  'General Surgery': 'Surgery',
+  'Surgical Oncology': 'Surgery',
+  
+  // OBGYN
+  'OB/GYN': 'OBGYN',
+  'Obstetrician & Gynecologist': 'OBGYN',
+  
+  // Direct mappings
+  'Nephrologist': 'Nephrology',
+  'Nephrology': 'Nephrology',
+  'Pain Management': 'Pain Management',
+  'Urologist': 'Urology',
+  'Urology': 'Urology',
+  'Rheumatologist': 'Rheumatology',
+  'Rheumatology': 'Rheumatology',
+  'Endocrinologist': 'Endocrinology',
+  'Endocrinology': 'Endocrinology',
+  'Physical Therapist': 'Physical Therapy',
+  'Physical Therapy': 'Physical Therapy',
+  
+  // Other
+  'Board Certified Radiologist': 'Radiology',
+  'Emergency Medicine': 'Emergency Medicine'
+};
+
+// Location type to department mapping
+const locationTypeMapping = {
+  'Urology': 'Urology',
+  'Nephrology': 'Nephrology',
+  'Pain Management': 'Pain Management',
+  'Physical Therapy': 'Physical Therapy',
+  'Primary Care': 'Primary Care',
+  'OBGYN': 'OBGYN',
+  'Rheumatology': 'Rheumatology',
+  'Endocrinology': 'Endocrinology',
+  'Surgery': 'Surgery'
+};
+
+// These specialties inherit department from location type
+const locationBasedSpecialties = ['Nurse Practitioner', 'Physician Assistant'];
+
+function isLocationBasedSpecialty(specialty) {
+  return locationBasedSpecialties.includes(specialty);
+}
+
+function getBundledDepartment(rawDept) {
+  return departmentMapping[rawDept] || rawDept || '';
+}
+
+function getDepartmentFromLocationType(locationType) {
+  return locationTypeMapping[locationType] || locationType || '';
+}
+let selectedLocationId = null;
+let selectedProviderId = null;
+let providerSearchQuery = '';
+let locationSearchQuery = '';
+let mobileViewMode = 'providers'; // 'providers' or 'locations'
+
+const specialtyTypes = ['All','Endocrinology','Nephrology','OBGYN','Pain Management','Physical Therapy','Primary Care','Rheumatology','Surgery','Urology'];
+
+function initMap() {
+  map = L.map('map').setView([40.8, -73.2], 9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+}
+
+function createIcon(isActive) {
+  const color = isActive ? '#2b3990' : '#0074b8';
+  const size = isActive ? 36 : 28;
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `<svg width="${size}" height="${size*1.25}" viewBox="0 0 32 40"><path d="M16 0C7.16 0 0 7.16 0 16c0 12 16 24 16 24s16-12 16-24C32 7.16 24.84 0 16 0z" fill="${color}"/><circle cx="16" cy="14" r="6" fill="white"/></svg>`,
+    iconSize: [size, size*1.25],
+    iconAnchor: [size/2, size*1.25],
+    popupAnchor: [0, -size]
+  });
+}
+
+async function loadData() {
+  try {
+    const res = await fetch(LOCATIONS_API);
+    const json = await res.json();
+    
+    const rawData = (Array.isArray(json) ? json : json.data || [])
+      .filter(loc => loc.domains?.some(d => d.domain === 'nyhealth.com'));
+    
+    const coordMap = new Map();
+    const providerMap = new Map();
+    
+    rawData.forEach(loc => {
+      const lat = parseFloat(loc.latitude) || 0;
+      const lng = parseFloat(loc.longitude) || 0;
+      if (!lat || !lng) return;
+      
+      const key = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+      const types = Array.isArray(loc.location_types) ? [...loc.location_types] : loc.location_types ? [loc.location_types] : [];
+      
+      if (!coordMap.has(key)) {
+        coordMap.set(key, { id: key, names: [loc.name], slugs: [loc.slug], types, address: loc.address || '', lat, lng, phone: loc.phone || '', providerIds: [], link: loc.link || '' });
+      } else {
+        const e = coordMap.get(key);
+        if (!e.names.includes(loc.name)) e.names.push(loc.name);
+        if (!e.slugs.includes(loc.slug)) e.slugs.push(loc.slug);
+        types.forEach(t => { if (!e.types.includes(t)) e.types.push(t); });
+      }
+      
+      // Extract providers from location data
+      const locProviders = loc.active_providers || [];
+      locProviders.forEach(p => {
+        const pId = p.id || p.slug || p.npi || `${p.first_name}-${p.last_name}`.toLowerCase();
+        if (!pId) return;
+        
+        const rawDept = p.speciality || p.specialty || '';
+        
+        // For NP/PA, derive department from location types
+        let providerDepts = [];
+        if (isLocationBasedSpecialty(rawDept)) {
+          types.forEach(t => {
+            const mappedDept = getDepartmentFromLocationType(t);
+            if (mappedDept && !providerDepts.includes(mappedDept)) {
+              providerDepts.push(mappedDept);
+            }
+          });
+        } else {
+          const department = getBundledDepartment(rawDept);
+          if (department) {
+            providerDepts = [department];
+          }
+        }
+        
+        if (!providerMap.has(pId)) {
+          providerMap.set(pId, {
+            id: pId,
+            name: p.name || `${p.first_name || ''} ${p.last_name || ''}`.trim(),
+            specialty: rawDept,
+            departments: providerDepts,
+            photo: p.img || p.photo || p.image || p.headshot || null,
+            credentials: p.credentials || p.degree || p.suffix || '',
+            link: p.link || p.url || null,
+            slug: p.slug || '',
+            locationIds: [key]
+          });
+        } else {
+          const existing = providerMap.get(pId);
+          if (!existing.locationIds.includes(key)) {
+            existing.locationIds.push(key);
+          }
+          // Add any new departments from this location (for NP/PA at multiple location types)
+          providerDepts.forEach(d => {
+            if (!existing.departments.includes(d)) {
+              existing.departments.push(d);
+            }
+          });
+        }
+        
+        // Link provider to location
+        const location = coordMap.get(key);
+        if (!location.providerIds.includes(pId)) {
+          location.providerIds.push(pId);
+        }
+      });
+    });
+    
+    locations = Array.from(coordMap.values());
+    providers = Array.from(providerMap.values()).filter(p => p.name);
+    
+    console.log('Locations:', locations.length);
+    console.log('Providers:', providers.length);
+    console.log('Sample provider:', providers[0]);
+    
+    render();
+  } catch (err) {
+    console.error(err);
+    document.getElementById('locationList').innerHTML = `<div class="no-results"><i class="fas fa-exclamation-triangle"></i>Failed to load data</div>`;
+    document.getElementById('providerList').innerHTML = `<div class="no-results"><i class="fas fa-exclamation-triangle"></i>Failed to load data</div>`;
+  }
+}
+
+function sortProviders(provs) {
+  return provs.sort((a, b) => {
+    const aIsSupport = isLocationBasedSpecialty(a.specialty);
+    const bIsSupport = isLocationBasedSpecialty(b.specialty);
+    
+    // Doctors first, NP/PA last
+    if (aIsSupport && !bIsSupport) return 1;
+    if (!aIsSupport && bIsSupport) return -1;
+    
+    // Within same group, sort alphabetically by name
+    return a.name.localeCompare(b.name);
+  });
+}
+
+function matchesDepartment(provider, dept) {
+  if (dept === 'All') return true;
+  return provider.departments && provider.departments.some(d => d.toLowerCase() === dept.toLowerCase());
+}
+
+function renderFilters() {
+  const el = document.getElementById('filterButtons');
+  el.innerHTML = departments.map(dept => {
+    return `<button class="filter-btn ${dept === selectedDepartment ? 'active' : ''}" data-dept="${dept}">${dept}</button>`;
+  }).join('');
+  
+  el.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedDepartment = btn.dataset.dept;
+      selectedLocationId = null;
+      selectedProviderId = null;
+      providerSearchQuery = '';
+      locationSearchQuery = '';
+      document.getElementById('providerSearch').value = '';
+      document.getElementById('locationSearch').value = '';
+      document.getElementById('mobileSearch').value = '';
+      document.getElementById('searchClear').style.display = 'none';
+      document.getElementById('locationSearchClear').style.display = 'none';
+      document.getElementById('mobileSearchClear').style.display = 'none';
+      render();
+    });
+  });
+}
+
+function render() {
+  updateFilterBanner();
+  
+  // Filter providers by department first
+  let filteredProvs = providers.filter(p => matchesDepartment(p, selectedDepartment));
+  
+  // Apply search filter (also search by location)
+  if (providerSearchQuery) {
+    const query = providerSearchQuery.toLowerCase();
+    filteredProvs = filteredProvs.filter(p => {
+      // Match provider name
+      const matchesName = p.name.toLowerCase().includes(query);
+      
+      // Or match location name/address
+      const matchesLocation = p.locationIds.some(lid => {
+        const loc = locations.find(l => l.id === lid);
+        return loc && (
+          loc.names.some(n => n.toLowerCase().includes(query)) ||
+          loc.address.toLowerCase().includes(query)
+        );
+      });
+      
+      return matchesName || matchesLocation;
+    });
+  }
+  
+  // Get provider IDs for filtering locations
+  const filteredProvIds = filteredProvs.map(p => p.id);
+  
+  // Show locations that have at least one provider in the selected department
+  let filteredLocs = selectedDepartment === 'All' 
+    ? locations 
+    : locations.filter(l => l.providerIds.some(pid => filteredProvIds.includes(pid)));
+  
+  // Apply location search filter (also search by provider name)
+  if (locationSearchQuery) {
+    const query = locationSearchQuery.toLowerCase();
+    filteredLocs = filteredLocs.filter(l => {
+      // Match location name or address
+      const matchesLocation = l.names.some(n => n.toLowerCase().includes(query)) || 
+        l.address.toLowerCase().includes(query);
+      
+      // Or match provider name at this location
+      const matchesProvider = l.providerIds.some(pid => {
+        const prov = providers.find(p => p.id === pid);
+        return prov && prov.name.toLowerCase().includes(query);
+      });
+      
+      return matchesLocation || matchesProvider;
+    });
+  }
+  
+  // Cross-filter on selection
+  if (selectedLocationId) {
+    // Show only providers at the selected location
+    const loc = locations.find(l => l.id === selectedLocationId);
+    filteredProvs = loc ? filteredProvs.filter(p => loc.providerIds.includes(p.id)) : [];
+  } else if (selectedProviderId) {
+    // Show only locations for selected provider
+    const prov = providers.find(p => p.id === selectedProviderId);
+    if (prov) filteredLocs = filteredLocs.filter(l => prov.locationIds.includes(l.id));
+    filteredProvs = filteredProvs.filter(p => p.id === selectedProviderId);
+  }
+  
+  renderLocations(filteredLocs, selectedProviderId ? providers.find(p => p.id === selectedProviderId)?.locationIds : null);
+  renderProviders(sortProviders(filteredProvs), selectedLocationId);
+  renderMarkers(filteredLocs);
+  
+  // Render mobile view
+  renderMobile(filteredLocs, sortProviders(filteredProvs));
+  
+  // Update active filter button
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.dept === selectedDepartment);
+  });
+  
+  // Sync mobile dropdown
+  const mobileDeptSelect = document.getElementById('mobileDeptSelect');
+  if (mobileDeptSelect) {
+    mobileDeptSelect.value = selectedDepartment;
+  }
+}
+
+function updateFilterBanner() {
+  const banner = document.getElementById('activeFilterBanner');
+  const text = document.getElementById('activeFilterText');
+  
+  if (selectedLocationId) {
+    const loc = locations.find(l => l.id === selectedLocationId);
+    text.innerHTML = `<i class="fas fa-hospital"></i> Showing providers at: ${loc?.names[0] || 'Selected location'}`;
+    banner.classList.remove('hidden');
+  } else if (selectedProviderId) {
+    const prov = providers.find(p => p.id === selectedProviderId);
+    text.innerHTML = `<i class="fas fa-user-md"></i> Showing locations for: ${prov?.name || 'Selected provider'}`;
+    banner.classList.remove('hidden');
+  } else {
+    banner.classList.add('hidden');
+  }
+}
+
+document.getElementById('clearFilterBtn').addEventListener('click', () => {
+  selectedLocationId = null;
+  selectedProviderId = null;
+  providerSearchQuery = '';
+  locationSearchQuery = '';
+  document.getElementById('providerSearch').value = '';
+  document.getElementById('locationSearch').value = '';
+  document.getElementById('mobileSearch').value = '';
+  document.getElementById('searchClear').style.display = 'none';
+  document.getElementById('locationSearchClear').style.display = 'none';
+  document.getElementById('mobileSearchClear').style.display = 'none';
+  render();
+});
+
+function renderMobile(filteredLocs, filteredProvs) {
+  const el = document.getElementById('mobileResultList');
+  const countEl = document.getElementById('mobileResultCount');
+  const labelEl = document.getElementById('mobileResultLabel');
+  const iconEl = document.getElementById('mobileResultIcon');
+  
+  if (!el) return;
+  
+  // Apply mobile search to both
+  let mobileQuery = document.getElementById('mobileSearch')?.value?.toLowerCase() || '';
+  
+  let displayLocs = filteredLocs;
+  let displayProvs = filteredProvs;
+  
+  if (mobileQuery) {
+    displayLocs = filteredLocs.filter(l => {
+      const matchesLocation = l.names.some(n => n.toLowerCase().includes(mobileQuery)) || 
+        l.address.toLowerCase().includes(mobileQuery);
+      const matchesProvider = l.providerIds.some(pid => {
+        const prov = providers.find(p => p.id === pid);
+        return prov && prov.name.toLowerCase().includes(mobileQuery);
+      });
+      return matchesLocation || matchesProvider;
+    });
+    
+    displayProvs = filteredProvs.filter(p => {
+      const matchesName = p.name.toLowerCase().includes(mobileQuery);
+      const matchesLocation = p.locationIds.some(lid => {
+        const loc = locations.find(l => l.id === lid);
+        return loc && (
+          loc.names.some(n => n.toLowerCase().includes(mobileQuery)) ||
+          loc.address.toLowerCase().includes(mobileQuery)
+        );
+      });
+      return matchesName || matchesLocation;
+    });
+  }
+  
+  if (mobileViewMode === 'providers') {
+    labelEl.textContent = 'Providers';
+    iconEl.className = 'fas fa-user-md';
+    countEl.textContent = `(${displayProvs.length})`;
+    
+    if (!displayProvs.length) {
+      el.innerHTML = '<div class="no-results"><i class="fas fa-user-md"></i>No providers found</div>';
+      return;
+    }
+    
+    el.innerHTML = displayProvs.map(p => {
+      const initials = p.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      const locNames = locations.filter(l => p.locationIds.includes(l.id)).map(l => l.names[0]).slice(0, 2);
+      const displaySpecialty = p.specialty || (p.departments && p.departments[0]) || 'Specialty not listed';
+      return `
+        <div class="list-item ${selectedProviderId === p.id ? 'active' : ''}" data-id="${p.id}" data-type="provider">
+          <div class="provider-item">
+            <div class="provider-avatar">${p.photo ? `<img src="${p.photo}" alt="" onerror="this.parentElement.innerHTML='${initials}'">` : initials}</div>
+            <div class="provider-info">
+              <div class="provider-name">${p.name}${p.credentials ? `, ${p.credentials}` : ''}</div>
+              <div class="provider-specialty">${displaySpecialty}</div>
+              <div class="provider-locations"><i class="fas fa-map-marker-alt"></i> ${locNames.join(', ') || 'Location info unavailable'}${p.locationIds.length > 2 ? ` +${p.locationIds.length - 2} more` : ''}</div>
+              ${p.link ? `<a href="${p.link}" target="_blank" class="view-btn" onclick="event.stopPropagation()"><i class="fas fa-user-md"></i> View Profile</a>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    labelEl.textContent = 'Locations';
+    iconEl.className = 'fas fa-hospital';
+    countEl.textContent = `(${displayLocs.length})`;
+    
+    if (!displayLocs.length) {
+      el.innerHTML = '<div class="no-results"><i class="fas fa-map-marker-alt"></i>No locations found</div>';
+      return;
+    }
+    
+    el.innerHTML = displayLocs.map(loc => {
+      const provCount = loc.providerIds.length;
+      return `
+        <div class="list-item ${selectedLocationId === loc.id ? 'active' : ''}" data-id="${loc.id}" data-type="location">
+          <div class="location-name">${loc.names[0]}</div>
+          <div class="location-address"><i class="fas fa-map-marker-alt"></i>${loc.address}</div>
+          <div class="location-meta">
+            ${provCount ? `<span><i class="fas fa-user-md"></i>${provCount} provider${provCount > 1 ? 's' : ''}</span>` : ''}
+            ${loc.phone ? `<span><i class="fas fa-phone"></i>${loc.phone}</span>` : ''}
+          </div>
+          ${loc.link ? `<a href="${loc.link}" target="_blank" class="view-btn" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i> View Location</a>` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+  
+  // Add click handlers for mobile results
+  el.querySelectorAll('.list-item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (item.dataset.type === 'provider') {
+        selectProvider(item.dataset.id);
+      } else {
+        selectLocation(item.dataset.id);
+      }
+    });
+  });
+}
+
+function renderLocations(locs, highlightIds) {
+  const el = document.getElementById('locationList');
+  document.getElementById('locationCount').textContent = `(${locs.length})`;
+  
+  if (!locs.length) {
+    el.innerHTML = '<div class="no-results"><i class="fas fa-map-marker-alt"></i>No locations found</div>';
+    return;
+  }
+  
+  el.innerHTML = locs.map(loc => {
+    const dimmed = highlightIds && !highlightIds.includes(loc.id);
+    const provCount = loc.providerIds.length;
+    return `
+      <div class="list-item ${selectedLocationId === loc.id ? 'active' : ''} ${dimmed ? 'dimmed' : ''}" data-id="${loc.id}">
+        <div class="location-name">${loc.names[0]}</div>
+        <div class="location-address"><i class="fas fa-map-marker-alt"></i>${loc.address}</div>
+        <div class="location-meta">
+          ${provCount ? `<span><i class="fas fa-user-md"></i>${provCount} provider${provCount > 1 ? 's' : ''}</span>` : ''}
+          ${loc.phone ? `<span><i class="fas fa-phone"></i>${loc.phone}</span>` : ''}
+        </div>
+        ${loc.link ? `<a href="${loc.link}" target="_blank" class="view-btn" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i> View Location</a>` : ''}
+      </div>
+    `;
+  }).join('');
+  
+  el.querySelectorAll('.list-item').forEach(item => {
+    item.addEventListener('click', () => selectLocation(item.dataset.id));
+  });
+}
+
+function renderProviders(provs, locationId) {
+  const el = document.getElementById('providerList');
+  document.getElementById('providerCount').textContent = `(${provs.length})`;
+  
+  if (!provs.length) {
+    el.innerHTML = '<div class="no-results"><i class="fas fa-user-md"></i>No providers found</div>';
+    return;
+  }
+  
+  el.innerHTML = provs.map(p => {
+    const initials = p.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+    const locNames = locations.filter(l => p.locationIds.includes(l.id)).map(l => l.names[0]).slice(0, 2);
+    const displaySpecialty = p.specialty || (p.departments && p.departments[0]) || 'Specialty not listed';
+    return `
+      <div class="list-item ${selectedProviderId === p.id ? 'active' : ''}" data-id="${p.id}">
+        <div class="provider-item">
+          <div class="provider-avatar">${p.photo ? `<img src="${p.photo}" alt="" onerror="this.parentElement.innerHTML='${initials}'">` : initials}</div>
+          <div class="provider-info">
+            <div class="provider-name">${p.name}${p.credentials ? `, ${p.credentials}` : ''}</div>
+            <div class="provider-specialty">${displaySpecialty}</div>
+            <div class="provider-locations"><i class="fas fa-map-marker-alt"></i> ${locNames.join(', ') || 'Location info unavailable'}${p.locationIds.length > 2 ? ` +${p.locationIds.length - 2} more` : ''}</div>
+            ${p.link ? `<a href="${p.link}" target="_blank" class="view-btn" onclick="event.stopPropagation()"><i class="fas fa-user-md"></i> View Profile</a>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  el.querySelectorAll('.list-item').forEach(item => {
+    item.addEventListener('click', () => selectProvider(item.dataset.id));
+  });
+}
+
+function renderMarkers(locs) {
+  Object.values(markers).forEach(m => map.removeLayer(m));
+  markers = {};
+  
+  const bounds = [];
+  locs.forEach(loc => {
+    const provCount = loc.providerIds.length;
+    const marker = L.marker([loc.lat, loc.lng], { icon: createIcon(selectedLocationId === loc.id) })
+      .addTo(map)
+      .bindPopup(`<h4>${loc.names[0]}</h4><p>${loc.address}</p>${provCount ? `<p style="color:#0074b8;">${provCount} provider${provCount > 1 ? 's' : ''}</p>` : ''}`)
+      .bindTooltip(loc.names[0], { direction: 'top', offset: [0, -20] });
+    marker.on('click', () => selectLocation(loc.id));
+    markers[loc.id] = marker;
+    bounds.push([loc.lat, loc.lng]);
+  });
+  
+  if (bounds.length && !selectedLocationId) {
+    // Offset center to account for locations overlay on desktop
+    if (isMobile()) {
+      map.fitBounds(bounds, { padding: [30, 30] });
+    } else {
+      map.fitBounds(bounds, { paddingTopLeft: [350, 30], paddingBottomRight: [30, 30] });
+    }
+  }
+}
+
+function isMobile() {
+  return window.innerWidth <= 900;
+}
+
+function selectLocation(id) {
+  selectedProviderId = null;
+  selectedLocationId = selectedLocationId === id ? null : id;
+  
+  if (selectedLocationId && markers[id]) {
+    markers[id].openPopup();
+    const latlng = markers[id].getLatLng();
+    map.setView(latlng, 12, { animate: true });
+    // Only offset on desktop where overlay covers map
+    if (!isMobile()) {
+      setTimeout(() => map.panBy([-160, 0]), 300);
+    }
+  }
+  render();
+  
+  // Scroll to selected location in list
+  if (selectedLocationId) {
+    setTimeout(() => {
+      const card = document.querySelector(`.list-item[data-id="${selectedLocationId}"]`);
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
+  }
+}
+
+function selectProvider(id) {
+  selectedLocationId = null;
+  selectedProviderId = selectedProviderId === id ? null : id;
+  
+  if (selectedProviderId) {
+    const prov = providers.find(p => p.id === selectedProviderId);
+    if (prov?.locationIds.length) {
+      const loc = locations.find(l => l.id === prov.locationIds[0]);
+      if (loc) {
+        map.setView([loc.lat, loc.lng], 11, { animate: true });
+        if (!isMobile()) {
+          setTimeout(() => map.panBy([-160, 0]), 300);
+        }
+      }
+    }
+  }
+  render();
+}
+
+initMap();
+renderFilters();
+loadData();
+
+// Handle resize for map
+window.addEventListener('resize', () => {
+  setTimeout(() => map.invalidateSize(), 100);
+});
+
+// Provider search functionality
+document.getElementById('providerSearch').addEventListener('input', (e) => {
+  providerSearchQuery = e.target.value;
+  document.getElementById('searchClear').style.display = providerSearchQuery ? 'block' : 'none';
+  render();
+});
+
+document.getElementById('searchClear').addEventListener('click', () => {
+  providerSearchQuery = '';
+  document.getElementById('providerSearch').value = '';
+  document.getElementById('searchClear').style.display = 'none';
+  render();
+});
+
+// Location search functionality
+document.getElementById('locationSearch').addEventListener('input', (e) => {
+  locationSearchQuery = e.target.value;
+  document.getElementById('locationSearchClear').style.display = locationSearchQuery ? 'block' : 'none';
+  render();
+});
+
+document.getElementById('locationSearchClear').addEventListener('click', () => {
+  locationSearchQuery = '';
+  document.getElementById('locationSearch').value = '';
+  document.getElementById('locationSearchClear').style.display = 'none';
+  render();
+});
+
+// Mobile department select
+document.getElementById('mobileDeptSelect').addEventListener('change', (e) => {
+  selectedDepartment = e.target.value;
+  selectedLocationId = null;
+  selectedProviderId = null;
+  document.getElementById('mobileSearch').value = '';
+  document.getElementById('mobileSearchClear').style.display = 'none';
+  render();
+  
+  // Sync desktop filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.dept === selectedDepartment);
+  });
+});
+
+// Mobile toggle functionality
+document.getElementById('toggleProviders').addEventListener('click', () => {
+  mobileViewMode = 'providers';
+  document.getElementById('toggleProviders').classList.add('active');
+  document.getElementById('toggleLocations').classList.remove('active');
+  render();
+});
+
+document.getElementById('toggleLocations').addEventListener('click', () => {
+  mobileViewMode = 'locations';
+  document.getElementById('toggleLocations').classList.add('active');
+  document.getElementById('toggleProviders').classList.remove('active');
+  render();
+});
+
+// Mobile search functionality
+document.getElementById('mobileSearch').addEventListener('input', (e) => {
+  const val = e.target.value;
+  document.getElementById('mobileSearchClear').style.display = val ? 'block' : 'none';
+  render();
+});
+
+document.getElementById('mobileSearchClear').addEventListener('click', () => {
+  document.getElementById('mobileSearch').value = '';
+  document.getElementById('mobileSearchClear').style.display = 'none';
+  render();
+});
+
+// Mobile map overlay
+let mobileMap = null;
+let mobileMarkers = {};
+
+document.getElementById('openMobileMap').addEventListener('click', () => {
+  document.getElementById('mobileMapOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
+  // Initialize mobile map if not done
+  if (!mobileMap) {
+    mobileMap = L.map('mobileMapContainer').setView([40.8, -73.2], 9);
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+      attribution: '&copy; CARTO &copy; OpenStreetMap',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(mobileMap);
+  }
+  
+  setTimeout(() => {
+    mobileMap.invalidateSize();
+    renderMobileMarkers();
+  }, 100);
+});
+
+document.getElementById('closeMobileMap').addEventListener('click', () => {
+  document.getElementById('mobileMapOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+});
+
+function renderMobileMarkers() {
+  if (!mobileMap) return;
+  
+  // Clear existing markers
+  Object.values(mobileMarkers).forEach(m => mobileMap.removeLayer(m));
+  mobileMarkers = {};
+  
+  // Get current filtered locations
+  let filteredLocs = selectedDepartment === 'All' 
+    ? locations 
+    : locations.filter(l => {
+        const filteredProvIds = providers.filter(p => matchesDepartment(p, selectedDepartment)).map(p => p.id);
+        return l.providerIds.some(pid => filteredProvIds.includes(pid));
+      });
+  
+  const bounds = [];
+  filteredLocs.forEach(loc => {
+    const marker = L.marker([loc.lat, loc.lng], { icon: createIcon(selectedLocationId === loc.id) })
+      .addTo(mobileMap)
+      .bindPopup(`<h4>${loc.names[0]}</h4><p>${loc.address}</p>`)
+      .bindTooltip(loc.names[0], { direction: 'top', offset: [0, -20] });
+    
+    marker.on('click', () => {
+      selectLocation(loc.id);
+      document.getElementById('mobileMapOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+      mobileViewMode = 'locations';
+      document.getElementById('toggleLocations').classList.add('active');
+      document.getElementById('toggleProviders').classList.remove('active');
+      render();
+    });
+    
+    mobileMarkers[loc.id] = marker;
+    bounds.push([loc.lat, loc.lng]);
+  });
+  
+  if (bounds.length) {
+    mobileMap.fitBounds(bounds, { padding: [30, 30] });
+  }
+}
+</script>
+</body>
+</html>
