@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liaison Activity Story Map</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <style>
+    :root{--slate:#313743;--accent:#0074b8;--accent-light:#e8f4fc;--accent-dark:#005a8e;--border:#e2e5e9;--text:#333;--text-light:#777;--bg:#f0f2f5;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;}
+    .app{display:flex;flex-direction:column;height:100vh;}
+    .topbar{background:var(--slate);color:#fff;padding:0 24px;display:flex;align-items:center;height:54px;flex-shrink:0;gap:16px;}
+    .topbar-brand{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:600;white-space:nowrap;}
+    .topbar-brand i{color:#00B4D8;font-size:18px;}
+    .topbar-divider{width:1px;height:28px;background:rgba(255,255,255,.15);}
+    .liaison-select-wrap{display:flex;align-items:center;gap:8px;}
+    .liaison-select-wrap label{font-size:12px;color:rgba(255,255,255,.6);font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+    .liaison-select{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);padding:7px 14px;border-radius:6px;font-size:13px;font-family:inherit;cursor:pointer;min-width:180px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
+    .liaison-select option{background:var(--slate);color:#fff;}
+    .map-controls{display:flex;align-items:center;gap:14px;margin-left:auto;}
+    .ctrl-group{display:flex;align-items:center;gap:6px;}
+    .ctrl-group label{font-size:11px;color:rgba(255,255,255,.55);white-space:nowrap;}
+    .ctrl-slider{-webkit-appearance:none;appearance:none;width:70px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);outline:none;}
+    .ctrl-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+    .ctrl-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;border:none;}
+    .ctrl-toggle{position:relative;width:34px;height:18px;background:rgba(255,255,255,.2);border-radius:9px;cursor:pointer;transition:background .2s;border:none;padding:0;}
+    .ctrl-toggle.on{background:#00B4D8;}
+    .ctrl-toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.2);}
+    .ctrl-toggle.on::after{transform:translateX(16px);}
+    .btn{padding:8px 16px;border:none;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;transition:all .2s;}
+    .btn-ghost{background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);}
+    .btn-ghost:hover{background:rgba(255,255,255,.1);color:#fff;}
+    .btn-primary{background:var(--accent);color:#fff;}.btn-primary:hover{background:var(--accent-dark);}
+    .btn-cancel{background:#fff;color:#555;border:1px solid #ccc;}
+    .btn-success{background:#16a34a;color:#fff;}.btn-success:hover{background:#15803d;}
+
+    .main{display:flex;flex:1;overflow:hidden;}
+    .story-panel{background:#fff;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;min-width:280px;max-width:70vw;}
+    .story-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);background:#fafbfc;flex-shrink:0;}
+    .nav-btn{width:38px;height:38px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+    .nav-btn:hover:not(:disabled){background:var(--accent);color:#fff;border-color:var(--accent);}
+    .nav-btn:disabled{opacity:.3;cursor:default;}
+    .nav-counter{font-size:13px;color:var(--text-light);font-weight:500;}
+    .nav-counter strong{color:var(--text);font-size:15px;}
+    .overview-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--accent);transition:all .2s;}
+    .overview-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .overview-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .overview-content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;overflow-y:auto;}
+    .overview-content .big-icon{font-size:48px;color:var(--accent);margin-bottom:20px;opacity:.7;}
+    .overview-content h2{font-size:22px;color:var(--slate);margin-bottom:8px;}
+    .overview-content p{font-size:14px;color:var(--text-light);line-height:1.7;max-width:320px;}
+    .overview-content .start-btn{margin-top:24px;padding:12px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
+    .overview-content .start-btn:hover{background:var(--accent-dark);transform:translateY(-1px);}
+    .overview-stats{display:flex;gap:20px;margin-top:28px;}
+    .overview-stat{text-align:center;}
+    .overview-stat .num{font-size:28px;font-weight:700;color:var(--slate);}
+    .overview-stat .lbl{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+    .story-detail{flex:1;overflow-y:auto;padding:24px 24px 32px;}
+    .story-detail.hidden{display:none;}
+    .detail-section{margin-bottom:22px;}
+    .detail-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-light);font-weight:600;margin-bottom:6px;}
+    .affiliation-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:14px;font-weight:600;}
+    .visit-type-pill{display:inline-block;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+    .visit-type-pill.intro{background:#ede9fe;color:#7c3aed;}
+    .visit-type-pill.followup{background:#dbeafe;color:#2563eb;}
+    .visit-type-pill.presentation{background:#fef3c7;color:#d97706;}
+    .visit-type-pill.closing{background:#dcfce7;color:#16a34a;}
+    .visit-type-pill.check-in{background:#fce7f3;color:#db2777;}
+    .visit-type-pill.default{background:#f0f2f5;color:#555;}
+    .doctor-list{list-style:none;padding:0;}
+    .doctor-list li{padding:6px 0;font-size:14px;color:var(--slate);display:flex;align-items:center;gap:8px;}
+    .doctor-list li i{color:var(--accent);font-size:12px;flex-shrink:0;}
+    .doctor-list li .specialty{font-size:11px;color:var(--text-light);margin-left:4px;}
+    .overview-text{font-size:14px;line-height:1.8;color:#444;background:#f8f9fb;padding:18px 20px;border-radius:10px;border-left:4px solid var(--accent);}
+    .story-date{font-size:15px;font-weight:600;color:var(--slate);display:flex;align-items:center;gap:8px;}
+    .story-date i{color:var(--accent);}
+    .detail-divider{height:1px;background:var(--border);margin:20px 0;}
+    .resizer{width:6px;cursor:col-resize;background:#e8e8e8;flex-shrink:0;position:relative;transition:background .15s;z-index:5;}
+    .resizer:hover,.resizer.active{background:var(--accent);}
+    .resizer::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:32px;background:rgba(0,0,0,.15);border-radius:1px;}
+    .resizer:hover::after,.resizer.active::after{background:rgba(255,255,255,.5);}
+    .map-col{flex:1;display:flex;flex-direction:column;min-width:200px;}
+    .map-area{flex:1;position:relative;}
+    #map{width:100%;height:100%;}
+    .timeline{background:#fff;border-top:1px solid var(--border);padding:14px 24px 16px;flex-shrink:0;user-select:none;position:relative;z-index:500;}
+    .timeline-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .timeline-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);}
+    .timeline-range{font-size:11px;color:var(--text-light);}
+    .timeline-track{position:relative;height:56px;margin:0 8px;overflow:visible;}
+    .timeline-line{position:absolute;top:50%;left:0;right:0;height:2px;background:#e0e0e0;transform:translateY(-50%);}
+    .timeline-active-date{position:absolute;top:-2px;transform:translateX(-50%);background:var(--accent);color:#fff;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:600;white-space:nowrap;pointer-events:none;z-index:3;}
+    .timeline-active-date::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--accent);}
+    .timeline-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:pointer;transition:all .2s;z-index:2;}
+    .timeline-dot:hover{transform:translate(-50%,-50%) scale(1.4);z-index:3;}
+    .timeline-dot.active{width:18px;height:18px;border:3px solid #fff;z-index:4;}
+    .timeline-tooltip{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--slate);color:#fff;padding:5px 10px;border-radius:5px;font-size:10px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;margin-bottom:6px;line-height:1.4;text-align:center;}
+    .timeline-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--slate);}
+    .timeline-dot:hover .timeline-tooltip{opacity:1;}
+    .timeline-months{position:relative;height:14px;margin-top:4px;padding:0 8px;}
+    .timeline-months span{font-size:9px;color:#bbb;font-weight:500;position:absolute;transform:translateX(-50%);}
+    .leaflet-label-overlay{background:rgba(255,255,255,.95);border:1px solid #ccc;padding:5px 10px;border-radius:6px;color:var(--slate);box-shadow:0 1px 4px rgba(0,0,0,.12);pointer-events:none;line-height:1.45;white-space:nowrap;}
+    .leaflet-label-overlay .lbl-affiliation{font-weight:700;}
+    .leaflet-label-overlay .lbl-row{display:flex;align-items:center;gap:6px;margin-top:3px;}
+    .leaflet-label-overlay .lbl-row.divider{padding-top:3px;margin-top:3px;border-top:1px solid #e0e0e0;}
+    .leaflet-label-overlay .lbl-row-label{font-weight:600;color:var(--accent);font-size:.85em;min-width:fit-content;}
+    .leaflet-label-overlay .lbl-row-val{color:#555;}
+    .leaflet-label-overlay .lbl-row i{font-size:9px;color:var(--accent);}
+    .leaflet-label-active{background:rgba(255,255,255,.98);border:2px solid var(--accent);box-shadow:0 2px 10px rgba(0,116,184,.25);z-index:600 !important;}
+    .map-dot-clickable{cursor:pointer !important;}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;border-radius:12px;padding:28px;width:740px;max-width:90vw;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+    .modal h2{font-size:18px;margin-bottom:4px;color:var(--slate);}
+    .modal .subtitle{font-size:13px;color:#888;margin-bottom:16px;}
+    .modal textarea{width:100%;height:180px;border:2px solid #e0e0e0;border-radius:8px;padding:12px;font-family:'Courier New',monospace;font-size:12px;resize:vertical;}
+    .modal textarea:focus{outline:none;border-color:var(--accent);}
+    .modal-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+    .format-hint{background:#f8f9fa;border-radius:8px;padding:14px;margin:12px 0;font-size:12px;line-height:1.7;}
+    .format-hint code{background:#e8e8e8;padding:1px 5px;border-radius:3px;font-size:11px;}
+    .import-status{margin-top:12px;max-height:200px;overflow-y:auto;}
+    .import-row{padding:4px 0;font-size:12px;display:flex;align-items:center;gap:8px;}
+    .import-row .ok{color:#16a34a;}.import-row .err{color:#dc2626;}.import-row .pending{color:#ea580c;}.import-row .skip{color:var(--accent);}
+    .import-summary{margin-top:12px;padding:12px 16px;border-radius:8px;font-size:13px;line-height:1.6;}
+    .import-summary.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0;}
+    .import-summary.mixed{background:#fef3c7;color:#92400e;border:1px solid #fde68a;}
+
+    .export-preview{background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:12px;font-family:'Courier New',monospace;font-size:11px;max-height:200px;overflow:auto;white-space:pre;margin-top:12px;line-height:1.5;color:#555;}
+    .copied-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--slate);color:#fff;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:2000;display:flex;align-items:center;gap:8px;animation:toastIn .3s ease;}
+    @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+
+    @keyframes fadeSlideIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    .story-detail{animation:fadeSlideIn .3s ease;}
+    @keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6;}50%{transform:translate(-50%,-50%) scale(1.5);opacity:0;}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-brand"><i class="fas fa-route"></i> Liaison Activity Story Map</div>
+    <div class="topbar-divider"></div>
+    <div class="liaison-select-wrap">
+      <label>Liaison</label>
+      <select class="liaison-select" id="liaisonSelect" onchange="onLiaisonChange(this.value)"></select>
+    </div>
+    <div class="map-controls">
+      <div class="ctrl-group"><label>Dots</label><input type="range" class="ctrl-slider" id="dotSlider" min="6" max="30" value="14" oninput="setDotSize(this.value)"></div>
+      <div class="ctrl-group"><label>Labels</label><button class="ctrl-toggle on" id="labelToggle" onclick="toggleLabels()"></button></div>
+      <div class="ctrl-group" id="labelSizeGroup"><label>Label Size</label><input type="range" class="ctrl-slider" id="labelSlider" min="8" max="16" value="11" oninput="setLabelSize(this.value)"></div>
+      <div class="topbar-divider"></div>
+      <button class="btn btn-ghost" onclick="openImport()"><i class="fas fa-file-import"></i> Import</button>
+      <button class="btn btn-ghost" onclick="openExport()"><i class="fas fa-file-export"></i> Export</button>
+      <button class="btn btn-ghost" onclick="openGeocode()"><i class="fas fa-map-marker-alt"></i> Geocode</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="story-panel" id="storyPanel" style="width:440px;">
+      <div class="story-nav">
+        <button class="nav-btn" id="prevBtn" onclick="goStory(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button class="overview-btn active" id="overviewBtn" onclick="goOverview()"><i class="fas fa-globe"></i> Overview</button>
+        <span class="nav-counter" id="navCounter"></span>
+        <button class="nav-btn" id="nextBtn" onclick="goStory(1)"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      <div id="overviewPanel" class="overview-content">
+        <div class="big-icon"><i class="fas fa-map-marked-alt"></i></div>
+        <h2 id="ovTitle">All Visits</h2>
+        <p id="ovDesc">A map of every visit. Navigate through each story to see the value we delivered.</p>
+        <div class="overview-stats" id="overviewStats"></div>
+        <button class="start-btn" onclick="goStory(1)">Begin Story <i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div id="storyContent" class="story-detail hidden"></div>
+    </div>
+    <div class="resizer" id="resizer"></div>
+    <div class="map-col">
+      <div class="map-area"><div id="map"></div></div>
+      <div class="timeline">
+        <div class="timeline-header">
+          <span class="timeline-title"><i class="fas fa-clock"></i> Timeline</span>
+          <span class="timeline-range" id="timelineRange"></span>
+        </div>
+        <div class="timeline-track" id="timelineTrack"><div class="timeline-line"></div></div>
+        <div class="timeline-months" id="timelineMonths"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <h2><i class="fas fa-file-import"></i> Import Visit Data</h2>
+    <p class="subtitle">Paste tab-separated rows from your spreadsheet</p>
+    <div class="format-hint">
+      <strong>Columns (tab-separated) — click to copy as header row:</strong><br>
+      <div style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+        <div id="headerRow" onclick="copyHeaders()" style="flex:1;background:#fff;border:1px solid #ddd;border-radius:6px;padding:8px 12px;font-family:'Courier New',monospace;font-size:11px;cursor:pointer;white-space:nowrap;overflow-x:auto;color:var(--slate);user-select:all;">Date&#9;Liaison&#9;Address&#9;Affiliation&#9;Doctor(s) Visited&#9;Our Attending Doctors&#9;Visit Type&#9;Overview&#9;Latitude&#9;Longitude</div>
+        <button class="btn btn-primary" onclick="copyHeaders()" style="padding:6px 12px;flex-shrink:0;font-size:11px;"><i class="fas fa-copy"></i></button>
+      </div>
+      <strong>Latitude &amp; Longitude are optional.</strong> If present, data loads instantly. If missing, addresses will be geocoded and coordinates added automatically.<br>
+      Multiple doctors separated by semicolons: <code>Dr. Smith; Dr. Jones</code>
+    </div>
+    <textarea id="importArea" placeholder="Paste your spreadsheet rows here..."></textarea>
+    <div class="import-status" id="importStatus"></div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeImport()">Cancel</button>
+      <button class="btn btn-primary" onclick="processImport()"><i class="fas fa-check"></i> Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- GEOCODE MODAL -->
+<div class="modal-overlay" id="geocodeModal">
+  <div class="modal">
+    <h2><i class="fas fa-map-marker-alt"></i> Batch Geocoder</h2>
+    <p class="subtitle">Paste addresses to get Latitude &amp; Longitude — then paste the results back into your spreadsheet.</p>
+    <div class="format-hint">
+      <strong>Paste one address per line</strong>, or paste a column of addresses from your spreadsheet:<br><br>
+      <code>123 Main St, New York, NY 10001</code><br>
+      <code>456 Oak Ave, Brooklyn, NY 11201</code><br>
+      <code>789 Elm Rd, Smithtown, NY 11787</code>
+    </div>
+    <textarea id="geocodeArea" placeholder="Paste addresses here, one per line..."></textarea>
+    <div id="geocodeStatus" class="import-status"></div>
+    <div id="geocodeResults" style="display:none;margin-top:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <strong style="font-size:13px;color:var(--slate);">Results</strong>
+        <button class="btn btn-success" onclick="copyGeocodeResults()" style="padding:6px 14px;font-size:12px;"><i class="fas fa-copy"></i> Copy Results</button>
+      </div>
+      <div class="export-preview" id="geocodePreview" style="max-height:180px;"></div>
+      <p style="font-size:11px;color:var(--text-light);margin-top:8px;"><i class="fas fa-info-circle"></i> Results are tab-separated — paste into your Latitude &amp; Longitude columns in Google Sheets.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeGeocode()">Close</button>
+      <button class="btn btn-primary" id="geocodeRunBtn" onclick="runGeocode()"><i class="fas fa-search-location"></i> Geocode Addresses</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="exportModal">
+
+
+  <div class="modal">
+    <h2><i class="fas fa-file-export"></i> Export Visit Data</h2>
+    <p class="subtitle">Copy this data back into your spreadsheet. Lat/Lng included — future imports will load instantly.</p>
+    <div id="exportInfo" style="font-size:13px;color:var(--text-light);margin-bottom:12px;"></div>
+    <div class="export-preview" id="exportPreview"></div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeExport()">Close</button>
+      <button class="btn btn-success" onclick="copyExport()"><i class="fas fa-copy"></i> Copy to Clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+let visits=[],map,markerGroup,labelGroup;
+let currentIdx=-1,activeLiaison='All';
+let dotSize=14,labelSize=11,showLabels=true;
+const LABEL_MAX=16;
+const liaisonColors={},palette=['#2563eb','#dc2626','#16a34a','#d97706','#7c3aed','#db2777','#0891b2','#4f46e5','#ca8a04','#059669'];
+let cIdx=0;
+function getLiaisonColor(n){if(!liaisonColors[n])liaisonColors[n]=palette[cIdx++%palette.length];return liaisonColors[n];}
+function getTypeClass(t){const s=(t||'').toLowerCase().replace(/[\s-]/g,'');if(s.includes('intro'))return'intro';if(s.includes('follow'))return'followup';if(s.includes('present'))return'presentation';if(s.includes('clos'))return'closing';if(s.includes('check'))return'check-in';return'default';}
+function fmt(d){return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});}
+function fmtShort(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function fmtMonth(d){return d.toLocaleDateString('en-US',{month:'short',year:'numeric'});}
+function fmtISO(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function getFiltered(){return activeLiaison==='All'?[...visits]:visits.filter(v=>v.liaison===activeLiaison);}
+function buildLocMap(fv){const m={};fv.forEach(v=>{if(!v.lat||!v.lng)return;const k=v.lat.toFixed(4)+','+v.lng.toFixed(4);if(!m[k])m[k]={lat:v.lat,lng:v.lng,visits:[],affiliations:new Set()};m[k].visits.push(v);m[k].affiliations.add(v.affiliation);});return m;}
+function makeOverviewLabel(aff,sz){
+  return`<div class="lbl-affiliation" style="font-size:${sz}px;">${aff}</div>`;
+}
+function makeStoryLabel(aff,theirDocs,liaison,ourDocs,sz){
+  return`<div class="lbl-affiliation" style="font-size:${sz}px;">${aff}</div>
+<div class="lbl-row" style="font-size:${Math.max(sz-1,8)}px;"><i class="fas fa-user-md"></i> <span class="lbl-row-val">${theirDocs||'—'}</span></div>
+<div class="lbl-row divider" style="font-size:${Math.max(sz-1,8)}px;"><i class="fas fa-stethoscope"></i> <span class="lbl-row-val">${ourDocs||'—'}</span></div>
+<div class="lbl-row" style="font-size:${Math.max(sz-1,8)}px;"><i class="fas fa-user-tie"></i> <span class="lbl-row-val">${liaison}</span></div>`;
+}
+
+map=L.map('map',{zoomControl:true}).setView([40.75,-73.5],9);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',maxZoom:19}).addTo(map);
+markerGroup=L.layerGroup().addTo(map);labelGroup=L.layerGroup().addTo(map);
+
+(function(){const r=document.getElementById('resizer'),p=document.getElementById('storyPanel');let sx,sw,d=false;r.addEventListener('mousedown',e=>{e.preventDefault();d=true;sx=e.clientX;sw=p.offsetWidth;r.classList.add('active');document.body.style.cursor='col-resize';document.body.style.userSelect='none';});document.addEventListener('mousemove',e=>{if(!d)return;p.style.width=Math.max(280,Math.min(window.innerWidth*.7,sw+(e.clientX-sx)))+'px';map.invalidateSize();});document.addEventListener('mouseup',()=>{if(!d)return;d=false;r.classList.remove('active');document.body.style.cursor='';document.body.style.userSelect='';map.invalidateSize();});})();
+
+function setDotSize(v){dotSize=parseInt(v);refreshMap();}
+function setLabelSize(v){labelSize=parseInt(v);refreshMap();}
+function toggleLabels(){showLabels=!showLabels;document.getElementById('labelToggle').classList.toggle('on',showLabels);document.getElementById('labelSizeGroup').style.opacity=showLabels?1:.35;refreshMap();}
+function refreshMap(){if(currentIdx===-1)renderOverviewMap(true);else{const fv=getFiltered();if(fv[currentIdx])renderStoryMap(fv[currentIdx],true);}}
+
+function onDotClickOverview(vid){const fv=getFiltered(),i=fv.findIndex(v=>v.id===vid);if(i===-1)return;navigateToIdx(i);}
+function onDotClickStory(vid){const fv=getFiltered(),av=fv[currentIdx];if(av&&av.id===vid){goOverview();return;}const i=fv.findIndex(v=>v.id===vid);if(i===-1)return;navigateToIdx(i);}
+function navigateToIdx(i){const fv=getFiltered();if(i<0||i>=fv.length)return;currentIdx=i;document.getElementById('overviewPanel').style.display='none';document.getElementById('storyContent').classList.remove('hidden');document.getElementById('overviewBtn').classList.remove('active');updateNav();renderStory(fv[i]);renderStoryMap(fv[i],false);renderTimeline();}
+
+// ========== IMPORT ==========
+function openImport(){document.getElementById('importModal').classList.add('open');}
+function closeImport(){document.getElementById('importModal').classList.remove('open');document.getElementById('importStatus').innerHTML='';}
+function copyHeaders(){
+  const h='Date\tLiaison\tAddress\tAffiliation\tDoctor(s) Visited\tOur Attending Doctors\tVisit Type\tOverview\tLatitude\tLongitude';
+  navigator.clipboard.writeText(h).then(()=>showToast('Headers copied! Paste into row 1 of your spreadsheet.')).catch(()=>{const ta=document.createElement('textarea');ta.value=h;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Headers copied!');});
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function geocode(a){try{const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(a)}&limit=1`);const d=await r.json();if(d.length)return{lat:parseFloat(d[0].lat),lng:parseFloat(d[0].lon)};}catch(e){}return null;}
+
+async function processImport(){
+  const raw=document.getElementById('importArea').value.trim();
+  if(!raw){alert('Paste data first.');return;}
+  const lines=raw.split('\n').filter(l=>l.trim());
+  const statusEl=document.getElementById('importStatus');statusEl.innerHTML='';
+
+  // Detect header
+  const fl=lines[0].toLowerCase();
+  const hasHeader=(fl.includes('date')&&(fl.includes('liaison')||fl.includes('address')));
+  const si=hasHeader?1:0;
+
+  // Detect if lat/lng columns exist by checking header or data
+  let hasCoords=false;
+  if(hasHeader){
+    const hCols=lines[0].split('\t').map(h=>h.trim().toLowerCase());
+    hasCoords=hCols.some(h=>h==='latitude'||h==='lat')&&hCols.some(h=>h==='longitude'||h==='lng'||h==='long');
+  } else {
+    // Check if last two columns of first data row look like numbers
+    const testCols=lines[0].split('\t');
+    if(testCols.length>=10){
+      const mayLat=parseFloat(testCols[testCols.length-2]);
+      const mayLng=parseFloat(testCols[testCols.length-1]);
+      hasCoords=!isNaN(mayLat)&&!isNaN(mayLng)&&Math.abs(mayLat)<=90&&Math.abs(mayLng)<=180;
+    }
+  }
+
+  if(hasCoords) statusEl.innerHTML=`<div class="import-row"><span class="skip"><i class="fas fa-bolt"></i></span> <strong>Coordinates detected — loading instantly!</strong></div>`;
+  else statusEl.innerHTML=`<div class="import-row"><span class="pending"><i class="fas fa-globe"></i></span> No coordinates found — geocoding addresses (this may take a moment)...</div>`;
+
+  const nv=[];
+  let geocoded=0,instant=0,failed=0;
+
+  for(let i=si;i<lines.length;i++){
+    const c=lines[i].split('\t');if(c.length<4)continue;
+    const ds=c[0]?.trim(),li=c[1]?.trim()||'Unknown',ad=c[2]?.trim(),af=c[3]?.trim()||'';
+    const dv=c[4]?.trim()||'',od=c[5]?.trim()||'',vt=c[6]?.trim()||'Visit',ov=c[7]?.trim()||'';
+    const pd=new Date(ds);
+    if(isNaN(pd)){statusEl.innerHTML+=`<div class="import-row"><span class="err">✗</span> Row ${i+1}: Bad date "${ds}"</div>`;continue;}
+
+    let lat=null,lng=null;
+    if(hasCoords){
+      lat=parseFloat(c[8]?.trim());lng=parseFloat(c[9]?.trim());
+      if(isNaN(lat)||isNaN(lng)){lat=null;lng=null;}
+    }
+
+    const id='v_'+Date.now()+'_'+i;
+    const row={id,date:pd,liaison:li,address:ad,affiliation:af,doctorsVisited:dv.split(';').map(s=>s.trim()).filter(Boolean),ourDoctors:od.split(';').map(s=>s.trim()).filter(Boolean),visitType:vt,overview:ov,lat,lng};
+
+    if(lat&&lng){
+      instant++;
+    } else {
+      statusEl.innerHTML+=`<div class="import-row" id="st_${id}"><span class="pending">⏳</span> Geocoding: ${ad}</div>`;
+      const geo=await geocode(ad);
+      const se=document.getElementById('st_'+id);
+      if(geo){row.lat=geo.lat;row.lng=geo.lng;geocoded++;se.innerHTML=`<span class="ok">✓</span> ${af} — ${ad}`;}
+      else{failed++;se.innerHTML=`<span class="err">✗</span> Not found: ${ad}`;}
+      await sleep(1100);
+    }
+    nv.push(row);
+  }
+
+  // Summary
+  const parts=[];
+  if(instant)parts.push(`${instant} loaded instantly`);
+  if(geocoded)parts.push(`${geocoded} geocoded`);
+  if(failed)parts.push(`${failed} failed`);
+  const cls=(failed>0)?'mixed':'success';
+  const tip=geocoded>0?`<br><strong>Tip:</strong> Use Export to save with coordinates — next import will be instant.`:'';
+  statusEl.innerHTML+=`<div class="import-summary ${cls}"><strong>${nv.length} visits imported</strong> — ${parts.join(', ')}.${tip}</div>`;
+
+  visits=visits.concat(nv).sort((a,b)=>a.date-b.date);
+  nv.forEach(v=>getLiaisonColor(v.liaison));
+  activeLiaison='All';
+  // Don't close modal so user can see results — they'll close manually
+  init();
+}
+
+// ========== EXPORT ==========
+function openExport(){
+  if(!visits.length){alert('No data to export.');return;}
+  const header='Date\tLiaison\tAddress\tAffiliation\tDoctor(s) Visited\tOur Attending Doctors\tVisit Type\tOverview\tLatitude\tLongitude';
+  const rows=visits.map(v=>{
+    return[fmtISO(v.date),v.liaison,v.address,v.affiliation,v.doctorsVisited.join('; '),v.ourDoctors.join('; '),v.visitType,v.overview,v.lat||'',v.lng||''].join('\t');
+  });
+  const full=[header,...rows].join('\n');
+
+  const withCoords=visits.filter(v=>v.lat&&v.lng).length;
+  const without=visits.length-withCoords;
+  document.getElementById('exportInfo').innerHTML=`<strong>${visits.length} visits</strong> — ${withCoords} with coordinates${without?`, ${without} missing coordinates`:''}. Paste this back into your spreadsheet for instant loading next time.`;
+
+  // Show preview (first 8 rows)
+  const preview=[header,...rows.slice(0,8)].join('\n')+(rows.length>8?'\n... ('+(rows.length-8)+' more rows)':'');
+  document.getElementById('exportPreview').textContent=preview;
+
+  document.getElementById('exportModal').classList.add('open');
+}
+function closeExport(){document.getElementById('exportModal').classList.remove('open');}
+function copyExport(){
+  const header='Date\tLiaison\tAddress\tAffiliation\tDoctor(s) Visited\tOur Attending Doctors\tVisit Type\tOverview\tLatitude\tLongitude';
+  const rows=visits.map(v=>[fmtISO(v.date),v.liaison,v.address,v.affiliation,v.doctorsVisited.join('; '),v.ourDoctors.join('; '),v.visitType,v.overview,v.lat||'',v.lng||''].join('\t'));
+  const full=[header,...rows].join('\n');
+  navigator.clipboard.writeText(full).then(()=>{showToast('Copied to clipboard! Paste into your spreadsheet.');}).catch(()=>{
+    // Fallback
+    const ta=document.createElement('textarea');ta.value=full;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Copied to clipboard!');
+  });
+}
+function showToast(msg){
+  const t=document.createElement('div');t.className='copied-toast';t.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+
+// ========== GEOCODE TOOL ==========
+function openGeocode(){document.getElementById('geocodeModal').classList.add('open');document.getElementById('geocodeResults').style.display='none';document.getElementById('geocodeStatus').innerHTML='';}
+function closeGeocode(){document.getElementById('geocodeModal').classList.remove('open');}
+let geocodeResultData=[];
+
+async function runGeocode(){
+  const raw=document.getElementById('geocodeArea').value.trim();
+  if(!raw){alert('Paste some addresses first.');return;}
+  const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  const statusEl=document.getElementById('geocodeStatus');
+  statusEl.innerHTML=`<div class="import-row"><span class="pending"><i class="fas fa-globe"></i></span> Geocoding ${lines.length} address${lines.length>1?'es':''}...</div>`;
+  document.getElementById('geocodeRunBtn').disabled=true;
+  document.getElementById('geocodeResults').style.display='none';
+  geocodeResultData=[];
+
+  let ok=0,fail=0;
+  for(let i=0;i<lines.length;i++){
+    const addr=lines[i];
+    statusEl.innerHTML=`<div class="import-row"><span class="pending">⏳</span> (${i+1}/${lines.length}) Geocoding: ${addr}</div>`;
+    const geo=await geocode(addr);
+    if(geo){geocodeResultData.push({addr,lat:geo.lat,lng:geo.lng});ok++;}
+    else{geocodeResultData.push({addr,lat:'NOT FOUND',lng:'NOT FOUND'});fail++;}
+    if(i<lines.length-1)await sleep(1100);
+  }
+
+  document.getElementById('geocodeRunBtn').disabled=false;
+  const cls=fail>0?'mixed':'success';
+  statusEl.innerHTML=`<div class="import-summary ${cls}"><strong>Done!</strong> ${ok} found, ${fail} failed.</div>`;
+
+  // Build preview
+  const headerLine='Address\tLatitude\tLongitude';
+  const resultLines=geocodeResultData.map(r=>`${r.addr}\t${r.lat}\t${r.lng}`);
+  const preview=[headerLine,...resultLines.slice(0,10)].join('\n')+(resultLines.length>10?'\n... ('+(resultLines.length-10)+' more)':'');
+  document.getElementById('geocodePreview').textContent=preview;
+  document.getElementById('geocodeResults').style.display='block';
+}
+
+function copyGeocodeResults(){
+  // Copy just lat/lng columns (no header, no address) so user can paste directly into their lat/lng columns
+  const justCoords=geocodeResultData.map(r=>`${r.lat}\t${r.lng}`).join('\n');
+  navigator.clipboard.writeText(justCoords).then(()=>showToast('Lat/Lng columns copied! Paste into your Latitude & Longitude columns.')).catch(()=>{const ta=document.createElement('textarea');ta.value=justCoords;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Copied!');});
+}
+
+// ========== TIMELINE ==========
+function renderTimeline(){
+  const fv=getFiltered(),track=document.getElementById('timelineTrack'),range=document.getElementById('timelineRange'),months=document.getElementById('timelineMonths');
+  track.querySelectorAll('.timeline-dot,.timeline-active-date').forEach(d=>d.remove());
+  if(!fv.length){range.textContent='';months.innerHTML='';return;}
+  const first=fv[0].date.getTime(),last=fv[fv.length-1].date.getTime(),span=last-first||1;
+  range.textContent=`${fmtShort(fv[0].date)} — ${fmtShort(fv[fv.length-1].date)}`;
+  const monthSet=new Set();fv.forEach(v=>{const d=v.date;monthSet.add(d.getFullYear()+'-'+(d.getMonth()+1));});
+  const sortedMonths=[...monthSet].sort().map(m=>{const[y,mo]=m.split('-');return new Date(y,mo-1,1);});
+  months.innerHTML='';
+  sortedMonths.forEach(md=>{const pct=Math.max(0,Math.min(100,((md.getTime()-first)/span)*100));const sp=document.createElement('span');sp.textContent=fmtMonth(md);sp.style.left=pct+'%';months.appendChild(sp);});
+  fv.forEach((v,i)=>{
+    const pct=((v.date.getTime()-first)/span)*100,lc=getLiaisonColor(v.liaison),isActive=(i===currentIdx);
+    const dot=document.createElement('div');dot.className='timeline-dot'+(isActive?' active':'');dot.style.left=pct+'%';dot.style.background=isActive?lc:(currentIdx===-1?lc:'#ccc');
+    if(isActive)dot.style.boxShadow=`0 0 0 3px ${lc}, 0 2px 8px rgba(0,0,0,.3)`;
+    const tip=document.createElement('div');tip.className='timeline-tooltip';tip.innerHTML=`<strong>${v.affiliation}</strong><br>${fmtShort(v.date)} · ${v.visitType}<br>${v.liaison}`;
+    dot.appendChild(tip);    dot.addEventListener('click',()=>{if(currentIdx===-1)onDotClickOverview(v.id);else onDotClickStory(v.id);});
+    track.appendChild(dot);
+
+    // Active date label
+    if(isActive){
+      const lbl=document.createElement('div');
+      lbl.className='timeline-active-date';
+      lbl.style.left=pct+'%';
+      lbl.textContent=fmtShort(v.date);
+      track.appendChild(lbl);
+    }
+  });
+}
+
+// ========== SAMPLE DATA ==========
+function loadSampleData(){
+  visits=[
+    {id:'s1',date:new Date('2025-01-08'),liaison:'Jane Rivera',address:'1 Delaware Dr, Lake Success, NY',affiliation:'North Shore Oncology Associates',doctorsVisited:['Dr. Alan Chen, Oncologist','Dr. Fiona Lam, Hematologist'],ourDoctors:['Dr. Richard Goldberg','Dr. Tamara Liu'],visitType:'Intro',overview:'First meeting with North Shore Oncology Associates, a major group practice with 12 physicians on Long Island. Dr. Chen outlined a growing need for expanded PET/CT access—his patients currently face 2-week waits. We presented our same-week imaging availability and 24-hour report turnaround. Dr. Lam was particularly interested in our hematology-specific imaging protocols.',lat:40.7725,lng:-73.7130},
+    {id:'s2',date:new Date('2025-01-22'),liaison:'Jane Rivera',address:'500 W 181st St, New York, NY',affiliation:'Washington Heights Cardiology',doctorsVisited:['Dr. James Wright, Cardiologist'],ourDoctors:['Dr. Sameer Patel'],visitType:'Follow-Up',overview:'Follow-up from our December intro. Dr. Wright reviewed our sample cardiac CT reports and was impressed. He committed to a 3-month trial directing all outpatient CT referrals—approximately 15-20 per month. A significant foothold in upper Manhattan.',lat:40.8490,lng:-73.9320},
+    {id:'s3',date:new Date('2025-02-10'),liaison:'Jane Rivera',address:'2801 Richmond Ave, Staten Island, NY',affiliation:'Island Medical Group',doctorsVisited:['Dr. Robert Kim, Internist','Dr. Nancy Choi, Family Medicine'],ourDoctors:['Dr. William Foster'],visitType:'Check-In',overview:'Quarterly check-in with one of our earliest Staten Island partners. Referral volume is up 15%. We discussed expanding to bone density screening. Dr. Choi mentioned a colleague who might be interested.',lat:40.5834,lng:-74.1634},
+    {id:'s4',date:new Date('2025-02-20'),liaison:'Jane Rivera',address:'201 E 71st St, New York, NY',affiliation:'Upper East Womens Health',doctorsVisited:['Dr. Elena Vasquez, OB-GYN','Dr. Catherine Wolfe, OB-GYN'],ourDoctors:['Dr. Michelle Santos','Dr. Linda Park'],visitType:'Closing',overview:'Six months of relationship building paid off. Dr. Vasquez signed a partnership for diagnostic ultrasound referrals. Expected 25-30 new patients per month. Portal training completed on-site.',lat:40.7681,lng:-73.9592},
+    {id:'s5',date:new Date('2025-03-18'),liaison:'Jane Rivera',address:'2330 Eastchester Rd, Bronx, NY',affiliation:'Eastchester Family Practice',doctorsVisited:['Dr. Anthony Moore, Family Medicine'],ourDoctors:['Dr. Richard Goldberg'],visitType:'Follow-Up',overview:'Brought sample reports showcasing 24-hour turnaround—a major differentiator. Dr. Moore agreed to trial 10 imaging referrals this month.',lat:40.8536,lng:-73.8432},
+    {id:'s6',date:new Date('2025-04-07'),liaison:'Jane Rivera',address:'40 Main St, Westhampton Beach, NY',affiliation:'Hamptons Internal Medicine',doctorsVisited:['Dr. David Okafor, Internist'],ourDoctors:['Dr. Susan Park'],visitType:'Intro',overview:'New contact via referral. Dr. Okafor\'s patients travel 45+ minutes for imaging. Our East End locations solve this. He asked for a formal proposal before summer.',lat:40.8085,lng:-72.6462},
+    {id:'s7',date:new Date('2025-01-15'),liaison:'Marcus Thompson',address:'2236 Nostrand Ave, Brooklyn, NY',affiliation:'Brooklyn Womens Breast Center',doctorsVisited:['Dr. Maria Santos, Breast Surgeon','Dr. Adaeze Onyeka, Radiologist'],ourDoctors:['Dr. Linda Park','Dr. Michelle Santos'],visitType:'Presentation',overview:'Comprehensive imaging capabilities presentation. Dr. Santos interested in our mammography-to-biopsy workflow. They requested a follow-up with their practice manager.',lat:40.6320,lng:-73.9478},
+    {id:'s8',date:new Date('2025-02-03'),liaison:'Marcus Thompson',address:'92-37 Metropolitan Ave, Forest Hills, NY',affiliation:'Forest Hills Medical Associates',doctorsVisited:['Dr. Priya Patel, Internist'],ourDoctors:['Dr. Sameer Patel'],visitType:'Intro',overview:'Cold outreach turned excellent opportunity. Dr. Patel sends 40+ orders per month to a competitor. She was candid about dissatisfaction and asked to compare turnaround times.',lat:40.7106,lng:-73.8448},
+    {id:'s9',date:new Date('2025-03-05'),liaison:'Marcus Thompson',address:'1500 Route 112, Port Jefferson Station, NY',affiliation:'Three Village Family Medicine',doctorsVisited:['Dr. Michael Brennan, Family Medicine','Dr. Angela Torres, Pediatrics'],ourDoctors:['Dr. William Foster','Dr. Susan Park'],visitType:'Intro',overview:'Large group—8 providers. Frustrated with 10+ day report delays. Our Port Jeff location is 5 minutes away. Full team presentation scheduled.',lat:40.9284,lng:-73.0467},
+    {id:'s10',date:new Date('2025-03-28'),liaison:'Marcus Thompson',address:'365 E Main St, Patchogue, NY',affiliation:'South Shore Primary Care',doctorsVisited:['Dr. Lisa Chang, Family Medicine'],ourDoctors:['Dr. Richard Goldberg'],visitType:'Check-In',overview:'Strong existing partner. Zero complaints. She mentioned two interested colleagues—warm intros coming in April.',lat:40.7654,lng:-73.0151},
+    {id:'s11',date:new Date('2025-04-15'),liaison:'Marcus Thompson',address:'172 Myrtle Ave, Brooklyn, NY',affiliation:'Brooklyn Womens Breast Center',doctorsVisited:['Dr. Maria Santos, Breast Surgeon'],ourDoctors:['Dr. Linda Park'],visitType:'Closing',overview:'Finalized MRI and PET/CT referral partnership. Portal setup completed same day. Estimated 20-25 referrals per month.',lat:40.6938,lng:-73.9857},
+    {id:'s12',date:new Date('2025-01-12'),liaison:'Danielle Park',address:'260 Middle Country Rd, Smithtown, NY',affiliation:'Long Island Orthopedic Specialists',doctorsVisited:['Dr. Howard Liang, Orthopedic Surgeon','Dr. Rachel Stein, Sports Medicine'],ourDoctors:['Dr. William Foster'],visitType:'Intro',overview:'Warm conference lead. 5-physician group with high MRI volume. Current vendor has 3-week waits. Same-week availability got their attention immediately.',lat:40.8557,lng:-73.2007},
+    {id:'s13',date:new Date('2025-01-30'),liaison:'Danielle Park',address:'260 Middle Country Rd, Smithtown, NY',affiliation:'Long Island Orthopedic Specialists',doctorsVisited:['Dr. Howard Liang, Orthopedic Surgeon'],ourDoctors:['Dr. William Foster','Dr. Susan Park'],visitType:'Presentation',overview:'Turnaround benchmarks and case studies. Sub-24-hour emergency MRI reads impressed Dr. Liang. He asked for contracts by Friday.',lat:40.8557,lng:-73.2007},
+    {id:'s14',date:new Date('2025-02-14'),liaison:'Danielle Park',address:'260 Middle Country Rd, Smithtown, NY',affiliation:'Long Island Orthopedic Specialists',doctorsVisited:['Dr. Howard Liang, Orthopedic Surgeon','Dr. Rachel Stein, Sports Medicine','Dr. Kevin Walsh, Orthopedic Surgeon'],ourDoctors:['Dr. William Foster'],visitType:'Closing',overview:'Full group signed. 30-40 MRI orders per month plus CT and X-ray. 33 days from intro to close—fastest in Q1.',lat:40.8557,lng:-73.2007},
+    {id:'s15',date:new Date('2025-02-28'),liaison:'Danielle Park',address:'631 Broadway, Amityville, NY',affiliation:'South Shore Wellness Center',doctorsVisited:['Dr. Karen Ostrowski, Family Medicine','Dr. Thomas Reilly, Internist'],ourDoctors:['Dr. Tamara Liu'],visitType:'Intro',overview:'South Shore territory expansion. Hospital system wait times exceed 2 weeks. Both physicians receptive.',lat:40.6784,lng:-73.4168},
+    {id:'s16',date:new Date('2025-03-12'),liaison:'Danielle Park',address:'750 Old Country Rd, Riverhead, NY',affiliation:'East End Medical Partners',doctorsVisited:['Dr. Susan Park, Internal Medicine','Dr. John Kavanagh, Pulmonology'],ourDoctors:['Dr. Richard Goldberg','Dr. Susan Park'],visitType:'Presentation',overview:'East End coverage presentation. Patients face 45+ minute drives. Our locations solve this. Dr. Kavanagh thrilled about same-day CT scheduling.',lat:40.9168,lng:-72.6618},
+    {id:'s17',date:new Date('2025-03-25'),liaison:'Danielle Park',address:'631 Broadway, Amityville, NY',affiliation:'South Shore Wellness Center',doctorsVisited:['Dr. Karen Ostrowski, Family Medicine'],ourDoctors:['Dr. Tamara Liu'],visitType:'Follow-Up',overview:'Second visit with practice manager. Walked through referral workflow. Trial month committed starting April 1.',lat:40.6784,lng:-73.4168},
+    {id:'s18',date:new Date('2025-04-10'),liaison:'Danielle Park',address:'4250 Veterans Memorial Hwy, Holbrook, NY',affiliation:'Brookhaven Gastroenterology',doctorsVisited:['Dr. Raj Mehta, Gastroenterologist','Dr. Amy Delgado, Gastroenterologist'],ourDoctors:['Dr. William Foster','Dr. Richard Goldberg'],visitType:'Intro',overview:'Referral from Dr. Liang. High-volume GI practice, 6 providers. MR enterography availability impressed them. Validates warm referral strategy.',lat:40.7893,lng:-73.0685},
+  ].sort((a,b)=>a.date-b.date);
+  ['Jane Rivera','Marcus Thompson','Danielle Park'].forEach(n=>getLiaisonColor(n));
+  init();
+}
+
+function init(){buildLiaisonDropdown();goOverview();}
+function buildLiaisonDropdown(){
+  const sel=document.getElementById('liaisonSelect'),ls=[...new Set(visits.map(v=>v.liaison))].sort();
+  sel.innerHTML=`<option value="All">All Liaisons (${visits.length} visits)</option>`;
+  ls.forEach(l=>{sel.innerHTML+=`<option value="${l}">${l} (${visits.filter(v=>v.liaison===l).length} visits)</option>`;});
+  sel.value=activeLiaison;
+}
+function onLiaisonChange(v){activeLiaison=v;goOverview();}
+function goOverview(){currentIdx=-1;document.getElementById('overviewPanel').style.display='flex';document.getElementById('storyContent').classList.add('hidden');document.getElementById('overviewBtn').classList.add('active');updateNav();renderOverviewMap(false);renderOverviewStats();renderTimeline();}
+function goStory(dir){const fv=getFiltered();if(!fv.length)return;let n=currentIdx+dir;if(n<0){goOverview();return;}if(n>=fv.length)n=fv.length-1;navigateToIdx(n);}
+function updateNav(){const fv=getFiltered(),c=document.getElementById('navCounter'),p=document.getElementById('prevBtn'),n=document.getElementById('nextBtn');if(currentIdx===-1){c.innerHTML=`<strong>${fv.length}</strong> visits`;p.disabled=true;n.disabled=fv.length===0;}else{c.innerHTML=`<strong>${currentIdx+1}</strong> of ${fv.length}`;p.disabled=false;n.disabled=currentIdx>=fv.length-1;}}
+
+function renderOverviewMap(pv){
+  markerGroup.clearLayers();labelGroup.clearLayers();
+  const fv=getFiltered(),bounds=[],lm=buildLocMap(fv);
+  Object.values(lm).forEach(loc=>{
+    const v0=loc.visits[0],lc=getLiaisonColor(v0.liaison),multi=new Set(loc.visits.map(x=>x.liaison)).size>1,color=(activeLiaison==='All'&&multi)?'#555':lc;
+    const icon=L.divIcon({className:'map-dot-clickable',html:`<div style="width:${dotSize}px;height:${dotSize}px;background:${color};border:3px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.35);opacity:.85;cursor:pointer;"></div>`,iconSize:[dotSize,dotSize],iconAnchor:[dotSize/2,dotSize/2]});
+    const m=L.marker([loc.lat,loc.lng],{icon,interactive:true}).addTo(markerGroup);
+    m.on('click',()=>onDotClickOverview(loc.visits[0].id));
+    if(showLabels){const affText=[...loc.affiliations].join(' / ');L.marker([loc.lat,loc.lng],{icon:L.divIcon({className:'leaflet-label-overlay',html:makeOverviewLabel(affText,labelSize),iconSize:[null,null],iconAnchor:[-8,12]}),interactive:false}).addTo(labelGroup);}
+    bounds.push([loc.lat,loc.lng]);
+  });
+  if(!pv){if(bounds.length>1)map.fitBounds(bounds,{padding:[50,50],maxZoom:12});else if(bounds.length===1)map.setView(bounds[0],11);}
+}
+function renderOverviewStats(){
+  const fv=getFiltered(),types={};fv.forEach(v=>{types[v.visitType]=(types[v.visitType]||0)+1;});const aff=new Set(fv.map(v=>v.affiliation));
+  document.getElementById('overviewStats').innerHTML=`<div class="overview-stat"><div class="num">${fv.length}</div><div class="lbl">Total Visits</div></div><div class="overview-stat"><div class="num">${aff.size}</div><div class="lbl">Practices</div></div><div class="overview-stat"><div class="num">${types['Closing']||0}</div><div class="lbl">Closings</div></div>`;
+  if(activeLiaison==='All'){document.getElementById('ovTitle').textContent='All Visits';document.getElementById('ovDesc').textContent='A map of every visit across all liaisons. Click any dot or use the arrows to navigate.';}
+  else{document.getElementById('ovTitle').textContent=activeLiaison;document.getElementById('ovDesc').textContent=`Showing ${getFiltered().length} visits by ${activeLiaison}. Click a dot or step through the stories.`;}
+}
+function renderStoryMap(v,pv){
+  markerGroup.clearLayers();labelGroup.clearLayers();if(!v.lat||!v.lng)return;
+  const lc=getLiaisonColor(v.liaison),fv=getFiltered(),fadeSz=Math.max(dotSize-4,6),lm=buildLocMap(fv);
+  Object.values(lm).forEach(loc=>{if(loc.visits.some(x=>x.id===v.id))return;const icon=L.divIcon({className:'map-dot-clickable',html:`<div style="width:${fadeSz}px;height:${fadeSz}px;background:#ccc;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.15);cursor:pointer;"></div>`,iconSize:[fadeSz,fadeSz],iconAnchor:[fadeSz/2,fadeSz/2]});const m=L.marker([loc.lat,loc.lng],{icon,interactive:true}).addTo(markerGroup);m.on('click',()=>onDotClickStory(loc.visits[0].id));});
+  const asz=dotSize+6;const icon=L.divIcon({className:'map-dot-clickable',html:`<div style="position:relative;cursor:pointer;"><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${asz*2.2}px;height:${asz*2.2}px;background:${lc}22;border-radius:50%;animation:pulse 2s infinite;pointer-events:none;"></div><div style="position:relative;width:${asz}px;height:${asz}px;background:${lc};border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.4);"></div></div>`,iconSize:[asz,asz],iconAnchor:[asz/2,asz/2]});
+  const am=L.marker([v.lat,v.lng],{icon,interactive:true}).addTo(markerGroup);am.on('click',()=>onDotClickStory(v.id));
+  const od=v.ourDoctors.join(', ')||'—';
+  const td=v.doctorsVisited.map(d=>d.split(',')[0].trim()).join(', ')||'—';
+  L.marker([v.lat,v.lng],{icon:L.divIcon({className:'leaflet-label-overlay leaflet-label-active',html:makeStoryLabel(v.affiliation,td,v.liaison,od,LABEL_MAX),iconSize:[null,null],iconAnchor:[-14,14]}),interactive:false}).addTo(labelGroup);
+  if(!pv)map.setView([v.lat,v.lng],12,{animate:true,duration:.6});
+}
+function renderStory(v){
+  const lc=getLiaisonColor(v.liaison);
+  document.getElementById('storyContent').innerHTML=`
+    <div class="detail-section"><div class="detail-label">Affiliation</div><div class="affiliation-badge" style="background:${lc}18;color:${lc};border:1px solid ${lc}44;"><i class="fas fa-building" style="font-size:13px;"></i> ${v.affiliation}</div></div>
+    <div class="detail-section"><div class="detail-label">Date</div><div class="story-date"><i class="fas fa-calendar-day"></i> ${fmt(v.date)}</div></div>
+    <div class="detail-section"><div class="detail-label">Visit Type</div><span class="visit-type-pill ${getTypeClass(v.visitType)}">${v.visitType}</span></div>
+    <div class="detail-divider"></div>
+    <div class="detail-section"><div class="detail-label">Doctor(s) Visited</div><ul class="doctor-list">${v.doctorsVisited.map(d=>{const p=d.split(',');return`<li><i class="fas fa-user-md"></i> <strong>${p[0].trim()}</strong>${p[1]?`<span class="specialty">— ${p[1].trim()}</span>`:''}</li>`;}).join('')}</ul></div>
+    <div class="detail-section"><div class="detail-label">Our Attending Doctors</div><ul class="doctor-list">${v.ourDoctors.map(d=>`<li><i class="fas fa-stethoscope"></i> ${d}</li>`).join('')}</ul></div>
+    <div class="detail-divider"></div>
+    <div class="detail-section"><div class="detail-label">How We Brought Value</div><div class="overview-text">${v.overview}</div></div>`;
+  const el=document.getElementById('storyContent');el.style.animation='none';el.offsetHeight;el.style.animation='';
+}
+
+document.addEventListener('keydown',e=>{if(document.querySelector('.modal-overlay.open'))return;if(e.code==='ArrowRight'||e.code==='ArrowDown'){e.preventDefault();goStory(1);}if(e.code==='ArrowLeft'||e.code==='ArrowUp'){e.preventDefault();goStory(-1);}if(e.code==='Escape')goOverview();});
+loadSampleData();
+</script>
+</body>
+</html>

@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provider Data Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --nyh-primary: #2b3990;
+      --nyh-secondary: #0074b8;
+      --nyh-slate: #313743;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; 
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+    
+    .portal-wrapper { display: flex; min-height: 100vh; }
+    
+    /* Left Sidebar */
+    .column-sidebar {
+      width: 120px;
+      background: #fff;
+      border-right: 1px solid #e0e0e0;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    
+    .column-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-family: inherit;
+    }
+    
+    .column-toggle:hover { border-color: #666; }
+    .column-toggle.active { background: var(--nyh-slate); border-color: var(--nyh-slate); color: #fff; }
+    
+    .sidebar-divider { height: 1px; background: #e0e0e0; margin: 8px 0; }
+    
+    /* Main Content */
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    
+    /* Filter Bar */
+    .filter-bar {
+      background: #fff;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-bar-left { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+    .filter-bar-right { display: flex; align-items: center; gap: 16px; }
+    .results-count { font-size: 13px; color: #666; white-space: nowrap; }
+    .results-count strong { color: #333; }
+    
+    /* Multi-select dropdown */
+    .filter-group { display: flex; flex-direction: column; gap: 4px; position: relative; }
+    .filter-group label { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; }
+    
+    .multi-select {
+      position: relative;
+      min-width: 140px;
+    }
+    
+    .multi-select-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      min-width: 120px;
+      font-family: inherit;
+      text-align: left;
+    }
+    
+    .multi-select-btn:hover { border-color: #999; }
+    .multi-select-btn.active { border-color: var(--nyh-secondary); }
+    .multi-select-btn i { font-size: 10px; color: #999; transition: transform 0.2s; }
+    .multi-select-btn.active i { transform: rotate(180deg); }
+    
+    .selected-count {
+      background: var(--nyh-secondary);
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 4px;
+    }
+    
+    .multi-select-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 280px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: none;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .multi-select-dropdown.open { display: block; }
+    
+    .dropdown-search {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      background: #fff;
+    }
+    
+    .dropdown-search input {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: inherit;
+    }
+    
+    .dropdown-search input:focus { outline: none; border-color: var(--nyh-secondary); }
+    
+    .dropdown-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.15s;
+      user-select: none;
+    }
+    
+    .dropdown-option:hover { background: #f5f5f5; }
+    .dropdown-option.selected { background: #e8f4fc; }
+    .dropdown-option input { margin: 0; pointer-events: none; }
+    .dropdown-option .option-count { margin-left: auto; font-size: 11px; color: #999; }
+    
+    .dropdown-actions {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      border-top: 1px solid #eee;
+      background: #fafafa;
+      position: sticky;
+      bottom: 0;
+    }
+    
+    .dropdown-action {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    
+    .dropdown-action.clear { background: #eee; color: #666; }
+    .dropdown-action.clear:hover { background: #ddd; }
+    .dropdown-action.done { background: var(--nyh-secondary); color: #fff; }
+    .dropdown-action.done:hover { background: var(--nyh-primary); }
+    
+    /* Text filter */
+    .filter-input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      min-width: 140px;
+      font-family: inherit;
+    }
+    
+    .filter-input:focus { outline: none; border-color: var(--nyh-secondary); }
+    
+    /* Doctors toggle */
+    .doctors-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      font-family: inherit;
+      margin-top: 18px;
+    }
+    
+    .doctors-toggle:hover { border-color: #666; }
+    .doctors-toggle.active { background: var(--nyh-slate); border-color: var(--nyh-slate); color: #fff; }
+    
+    .toggle-indicator {
+      width: 36px; height: 20px;
+      background: #ccc;
+      border-radius: 10px;
+      position: relative;
+      transition: all 0.2s;
+    }
+    
+    .toggle-indicator::after {
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      top: 2px; left: 2px;
+      transition: all 0.2s;
+    }
+    
+    .doctors-toggle.active .toggle-indicator { background: var(--nyh-secondary); }
+    .doctors-toggle.active .toggle-indicator::after { left: 18px; }
+    
+    /* Table */
+    .table-area { flex: 1; overflow: auto; padding: 20px; padding-top: 0; display: flex; flex-direction: column; }
+    .table-container {
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 120px);
+    }
+    .table-scroll { flex: 1; overflow: auto; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; }
+    .data-table th {
+      background: #f8f8f8;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .data-table th:hover { background: #f0f0f0; }
+    .data-table th .sort-icon { margin-left: 6px; font-size: 10px; color: #999; }
+    .data-table th.sorted .sort-icon { color: var(--nyh-secondary); }
+    .data-table th.sorted { color: var(--nyh-secondary); }
+    .data-table td { padding: 10px 16px; border-bottom: 1px solid #f0f0f0; color: #333; vertical-align: top; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #fafafa; }
+    .data-table a { color: var(--nyh-secondary); text-decoration: none; }
+    .data-table a:hover { text-decoration: underline; }
+    .multi-value { max-width: 300px; }
+    
+    /* Buttons */
+    .export-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 6px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      border: none; font-family: inherit;
+    }
+    .export-btn.primary { background: var(--nyh-secondary); color: #fff; }
+    .export-btn.primary:hover { background: var(--nyh-primary); }
+    .export-btn.secondary { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
+    .export-btn.secondary:hover { background: #eee; }
+    
+    .loading { display: flex; align-items: center; justify-content: center; padding: 60px; color: #666; }
+    .loading i { font-size: 24px; animation: spin 1s linear infinite; margin-right: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 60px 20px; color: #999; }
+  </style>
+</head>
+<body>
+  
+  <div class="portal-wrapper">
+    <div class="column-sidebar">
+      <button class="column-toggle" data-view="default" onclick="loadDefaultView()">Default View</button>
+      <div class="sidebar-divider"></div>
+      <button class="column-toggle" data-column="npi">NPI</button>
+      <button class="column-toggle" data-column="credentials">Credentials</button>
+      <button class="column-toggle active" data-column="department">Department</button>
+      <button class="column-toggle active" data-column="specialty">Specialty</button>
+      <button class="column-toggle active" data-column="job_title">Job Title</button>
+      <button class="column-toggle" data-column="cell_phone">Cell</button>
+      <button class="column-toggle" data-column="email">Email</button>
+      <button class="column-toggle" data-column="domains">Domains</button>
+      <button class="column-toggle" data-column="locations">Locations</button>
+      <button class="column-toggle" data-column="hospitals">Hospitals</button>
+      <button class="column-toggle" data-column="webpage">Link</button>
+    </div>
+    
+    <div class="main-content">
+      <div class="filter-bar">
+        <div class="filter-bar-left">
+          <div class="filter-group">
+            <label>Staff Name</label>
+            <input type="text" class="filter-input" id="filterName" placeholder="Search...">
+          </div>
+          <div class="filter-group">
+            <label>Dept</label>
+            <div class="multi-select" id="filterDept"></div>
+          </div>
+          <div class="filter-group">
+            <label>Specialty</label>
+            <div class="multi-select" id="filterSpecialty"></div>
+          </div>
+          <div class="filter-group">
+            <label>Domain</label>
+            <div class="multi-select" id="filterDomain"></div>
+          </div>
+          <div class="filter-group">
+            <label>Location</label>
+            <div class="multi-select" id="filterLocation"></div>
+          </div>
+          <div class="filter-group">
+            <label>Hospital</label>
+            <div class="multi-select" id="filterHospital"></div>
+          </div>
+          <button class="doctors-toggle" id="doctorsToggle" onclick="toggleDoctorsOnly()">
+            <span class="toggle-indicator"></span>
+            Doctors Only
+          </button>
+        </div>
+        <div class="filter-bar-right">
+          <span class="results-count"><strong id="filteredCount">0</strong> of <strong id="totalCount">0</strong></span>
+          <button class="export-btn secondary" onclick="copyToClipboard()"><i class="fas fa-copy"></i> Copy</button>
+          <button class="export-btn primary" onclick="exportCSV()"><i class="fas fa-download"></i> Export</button>
+        </div>
+      </div>
+      
+      <div class="table-area">
+        <div class="table-container">
+          <div class="table-scroll">
+            <table class="data-table" id="dataTable">
+              <thead id="tableHead"></thead>
+              <tbody id="tableBody">
+                <tr><td colspan="10" class="loading"><i class="fas fa-spinner"></i> Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const PROVIDERS_API = 'https://api.nycancer.com/open/directory/filter?q=a';
+    const DEFAULT_DOMAIN = 'nycancer.com';
+    
+    let allProviders = [];
+    let doctorsOnly = false;
+    let sortColumn = null;
+    let sortDirection = 'asc'; // 'asc' or 'desc'
+    
+    // Filter state - each is an array of selected values
+    const filters = {
+      department: [],
+      specialty: [],
+      domains: [],
+      locations: [],
+      hospitals: []
+    };
+    
+    // Pending selections (before Done is clicked)
+    const pendingFilters = {
+      department: [],
+      specialty: [],
+      domains: [],
+      locations: [],
+      hospitals: []
+    };
+    
+    const filterConfig = [
+      { id: 'filterDept', key: 'department', label: 'Dept' },
+      { id: 'filterSpecialty', key: 'specialty', label: 'Specialty' },
+      { id: 'filterDomain', key: 'domains', label: 'Domain', isArray: true },
+      { id: 'filterLocation', key: 'locations', label: 'Location', isArray: true },
+      { id: 'filterHospital', key: 'hospitals', label: 'Hospital', isArray: true }
+    ];
+    
+    const columns = [
+      { key: 'display_name', label: 'Staff Name', alwaysVisible: true },
+      { key: 'npi', label: 'NPI' },
+      { key: 'credentials', label: 'Credentials' },
+      { key: 'department', label: 'Department' },
+      { key: 'specialty', label: 'Specialty' },
+      { key: 'job_title', label: 'Job Title' },
+      { key: 'cell_phone', label: 'Cell' },
+      { key: 'email', label: 'Email', type: 'email' },
+      { key: 'domains', label: 'Domains', type: 'array' },
+      { key: 'locations', label: 'Locations', type: 'array' },
+      { key: 'hospitals', label: 'Hospitals', type: 'array' },
+      { key: 'webpage', label: 'Link', type: 'link' }
+    ];
+    
+    const defaultColumns = ['display_name', 'department', 'specialty', 'job_title'];
+    let visibleColumns = [...defaultColumns];
+    
+    async function init() {
+      try {
+        const response = await fetch(PROVIDERS_API);
+        const json = await response.json();
+        const rawData = Array.isArray(json) ? json : (json.data || []);
+        
+        allProviders = rawData.map(p => {
+          const domainNames = (p.domains || []).map(d => d.domain).filter(Boolean);
+          const locationNames = [];
+          const hospitalNames = [];
+          
+          // Extract locations from active_locations array
+          if (Array.isArray(p.active_locations)) {
+            p.active_locations.forEach(loc => {
+              const name = loc.name || loc.location_name || loc.slug;
+              if (name && !locationNames.includes(name)) locationNames.push(name);
+            });
+          }
+          
+          // Also check domains for locations as fallback
+          (p.domains || []).forEach(d => {
+            (d.locations || []).forEach(loc => {
+              const name = loc.name || loc.location_name || loc.slug;
+              if (name && !locationNames.includes(name)) locationNames.push(name);
+            });
+          });
+          
+          if (Array.isArray(p.hospitals)) {
+            p.hospitals.forEach(h => {
+              const name = typeof h === 'string' ? h : (h.name || h.label);
+              if (name && !hospitalNames.includes(name)) hospitalNames.push(name);
+            });
+          }
+          
+          return {
+            display_name: p.display_name || p.name || `${p.first_name || ''} ${p.last_name || ''}`.trim(),
+            npi: p.npi || '',
+            credentials: p.credentials || '',
+            department: p.department || '',
+            specialty: p.specialty || p.speciality || '',
+            job_title: p.job_title || p.title || '',
+            cell_phone: p.cell_phone || p.phone || '',
+            email: p.email || '',
+            domains: domainNames,
+            locations: locationNames,
+            hospitals: hospitalNames,
+            webpage: p.webpage || p.link || ''
+          };
+        });
+        
+        document.getElementById('totalCount').textContent = allProviders.length;
+        
+        // Set default domain filter
+        filters.domains = [DEFAULT_DOMAIN];
+        pendingFilters.domains = [DEFAULT_DOMAIN];
+        
+        // Initialize multi-selects
+        filterConfig.forEach(fc => initMultiSelect(fc));
+        
+        // Setup other listeners
+        document.getElementById('filterName').addEventListener('input', () => { 
+          updateAvailableOptions(); 
+          renderTable(); 
+        });
+        setupColumnToggles();
+        
+        updateAvailableOptions();
+        renderTable();
+        
+      } catch (err) {
+        console.error('Failed to load:', err);
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" class="empty-state">Failed to load: ${err.message}</td></tr>`;
+      }
+    }
+    
+    function initMultiSelect(config) {
+      const container = document.getElementById(config.id);
+      container.innerHTML = `
+        <button class="multi-select-btn" onclick="toggleDropdown('${config.id}', '${config.key}')">
+          <span class="btn-text">All</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="multi-select-dropdown" id="${config.id}-dropdown">
+          <div class="dropdown-search">
+            <input type="text" placeholder="Search..." oninput="filterDropdownOptions('${config.id}', this.value)">
+          </div>
+          <div class="dropdown-options"></div>
+          <div class="dropdown-actions">
+            <button class="dropdown-action clear" onclick="clearPendingFilter('${config.key}')">Clear</button>
+            <button class="dropdown-action done" onclick="applyFilter('${config.key}', '${config.id}')">Done</button>
+          </div>
+        </div>
+      `;
+    }
+    
+    function toggleDropdown(id, key) {
+      const dropdown = document.getElementById(`${id}-dropdown`);
+      const btn = document.querySelector(`#${id} .multi-select-btn`);
+      const isOpen = dropdown.classList.contains('open');
+      
+      // Close all dropdowns
+      document.querySelectorAll('.multi-select-dropdown').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.multi-select-btn').forEach(b => b.classList.remove('active'));
+      
+      if (!isOpen) {
+        // Copy current filters to pending
+        pendingFilters[key] = [...filters[key]];
+        updateDropdownOptions(key, id);
+        
+        dropdown.classList.add('open');
+        btn.classList.add('active');
+        dropdown.querySelector('input').focus();
+      }
+    }
+    
+    // Close dropdowns when clicking outside (without applying)
+    document.addEventListener('click', (e) => {
+      // Handle dropdown option clicks
+      const option = e.target.closest('.dropdown-option');
+      if (option) {
+        const key = option.dataset.key;
+        const idx = parseInt(option.dataset.value);
+        const id = option.dataset.id;
+        const optionsContainer = option.closest('.dropdown-options');
+        const value = optionsContainer._values[idx];
+        
+        togglePendingOption(key, value, id);
+        return;
+      }
+      
+      // Close dropdowns when clicking outside
+      if (!e.target.closest('.multi-select')) {
+        document.querySelectorAll('.multi-select-dropdown').forEach(d => d.classList.remove('open'));
+        document.querySelectorAll('.multi-select-btn').forEach(b => b.classList.remove('active'));
+        // Reset pending to match actual filters
+        Object.keys(filters).forEach(k => pendingFilters[k] = [...filters[k]]);
+      }
+    });
+    
+    function filterDropdownOptions(id, search) {
+      const dropdown = document.getElementById(`${id}-dropdown`);
+      const options = dropdown.querySelectorAll('.dropdown-option');
+      const searchLower = search.toLowerCase();
+      
+      options.forEach(opt => {
+        const text = opt.querySelector('.option-text').textContent.toLowerCase();
+        opt.style.display = text.includes(searchLower) ? 'flex' : 'none';
+      });
+    }
+    
+    function getFilteredDataExcluding(excludeKey) {
+      let data = [...allProviders];
+      
+      // Name filter
+      const nameFilter = document.getElementById('filterName').value.toLowerCase();
+      if (nameFilter) {
+        data = data.filter(p => p.display_name.toLowerCase().includes(nameFilter));
+      }
+      
+      // Doctors only
+      if (doctorsOnly) {
+        data = data.filter(p => p.display_name.startsWith('Dr. '));
+      }
+      
+      // Apply each filter except the excluded one
+      filterConfig.forEach(fc => {
+        if (fc.key === excludeKey) return;
+        const selected = filters[fc.key];
+        if (selected.length === 0) return;
+        
+        data = data.filter(p => {
+          const val = p[fc.key];
+          if (fc.isArray) {
+            return selected.some(s => val.includes(s));
+          } else {
+            return selected.includes(val);
+          }
+        });
+      });
+      
+      return data;
+    }
+    
+    function getFilteredData() {
+      return getFilteredDataExcluding(null);
+    }
+    
+    function updateDropdownOptions(key, id) {
+      const fc = filterConfig.find(f => f.key === key);
+      
+      // Get data filtered by everything EXCEPT this filter
+      const availableData = getFilteredDataExcluding(fc.key);
+      
+      // Get available values from filtered data
+      const availableValues = new Map();
+      availableData.forEach(p => {
+        const val = p[fc.key];
+        if (fc.isArray) {
+          val.forEach(v => {
+            if (v) availableValues.set(v, (availableValues.get(v) || 0) + 1);
+          });
+        } else {
+          if (val) availableValues.set(val, (availableValues.get(val) || 0) + 1);
+        }
+      });
+      
+      // Render only available options (hide unavailable ones)
+      const dropdown = document.getElementById(`${id}-dropdown`);
+      const optionsContainer = dropdown.querySelector('.dropdown-options');
+      const pending = pendingFilters[key];
+      
+      const sortedValues = [...availableValues.keys()].sort();
+      
+      optionsContainer.innerHTML = sortedValues.map((val, idx) => {
+        const isSelected = pending.includes(val);
+        const count = availableValues.get(val) || 0;
+        
+        return `
+          <div class="dropdown-option ${isSelected ? 'selected' : ''}" 
+               data-key="${key}" data-value="${idx}" data-id="${id}">
+            <input type="checkbox" ${isSelected ? 'checked' : ''}>
+            <span class="option-text">${val}</span>
+            <span class="option-count">${count}</span>
+          </div>
+        `;
+      }).join('');
+      
+      // Store values for lookup
+      optionsContainer._values = sortedValues;
+      
+      if (sortedValues.length === 0) {
+        optionsContainer.innerHTML = '<div style="padding: 12px; color: #999; text-align: center;">No options available</div>';
+      }
+    }
+    
+    function updateAvailableOptions() {
+      filterConfig.forEach(fc => {
+        // Update button text based on actual filters
+        const btn = document.querySelector(`#${fc.id} .multi-select-btn`);
+        const btnText = btn.querySelector('.btn-text');
+        const selected = filters[fc.key];
+        
+        if (selected.length === 0) {
+          btnText.innerHTML = 'All';
+        } else if (selected.length === 1) {
+          btnText.innerHTML = selected[0].length > 15 ? selected[0].substring(0, 15) + '...' : selected[0];
+        } else {
+          btnText.innerHTML = `${selected.length} selected`;
+        }
+      });
+    }
+    
+    function togglePendingOption(key, value, id) {
+      const idx = pendingFilters[key].indexOf(value);
+      if (idx > -1) {
+        pendingFilters[key].splice(idx, 1);
+      } else {
+        pendingFilters[key].push(value);
+      }
+      updateDropdownOptions(key, id);
+    }
+    
+    function applyFilter(key, id) {
+      // Copy pending to actual filters
+      filters[key] = [...pendingFilters[key]];
+      
+      // Close dropdown
+      const dropdown = document.getElementById(`${id}-dropdown`);
+      const btn = document.querySelector(`#${id} .multi-select-btn`);
+      dropdown.classList.remove('open');
+      btn.classList.remove('active');
+      
+      // Update UI
+      updateAvailableOptions();
+      renderTable();
+    }
+    
+    function clearPendingFilter(key) {
+      pendingFilters[key] = [];
+      const fc = filterConfig.find(f => f.key === key);
+      updateDropdownOptions(key, fc.id);
+    }
+    
+    function clearFilter(key) {
+      filters[key] = [];
+      pendingFilters[key] = [];
+      updateAvailableOptions();
+      renderTable();
+    }
+    
+    function setupColumnToggles() {
+      document.querySelectorAll('.column-toggle[data-column]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const col = btn.dataset.column;
+          btn.classList.toggle('active');
+          
+          if (visibleColumns.includes(col)) {
+            visibleColumns = visibleColumns.filter(c => c !== col);
+          } else {
+            const colIndex = columns.findIndex(c => c.key === col);
+            let insertIndex = visibleColumns.length;
+            for (let i = 0; i < visibleColumns.length; i++) {
+              const existingIndex = columns.findIndex(c => c.key === visibleColumns[i]);
+              if (existingIndex > colIndex) { insertIndex = i; break; }
+            }
+            visibleColumns.splice(insertIndex, 0, col);
+          }
+          
+          if (!visibleColumns.includes('display_name')) visibleColumns.unshift('display_name');
+          renderTable();
+        });
+      });
+    }
+    
+    function loadDefaultView() {
+      visibleColumns = [...defaultColumns];
+      document.querySelectorAll('.column-toggle[data-column]').forEach(btn => {
+        btn.classList.toggle('active', defaultColumns.includes(btn.dataset.column));
+      });
+      
+      document.getElementById('filterName').value = '';
+      Object.keys(filters).forEach(k => {
+        filters[k] = [];
+        pendingFilters[k] = [];
+      });
+      filters.domains = [DEFAULT_DOMAIN];
+      pendingFilters.domains = [DEFAULT_DOMAIN];
+      
+      doctorsOnly = false;
+      document.getElementById('doctorsToggle').classList.remove('active');
+      
+      // Reset sort
+      sortColumn = null;
+      sortDirection = 'asc';
+      
+      updateAvailableOptions();
+      renderTable();
+    }
+    
+    function toggleDoctorsOnly() {
+      doctorsOnly = !doctorsOnly;
+      document.getElementById('doctorsToggle').classList.toggle('active', doctorsOnly);
+      updateAvailableOptions();
+      renderTable();
+    }
+    
+    function renderTable() {
+      let data = getFilteredData();
+      document.getElementById('filteredCount').textContent = data.length;
+      
+      // Sort data if sort column is set
+      if (sortColumn) {
+        data = [...data].sort((a, b) => {
+          let valA = a[sortColumn];
+          let valB = b[sortColumn];
+          
+          // Handle arrays
+          if (Array.isArray(valA)) valA = valA.join(', ');
+          if (Array.isArray(valB)) valB = valB.join(', ');
+          
+          // Handle nulls/empty
+          valA = valA || '';
+          valB = valB || '';
+          
+          // String comparison
+          const comparison = String(valA).toLowerCase().localeCompare(String(valB).toLowerCase());
+          return sortDirection === 'asc' ? comparison : -comparison;
+        });
+      }
+      
+      const visibleColDefs = columns.filter(c => c.alwaysVisible || visibleColumns.includes(c.key));
+      
+      document.getElementById('tableHead').innerHTML = `<tr>${visibleColDefs.map(c => {
+        const isSorted = sortColumn === c.key;
+        const icon = isSorted ? (sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort';
+        return `<th class="${isSorted ? 'sorted' : ''}" onclick="sortBy('${c.key}')">${c.label}<i class="fas ${icon} sort-icon"></i></th>`;
+      }).join('')}</tr>`;
+      
+      if (data.length === 0) {
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="${visibleColDefs.length}" class="empty-state">No providers match</td></tr>`;
+        return;
+      }
+      
+      document.getElementById('tableBody').innerHTML = data.map(item => `
+        <tr>${visibleColDefs.map(col => {
+          const val = item[col.key];
+          if (col.type === 'email' && val) return `<td><a href="mailto:${val}">${val}</a></td>`;
+          if (col.type === 'link' && val) return `<td><a href="${val}" target="_blank">View</a></td>`;
+          if (col.type === 'array') return `<td class="multi-value">${(Array.isArray(val) ? val : []).join(' | ') || '-'}</td>`;
+          return `<td>${val || '-'}</td>`;
+        }).join('')}</tr>
+      `).join('');
+    }
+    
+    function sortBy(columnKey) {
+      if (sortColumn === columnKey) {
+        // Toggle direction
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortColumn = columnKey;
+        sortDirection = 'asc';
+      }
+      renderTable();
+    }
+    
+    function getExportTimestamp() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      return `${year}.${month}.${day}_${hours}:${minutes}`;
+    }
+    
+    function getFilterSummary() {
+      const parts = [];
+      
+      const nameFilter = document.getElementById('filterName').value;
+      if (nameFilter) parts.push(`Name: "${nameFilter}"`);
+      
+      if (filters.department.length) parts.push(`Dept: ${filters.department.join(', ')}`);
+      if (filters.specialty.length) parts.push(`Specialty: ${filters.specialty.join(', ')}`);
+      if (filters.domains.length) parts.push(`Domain: ${filters.domains.join(', ')}`);
+      if (filters.locations.length) parts.push(`Location: ${filters.locations.join(', ')}`);
+      if (filters.hospitals.length) parts.push(`Hospital: ${filters.hospitals.join(', ')}`);
+      if (doctorsOnly) parts.push(`Doctors Only: Yes`);
+      
+      if (parts.length === 0) return 'No filters applied';
+      return parts.join(' | ');
+    }
+    
+    function exportCSV() {
+      const visibleColDefs = columns.filter(c => c.alwaysVisible || visibleColumns.includes(c.key));
+      const data = getFilteredData();
+      const headers = visibleColDefs.map(c => c.label);
+      const rows = data.map(item => visibleColDefs.map(col => {
+        let val = item[col.key];
+        if (col.type === 'array') val = (Array.isArray(val) ? val : []).join(' | ');
+        return `"${String(val || '').replace(/"/g, '""')}"`;
+      }));
+      
+      // Add filter summary at bottom
+      const timestamp = getExportTimestamp();
+      const filterSummary = getFilterSummary();
+      const blankRow = new Array(headers.length).fill('""');
+      const exportInfo = [
+        blankRow.join(','),
+        `"Export Details:"${',""'.repeat(headers.length - 1)}`,
+        `"Date/Time: ${timestamp}"${',""'.repeat(headers.length - 1)}`,
+        `"Filters: ${filterSummary}"${',""'.repeat(headers.length - 1)}`,
+        `"Total Records: ${data.length}"${',""'.repeat(headers.length - 1)}`
+      ];
+      
+      const csv = [headers.join(','), ...rows.map(r => r.join(',')), ...exportInfo].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `nycbs_API_${timestamp}.csv`;
+      a.click();
+    }
+    
+    function copyToClipboard() {
+      const visibleColDefs = columns.filter(c => c.alwaysVisible || visibleColumns.includes(c.key));
+      const data = getFilteredData();
+      const headers = visibleColDefs.map(c => c.label);
+      const rows = data.map(item => visibleColDefs.map(col => {
+        let val = item[col.key];
+        if (col.type === 'array') val = (Array.isArray(val) ? val : []).join(' | ');
+        return val || '';
+      }));
+      
+      // Add filter summary
+      const timestamp = getExportTimestamp();
+      const filterSummary = getFilterSummary();
+      const exportInfo = [
+        '',
+        `Export Details:`,
+        `Date/Time: ${timestamp}`,
+        `Filters: ${filterSummary}`,
+        `Total Records: ${data.length}`
+      ];
+      
+      const text = [headers.join('\t'), ...rows.map(r => r.join('\t')), ...exportInfo].join('\n');
+      navigator.clipboard.writeText(text).then(() => alert(`Copied ${data.length} rows!`));
+    }
+    
+    init();
+  </script>
+</body>
+</html>
