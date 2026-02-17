@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physician Schedule Tracker</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1e293b;background:#fff}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px}
+  h1{font-size:22px;font-weight:800;color:#0f172a}
+  .subtitle{font-size:14px;color:#94a3b8;margin-top:4px}
+  .sticky-top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #e2e8f0;padding-bottom:4px;margin:0 -24px;padding-left:24px;padding-right:24px}
+  nav{display:flex;gap:0;border-bottom:2px solid #e2e8f0;flex-wrap:wrap}
+  nav button{padding:10px 16px;font-size:13px;font-weight:500;color:#64748b;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer}
+  nav button.active{font-weight:700;color:#1e40af;border-bottom-color:#1e40af}
+  #filters-bar{padding-top:10px}
+  #filters-bar:empty{padding:0}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .filters input,.filters select{padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;background:#fff;outline:none}
+  .filters input{width:220px}
+  .filters input[type="date"]{width:160px}
+  #content{padding-top:16px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;padding:10px 14px;color:#475569;font-weight:600;border-bottom:2px solid #e2e8f0}
+  th.ctr{text-align:center}
+  td{padding:10px 14px;border-bottom:1px solid #f1f5f9}
+  td.ctr{text-align:center}
+  tr.striped:nth-child(even){background:#f8fafc}
+  .badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:600;position:relative;cursor:default}
+  .badge .star{position:absolute;top:-2px;right:-2px;font-size:13px;font-weight:800;color:#ef4444;line-height:1}
+  .badge-sm{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:600;cursor:default}
+  .status{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600}
+  .tip{position:absolute;background:#1e293b;color:#fff;padding:6px 12px;border-radius:8px;font-size:12px;white-space:nowrap;z-index:999;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.15);line-height:1.5}
+  .tip.wide{white-space:normal;min-width:240px;max-width:340px;padding:10px 14px}
+  .tip .arrow{position:absolute;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent}
+  .tip .arrow.down{top:100%;border-top:6px solid #1e293b}
+  .tip .arrow.up{bottom:100%;border-bottom:6px solid #1e293b}
+  .nav-arrows{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .nav-arrows button{padding:6px 12px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;cursor:pointer;font-size:16px}
+  .nav-arrows span{font-weight:600;font-size:15px;min-width:160px;text-align:center;color:#1e293b}
+  .btn{padding:8px 18px;background:#1e40af;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+  .loading{padding:60px;text-align:center;color:#94a3b8;font-size:16px}
+  .error{padding:24px;background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;color:#991b1b;text-align:center}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:#e2e8f0;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0}
+  .cal-header{padding:8px 4px;text-align:center;font-weight:600;font-size:12px;color:#64748b;background:#f8fafc;text-transform:uppercase;letter-spacing:0.05em}
+  .cal-day{min-height:80px;background:#fff;padding:4px}
+  .cal-day.weekend{background:#f8fafc}
+  .cal-day .num{font-size:12px;font-weight:500;color:#64748b;padding:2px 4px}
+  .cal-day .num.today{background:#1e40af;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;margin:2px}
+  .cal-ex{padding:2px 4px;border-radius:4px;font-size:10px;font-weight:600;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-bottom:2px;cursor:default}
+  .matrix-name{padding:3px 8px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;margin-bottom:3px}
+  .matrix-name.pto{border-style:dashed!important;color:#d4a0a0!important;text-decoration:line-through;opacity:0.5}
+  .matrix-name.highlighted{background:#fef3c7!important;border:1.5px solid #f59e0b!important}
+  .matrix-name.dimmed{opacity:0.35}
+  .hl-banner{margin-bottom:12px;padding:8px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#92400e}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .card{border:1px solid #e2e8f0;border-radius:10px;padding:18px;background:#fff}
+  .card.faded{opacity:0.6}
+  .mini-sched{display:flex;gap:4px;margin-bottom:10px}
+  .mini-sched .day-col{flex:1;text-align:center}
+  .mini-sched .day-label{font-size:10px;color:#94a3b8;margin-bottom:3px;font-weight:600}
+  .mini-sched .day-val{padding:3px 0;border-radius:4px;font-size:11px;font-weight:600}
+  .pto-bar-bg{height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden}
+  .pto-bar{height:100%;border-radius:3px}
+  .pto-chip{padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;cursor:default;display:inline-block;margin:2px 2px 0 0}
+  .loc-block{margin-bottom:24px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+  .loc-block-header{padding:12px 18px;display:flex;justify-content:space-between;align-items:center}
+  .up-item{display:flex;align-items:center;gap:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;border:1px solid #f1f5f9;margin-bottom:8px}
+  .up-date{min-width:56px;text-align:center}
+  .up-date .wd{font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:600}
+  .up-date .d{font-size:20px;font-weight:700;color:#1e293b;line-height:1.1}
+  .up-date .mo{font-size:11px;color:#94a3b8}
+  .email-wrap{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+  .email-header{background:#f8fafc;padding:14px 20px;border-bottom:1px solid #e2e8f0}
+  .email-body{padding:24px;font-size:14px;line-height:1.7;color:#334155}
+  .email-section{margin:16px 0;padding:16px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0}
+  .sub-tab{padding:6px 16px;border-radius:6px;font-size:13px;font-weight:600;border:1px solid #cbd5e1;background:#fff;color:#64748b;cursor:pointer}
+  .sub-tab.active{background:#1e40af;color:#fff}
+  .half-circle{display:inline-block;width:20px;height:20px;border-radius:50%;position:relative;overflow:hidden}
+  .half-circle .left,.half-circle .right{position:absolute;top:0;width:50%;height:100%}
+  .half-circle .left{left:0;border-radius:20px 0 0 20px}
+  .half-circle .right{right:0;border-radius:0 20px 20px 0}
+  .pto-overlay{position:relative;display:inline-block}
+  .pto-overlay .pto-line{position:absolute;top:50%;left:0;right:0;height:2px;background:#ef4444;transform:rotate(-15deg)}
+  .mx-app{font-size:10px;color:#7c3aed;font-weight:600;padding:2px 6px;background:#f5f3ff;border-radius:4px;border:1px solid #ede9fe;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+  .mx-app.highlighted{background:#fef3c7!important;border:1.5px solid #f59e0b!important;color:#92400e!important}
+  .mx-app.dimmed{opacity:0.35}
+  .mx-pair{display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Physician Schedule Tracker</h1>
+  <p class="subtitle" id="lastUpdated">Loading...</p>
+  <div class="sticky-top">
+    <nav id="nav"></nav>
+    <div id="filters-bar"></div>
+  </div>
+  <div id="loading" class="loading">Loading data from Google Sheets...</div>
+  <div id="errorBox" class="error" style="display:none;"></div>
+  <div id="content"></div>
+</div>
+<script>
+const API_URL="https://script.googleusercontent.com/a/macros/nycancer.com/echo?user_content_key=AY5xjrRVDp5tR4nz6OYm4tPRUptszKP6UbHoGZwrgN6nLvZo5sC-QGe83hJ_6Rt7A-cZkU-z45h93yDfIrxSC0BFdv_K8ZoV9vSAc8voG5QwNJtt59CwA3m5jX2duy8-MBL6WiIPC65kS-vBxTVtHTUe7_QUnVqQDxUbqLv2tCn-eeebCWNj1CxxBu-K_QXwrtThqXanBec0UQKm_fljUBUL1gXbgvjmmI0lJ-2DGD_q9KnfWvZagyRRxfTL2rhP-9XvMzGr_RlGKKfNDzZyU_rpzp7AsHxOu3w-tty4XkvYyGHqXCoJz7w&lib=McTh6kxSKcMevVVZnTfnaKxFbyQXY-2bv";
+const DAYS=["Mon","Tue","Wed","Thu","Fri"];
+const TODAY=new Date().toISOString().slice(0,10);
+const LOC_COLORS={LSC:{bg:"#dbeafe",text:"#1e40af",border:"#93c5fd"},RNK:{bg:"#dcfce7",text:"#166534",border:"#86efac"},PTG:{bg:"#fef9c3",text:"#854d0e",border:"#fde047"},BSH:{bg:"#f3e8ff",text:"#6b21a8",border:"#c4b5fd"},RVC:{bg:"#ffe4e6",text:"#9f1239",border:"#fda4af"}};
+const DEFAULT_LOC={bg:"#f1f5f9",text:"#334155",border:"#cbd5e1"};
+const TYPE_COLORS={PTO:{bg:"#fee2e2",text:"#991b1b"},"Covering Location":{bg:"#fff7ed",text:"#9a3412"},Conference:{bg:"#eff6ff",text:"#1e40af"}};
+let DATA=null,activeTab="schedules",state={weekOffset:0};
+const FB=()=>document.getElementById("filters-bar");
+
+function lc(code){return LOC_COLORS[code]||DEFAULT_LOC}
+function locName(code){if(!DATA)return code;const l=DATA.locations.find(x=>x.locationCode===code);return l?l.locationName:code}
+function locRegion(code){if(!DATA)return"";const l=DATA.locations.find(x=>x.locationCode===code);return l?l.region:""}
+function getStatus(i){if(i.endDate&&i.endDate<TODAY)return"former";if(i.startDate>TODAY)return"upcoming";return"active"}
+
+function getWeekDates(offset){
+  const b=new Date();const dow=b.getDay();const mo=dow===0?-6:1-dow;
+  b.setDate(b.getDate()+mo+(offset*7));
+  return DAYS.map((_,i)=>{const d=new Date(b);d.setDate(d.getDate()+i);return{date:d,str:d.toISOString().slice(0,10),day:DAYS[i],label:`${d.getMonth()+1}/${d.getDate()}`}});
+}
+
+function weekNavHTML(id){
+  const wd=getWeekDates(state.weekOffset);const wl=`${wd[0].label} – ${wd[4].label}`;
+  return`<div class="nav-arrows"><button id="${id}-prev">←</button><span>Week of ${wl}</span><button id="${id}-next">→</button></div>`;
+}
+function bindWeekNav(id,fn){
+  document.getElementById(id+"-prev").addEventListener("click",()=>{state.weekOffset--;fn()});
+  document.getElementById(id+"-next").addEventListener("click",()=>{state.weekOffset++;fn()});
+}
+
+function getSchedForDate(phyName,dateStr){
+  const d=new Date(dateStr+"T12:00:00");
+  const dn=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
+  return DATA.schedules.filter(s=>s.physicianName===phyName&&s.day===dn&&s.effectiveFrom<=dateStr&&(!s.effectiveTo||s.effectiveTo>=dateStr));
+}
+
+function getExceptionForDate(phyName,dateStr){
+  return DATA.exceptions.find(e=>e.physicianName===phyName&&e.startDate<=dateStr&&e.endDate>=dateStr)||null;
+}
+
+function getEffectiveForDate(phyName,dateStr){
+  const base=getSchedForDate(phyName,dateStr);
+  const ex=getExceptionForDate(phyName,dateStr);
+  return{entries:base,exception:ex||null};
+}
+
+function getExceptionsOnDate(dateStr){
+  return DATA.exceptions.filter(e=>e.startDate<=dateStr&&e.endDate>=dateStr);
+}
+
+function countWeekdays(start,end){
+  let c=0;const d=new Date(start+"T12:00:00");const e=new Date(end+"T12:00:00");
+  while(d<=e){const dow=d.getDay();if(dow!==0&&dow!==6)c++;d.setDate(d.getDate()+1)}
+  return c;
+}
+
+function getWeekdaysInMonth(startDate,endDate,year,month){
+  const mStart=`${year}-${String(month+1).padStart(2,"0")}-01`;
+  const mEnd=`${year}-${String(month+1).padStart(2,"0")}-${String(new Date(year,month+1,0).getDate()).padStart(2,"0")}`;
+  const effStart=startDate>mStart?startDate:mStart;const effEnd=endDate<mEnd?endDate:mEnd;
+  if(effStart>effEnd)return{count:0,dates:[]};
+  const dates=[];const d=new Date(effStart+"T12:00:00");const e=new Date(effEnd+"T12:00:00");
+  while(d<=e){const dow=d.getDay();if(dow!==0&&dow!==6)dates.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+1)}
+  return{count:dates.length,dates};
+}
+
+function getSupportForDate(phyName,dateStr){
+  const entries=getSchedForDate(phyName,dateStr);
+  const s1=new Set(),s2=new Set();
+  entries.forEach(e=>{if(e.support)s1.add(e.support);if(e.support2)s2.add(e.support2)});
+  return{support:[...s1],support2:[...s2],all:[...s1,...s2]};
+}
+
+function getActivePhysicians(){return DATA.physicians.filter(p=>getStatus(p)==="active")}
+function getActiveMDs(){return getActivePhysicians().filter(p=>p.role!=="APP")}
+function getActiveLocations(){return DATA.locations.filter(l=>!((l.endDate&&l.endDate<TODAY)||(l.startDate>TODAY)))}
+function getRegions(){return[...new Set(getActiveLocations().map(l=>l.region))].filter(Boolean).sort()}
+function getSpecialties(){return[...new Set(DATA.physicians.map(p=>p.specialty))].filter(Boolean).sort()}
+function getPtoAllotment(n){const p=DATA.physicians.find(x=>x.physicianName===n);if(!p||!p.ptoDaysMonth)return 0;return p.ptoDaysMonth}
+
+function getPtoUsedInMonth(n,year,month){
+  const ptoEx=DATA.exceptions.filter(e=>e.physicianName===n&&e.type==="PTO");
+  let totalDays=0;const dates=[];
+  ptoEx.forEach(ex=>{
+    const r=getWeekdaysInMonth(ex.startDate,ex.endDate,year,month);
+    const v=ex.value!=null?Number(ex.value):null;
+    if(r.count>0){
+      if(v!=null&&ex.startDate===ex.endDate){totalDays+=v;dates.push({date:ex.startDate,value:v,notes:ex.notes})}
+      else{totalDays+=r.count;r.dates.forEach(dt=>dates.push({date:dt,value:1,notes:ex.notes}))}
+    }
+  });
+  return{totalDays,dates};
+}
+
+let tipEl=null;
+function showTip(t,html,wide){hideTip();tipEl=document.createElement("div");tipEl.className="tip"+(wide?" wide":"");tipEl.innerHTML=html+'<div class="arrow"></div>';document.body.appendChild(tipEl);const r=t.getBoundingClientRect();const above=r.top>200;tipEl.style.left=(r.left+r.width/2)+"px";tipEl.style.transform="translateX(-50%)";if(above){tipEl.style.top=(r.top+window.scrollY-tipEl.offsetHeight-8)+"px";tipEl.querySelector(".arrow").className="arrow down"}else{tipEl.style.top=(r.bottom+window.scrollY+8)+"px";tipEl.querySelector(".arrow").className="arrow up"}}
+function hideTip(){if(tipEl){tipEl.remove();tipEl=null}}
+
+function esc(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function fmtDateShort(ds){const d=new Date(ds+"T12:00:00");return`${d.getMonth()+1}/${d.getDate()}`}
+function fmtDateMed(ds){const d=new Date(ds+"T12:00:00");return d.toLocaleDateString("en",{month:"short",day:"numeric"})}
+
+function locBadgeHTML(code,comment,session,supportList){
+  const c=lc(code);const star=comment?'<span class="star">*</span>':"";
+  let tipParts=[comment||`${locName(code)} · ${locRegion(code)}${session&&session!=="Full"?" · "+session:""}`];
+  if(supportList&&supportList.length>0)tipParts.push("Support: "+supportList.join(", "));
+  const tip=tipParts.join("<br>");
+  const label=session&&session!=="Full"?code+" ("+session.substring(0,2)+")":code;
+  const wide=supportList&&supportList.length>0;
+  return`<span class="badge" style="background:${c.bg};color:${c.text};border:1px solid ${c.border}" data-tip="${esc(tip)}" ${wide?'data-tip-wide="1"':''}>${esc(label)}${star}</span>`;
+}
+
+function weekCellHTML(phyName,dateInfo){
+  const{entries,exception:ex}=getEffectiveForDate(phyName,dateInfo.str);
+  const sup=getSupportForDate(phyName,dateInfo.str);
+  if(entries.length===0&&!ex)return'<span style="color:#cbd5e1">—</span>';
+  if(ex&&(ex.type==="PTO"||ex.type==="Conference")){
+    const tip=`${ex.type}${ex.notes?" · "+ex.notes:""}`;
+    if(entries.length===0)return`<span class="badge" style="background:#fee2e2;color:#991b1b;border:1px dashed #fca5a5;opacity:0.6;font-size:11px" data-tip="${esc(tip)}">${ex.type}</span>`;
+    return entries.map(e=>{const c=lc(e.location);return`<span class="pto-overlay" data-tip="${esc(tip)}"><span class="badge" style="background:${c.bg};color:${c.text};border:1px solid ${c.border};opacity:0.35;text-decoration:line-through">${esc(e.location)}</span><span class="pto-line"></span></span>`}).join(" ");
+  }
+  if(ex&&ex.type==="Covering Location"&&ex.coveringLocation){
+    const c=lc(ex.coveringLocation);
+    let tipParts=[`Covering: ${locName(ex.coveringLocation)}${ex.notes?" · "+ex.notes:""}`];
+    if(sup.all.length>0)tipParts.push("Support: "+sup.all.join(", "));
+    return`<span class="badge" style="background:${c.bg};color:${c.text};border:2px dashed ${c.border}" data-tip="${esc(tipParts.join('<br>'))}" data-tip-wide="1">${esc(ex.coveringLocation)} <span style="font-size:9px;font-weight:700;color:#9a3412">COV</span></span>`;
+  }
+  if(entries.length===0)return'<span style="color:#cbd5e1">—</span>';
+  return entries.map(e=>locBadgeHTML(e.location,e.comment,e.session,sup.all)).join(" ");
+}
+
+function statusHTML(s){const m={active:{bg:"#dcfce7",text:"#166534",l:"Active"},former:{bg:"#fee2e2",text:"#991b1b",l:"Former"},upcoming:{bg:"#dbeafe",text:"#1e40af",l:"Upcoming"},closed:{bg:"#fee2e2",text:"#991b1b",l:"Closed"}};const v=m[s]||m.active;return`<span class="status" style="background:${v.bg};color:${v.text}">${v.l}</span>`}
+
+function bindTips(el){el.querySelectorAll("[data-tip]").forEach(e=>{e.addEventListener("mouseenter",()=>showTip(e,e.dataset.tip,e.dataset.tipWide==="1"));e.addEventListener("mouseleave",hideTip)})}
+
+const TABS=[{id:"schedules",label:"MD Schedules"},{id:"locations",label:"Location Schedules"},{id:"matrix",label:"Weekly Matrix"},{id:"exceptions",label:"Exceptions & PTO"},{id:"pto",label:"PTO Balances"},{id:"changelog",label:"Change Log"},{id:"directory",label:"Directory"}];
+
+function renderNav(){const nav=document.getElementById("nav");nav.innerHTML=TABS.map(t=>`<button class="${t.id===activeTab?'active':''}" data-tab="${t.id}">${t.label}</button>`).join("");nav.querySelectorAll("button").forEach(b=>{b.addEventListener("click",()=>{activeTab=b.dataset.tab;renderNav();renderTab()})})}
+
+function renderTab(){if(!DATA)return;document.getElementById("errorBox").style.display="none";const c=document.getElementById("content");
+  const wo=state.weekOffset;const hl=state.mxHL;state={weekOffset:wo,mxHL:hl};
+  switch(activeTab){case"schedules":renderSchedules(c);break;case"locations":renderLocSchedules(c);break;case"matrix":renderMatrix(c);break;case"exceptions":renderExceptions(c);break;case"pto":renderPTO(c);break;case"changelog":renderChangelog(c);break;case"directory":renderDirectory(c);break;default:c.innerHTML="";FB().innerHTML=""}}
+
+// ═══ MD SCHEDULES ═══
+function renderSchedules(c){
+  const specs=getSpecialties();const regions=getRegions();const locs=getActiveLocations();
+  function build(){
+    const wd=getWeekDates(state.weekOffset);
+    FB().innerHTML=`<div class="filters">
+      <input type="text" id="s-search" placeholder="Search physician or NPI...">
+      <select id="s-spec"><option value="All">All Specialties</option>${specs.map(s=>`<option>${esc(s)}</option>`).join("")}</select>
+      <select id="s-region"><option value="All">All Regions</option>${regions.map(r=>`<option>${esc(r)}</option>`).join("")}</select>
+      <select id="s-loc"><option value="All">All Locations</option>${locs.map(l=>`<option value="${esc(l.locationCode)}">${esc(l.locationName)}</option>`).join("")}</select>
+      ${weekNavHTML('s')}
+    </div>`;
+    let h=`<div style="overflow-x:auto"><table><thead><tr><th>Physician</th><th>Specialty</th>`;
+    wd.forEach(d=>{h+=`<th class="ctr" style="min-width:100px"><div>${d.day}</div><div style="font-size:11px;font-weight:500;color:#94a3b8">${d.label}</div></th>`});
+    h+=`</tr></thead><tbody id="s-body"></tbody></table></div>`;
+    h+=`<div style="margin-top:10px;font-size:12px;color:#94a3b8;font-style:italic">Hover a location badge to see APP support assignments.</div>`;
+    c.innerHTML=h;
+
+    function update(){
+      const search=document.getElementById("s-search").value.toLowerCase();
+      const spec=document.getElementById("s-spec").value;
+      const region=document.getElementById("s-region").value;
+      const loc=document.getElementById("s-loc").value;
+      const phys=getActiveMDs().filter(p=>{
+        if(search&&!p.physicianName.toLowerCase().includes(search)&&!(p.npi||"").includes(search))return false;
+        if(spec!=="All"&&p.specialty!==spec)return false;
+        if(loc!=="All"||region!=="All"){
+          const hasMatch=wd.some(d=>{const entries=getSchedForDate(p.physicianName,d.str);return entries.some(e=>(loc==="All"||e.location===loc)&&(region==="All"||locRegion(e.location)===region))});
+          if(!hasMatch)return false;
+        }
+        return true;
+      });
+      const tbody=document.getElementById("s-body");
+      tbody.innerHTML=phys.map(p=>`<tr class="striped"><td style="white-space:nowrap"><strong>${esc(p.physicianName)}</strong></td><td style="color:#64748b">${esc(p.specialty)}</td>`+wd.map(d=>`<td class="ctr">${weekCellHTML(p.physicianName,d)}</td>`).join("")+`</tr>`).join("")||'<tr><td colspan="7" style="padding:24px;text-align:center;color:#94a3b8">No physicians match filters.</td></tr>';
+      bindTips(tbody);
+    }
+    ["s-search"].forEach(id=>document.getElementById(id).addEventListener("input",update));
+    ["s-spec","s-region","s-loc"].forEach(id=>document.getElementById(id).addEventListener("change",update));
+    bindWeekNav('s',build);
+    update();
+  }
+  build();
+}
+
+// ═══ LOCATION SCHEDULES ═══
+function renderLocSchedules(c){
+  const regions=getRegions();state.lsRegion=state.lsRegion||"All";
+  function build(){
+    const wd=getWeekDates(state.weekOffset);
+    const locsAll=getActiveLocations().filter(l=>state.lsRegion==="All"||l.region===state.lsRegion);
+    FB().innerHTML=`<div class="filters">
+      <input type="text" id="ls-search" placeholder="Search location...">
+      <select id="ls-region"><option value="All">All Regions</option>${regions.map(r=>`<option ${r===state.lsRegion?'selected':''}>${esc(r)}</option>`).join("")}</select>
+      ${weekNavHTML('ls')}
+    </div>`;
+    c.innerHTML='<div id="ls-body"></div>';
+
+    function update(){
+      const search=document.getElementById("ls-search").value.toLowerCase();
+      const filtered=locsAll.filter(l=>!search||l.locationName.toLowerCase().includes(search)||l.locationCode.toLowerCase().includes(search));
+      const activeMDs=getActiveMDs();
+      const body=document.getElementById("ls-body");
+
+      body.innerHTML=filtered.map(loc=>{
+        const cl=lc(loc.locationCode);
+        const phyNames=new Set();
+        wd.forEach(d=>{
+          activeMDs.forEach(p=>{const entries=getSchedForDate(p.physicianName,d.str);if(entries.some(e=>e.location===loc.locationCode))phyNames.add(p.physicianName)});
+          getExceptionsOnDate(d.str).filter(e=>e.type==="Covering Location"&&e.coveringLocation===loc.locationCode).forEach(e=>{const phy=activeMDs.find(p=>p.physicianName===e.physicianName);if(phy)phyNames.add(e.physicianName)});
+        });
+        const phys=[...phyNames].map(n=>activeMDs.find(p=>p.physicianName===n)).filter(Boolean);
+        let rows="";
+        if(phys.length>0){
+          rows=`<table><thead><tr><th style="padding-left:18px">Physician</th><th>Specialty</th>${wd.map(d=>`<th class="ctr"><div>${d.day}</div><div style="font-size:11px;font-weight:500;color:#94a3b8">${d.label}</div></th>`).join("")}</tr></thead><tbody>`;
+          phys.forEach(p=>{
+            rows+=`<tr class="striped"><td style="padding-left:18px;font-weight:600;white-space:nowrap">${esc(p.physicianName)}</td><td style="color:#64748b">${esc(p.specialty)}</td>`;
+            wd.forEach(d=>{
+              const{entries,exception:ex}=getEffectiveForDate(p.physicianName,d.str);
+              const isPto=ex&&(ex.type==="PTO"||ex.type==="Conference");
+              const isCov=ex&&ex.type==="Covering Location";
+              if(isCov&&ex.coveringLocation===loc.locationCode){rows+=`<td class="ctr"><span data-tip="Covering from ${esc(locName(entries[0]?.location||''))}" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${cl.text};border:2px dashed #f59e0b"></span></td>`;return}
+              if(isCov&&ex.coveringLocation!==loc.locationCode){rows+=`<td class="ctr"><span data-tip="Covering at ${esc(locName(ex.coveringLocation))}" style="font-size:12px;color:#b0b8c4;font-style:italic">${esc(ex.coveringLocation)}</span></td>`;return}
+              const hereEntries=entries.filter(e=>e.location===loc.locationCode);
+              if(hereEntries.length===0){const oe=entries[0];if(oe){rows+=`<td class="ctr"><span data-tip="${esc(locName(oe.location))}" style="font-size:12px;color:#b0b8c4;font-style:italic">${esc(oe.location)}</span></td>`}else{rows+=`<td class="ctr"><span style="color:#e2e8f0">—</span></td>`}return}
+              const isFull=hereEntries.some(e=>!e.session||e.session==="Full");const hasAM=hereEntries.some(e=>e.session==="AM");const hasPM=hereEntries.some(e=>e.session==="PM");
+              if(isPto){const tip=`${ex.type}${ex.notes?" · "+ex.notes:""}`;rows+=`<td class="ctr"><span data-tip="${esc(tip)}" style="opacity:0.3;text-decoration:line-through"><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${cl.text}"></span></span></td>`;return}
+              if(isFull||(hasAM&&hasPM)){const cm=hereEntries.find(e=>e.comment)?.comment;const tip=cm||locName(loc.locationCode);rows+=`<td class="ctr"><span data-tip="${esc(tip)}" style="position:relative;display:inline-block"><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${cl.text}"></span>${cm?'<span style="position:absolute;top:-6px;right:-8px;font-size:13px;font-weight:800;color:#ef4444">*</span>':""}</span></td>`}
+              else if(hasAM){const ot=entries.find(e=>e.session==="PM"&&e.location!==loc.locationCode);const oc=ot?lc(ot.location):DEFAULT_LOC;const tip=`AM: ${locName(loc.locationCode)}${ot?", PM: "+locName(ot.location):""}`;rows+=`<td class="ctr"><span data-tip="${esc(tip)}"><span class="half-circle"><span class="left" style="background:${cl.text}"></span><span class="right" style="background:${ot?oc.border:'#e2e8f0'}"></span></span></span></td>`}
+              else if(hasPM){const ot=entries.find(e=>e.session==="AM"&&e.location!==loc.locationCode);const oc=ot?lc(ot.location):DEFAULT_LOC;const tip=`${ot?"AM: "+locName(ot.location)+", ":""}PM: ${locName(loc.locationCode)}`;rows+=`<td class="ctr"><span data-tip="${esc(tip)}"><span class="half-circle"><span class="left" style="background:${ot?oc.border:'#e2e8f0'}"></span><span class="right" style="background:${cl.text}"></span></span></span></td>`}
+            });
+            rows+="</tr>";
+          });
+          rows+="</tbody></table>";
+        }else rows='<div style="padding:20px;text-align:center;color:#94a3b8;font-size:14px">No physicians scheduled this week.</div>';
+        return`<div class="loc-block"><div class="loc-block-header" style="background:${cl.bg};border-bottom:1px solid ${cl.border}"><div><span style="font-weight:700;font-size:16px;color:${cl.text}">${esc(loc.locationName)}</span><span style="margin-left:8px;font-size:13px;color:${cl.text};opacity:0.7">${esc(loc.locationCode)} · ${esc(loc.region)}</span></div><span style="font-size:13px;color:${cl.text};font-weight:600">${phys.length} physician${phys.length!==1?"s":""}</span></div>${rows}</div>`;
+      }).join("");
+      bindTips(body);
+    }
+    document.getElementById("ls-search").addEventListener("input",update);
+    document.getElementById("ls-region").addEventListener("change",e=>{state.lsRegion=e.target.value;build()});
+    bindWeekNav('ls',build);
+    update();
+  }
+  build();
+}
+
+// ═══ WEEKLY MATRIX ═══
+function renderMatrix(c){
+  const regions=getRegions();state.mxRegion=state.mxRegion||regions[0]||"";
+  if(!state.mxHL)state.mxHL=null;
+  function build(){
+    const wd=getWeekDates(state.weekOffset);
+    const locs=getActiveLocations().filter(l=>l.region===state.mxRegion);const ap=getActiveMDs();
+    const hl=state.mxHL;
+    FB().innerHTML=`<div class="filters"><select id="mx-r">${regions.map(r=>`<option ${r===state.mxRegion?'selected':''}>${esc(r)}</option>`).join("")}</select>${weekNavHTML('mx')}</div>`;
+    let h='';
+    if(hl)h+=`<div class="hl-banner">Highlighting: <strong>${esc(hl.name)}</strong> <span style="font-size:11px;color:#b45309">(${hl.type==='app'?'APP':'MD'})</span><button id="mx-c" style="background:none;border:none;color:#92400e;cursor:pointer;font-weight:600;font-size:13px;margin-left:8px">✕ Clear</button></div>`;
+    h+='<div style="overflow-x:auto"><table style="font-size:13px"><thead><tr><th style="min-width:130px">Location</th>';
+    wd.forEach(d=>{h+=`<th class="ctr" style="min-width:160px"><div>${d.day}</div><div style="font-size:11px;font-weight:500;color:#94a3b8">${d.label}</div></th>`});
+    h+='</tr></thead><tbody>';
+    locs.forEach(loc=>{
+      const cl2=lc(loc.locationCode);
+      h+=`<tr style="border-top:2px solid #e2e8f0"><td style="padding:10px 14px;vertical-align:top;border-right:1px solid #e2e8f0"><div style="font-weight:700;color:${cl2.text};font-size:14px">${esc(loc.locationName)}</div><div style="font-size:11px;color:#94a3b8">${esc(loc.locationCode)}</div></td>`;
+      wd.forEach(d=>{
+        h+='<td style="padding:6px 8px;border-right:1px solid #f1f5f9;vertical-align:top;background:#fff"><div style="display:flex;flex-direction:column;gap:4px">';
+        let has=false;
+        ap.forEach(p=>{
+          const sched=getSchedForDate(p.physicianName,d.str).filter(s=>s.location===loc.locationCode);
+          const ex=getExceptionForDate(p.physicianName,d.str);
+          const isPto=ex&&(ex.type==="PTO"||ex.type==="Conference");
+          const isCov=ex&&ex.type==="Covering Location";
+          if(sched.length===0&&!(isCov&&ex.coveringLocation===loc.locationCode))return;
+          const nm=esc(p.physicianName.replace("Dr. ",""));
+          const sup=getSupportForDate(p.physicianName,d.str);
+          const mdHl=hl&&((hl.type==='md'&&hl.name===p.physicianName)||(hl.type==='app'&&sup.all.includes(hl.name)));
+          const mdDim=hl&&!mdHl;
+          const appTags=sup.all.map(a=>{const aHl=hl&&((hl.type==='app'&&hl.name===a)||(hl.type==='md'&&hl.name===p.physicianName));const aDim=hl&&!aHl;return`<span class="mx-app ${aHl?'highlighted':''} ${aDim?'dimmed':''}" data-app="${esc(a)}">${esc(a)}</span>`}).join('');
+          if(sched.length>0&&isPto){h+=`<div class="mx-pair"><div class="matrix-name pto ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" data-tip="${esc(p.physicianName+' — '+ex.type)}" style="background:#fef2f2;border:1px dashed #fca5a5">${nm}</div></div>`;has=true;return}
+          if(sched.length>0&&isCov&&ex.coveringLocation!==loc.locationCode){h+=`<div class="mx-pair"><div class="matrix-name pto ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" data-tip="${esc(p.physicianName+' — Covering at '+locName(ex.coveringLocation))}" style="background:#fef2f2;border:1px dashed #fca5a5">${nm}</div></div>`;has=true;return}
+          if(isCov&&ex.coveringLocation===loc.locationCode){h+=`<div class="mx-pair"><div class="matrix-name ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" style="background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b">${nm}<span style="font-size:9px;margin-left:4px;color:#9a3412;font-weight:700">COV</span></div>${appTags}</div>`;has=true;return}
+          if(sched.length>0){const cmt=sched[0].comment;h+=`<div class="mx-pair"><div class="matrix-name ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" style="background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b">${nm}${cmt?'<span style="color:#ef4444;margin-left:2px;font-weight:800">*</span>':''}</div>${appTags}</div>`;has=true}
+        });
+        if(!has)h+='<span style="color:#e2e8f0;font-size:11px">—</span>';
+        h+='</div></td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+    h+=`<div style="margin-top:16px;display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#64748b">
+      <div style="display:flex;align-items:center;gap:6px"><span style="padding:2px 8px;border-radius:4px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;font-weight:600">Name</span> Scheduled</div>
+      <div style="display:flex;align-items:center;gap:6px"><span class="mx-app" style="display:inline-block">APP Name</span> Support (click to highlight)</div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="padding:2px 8px;border-radius:4px;background:#fef2f2;border:1px dashed #fca5a5;font-size:11px;font-weight:600;color:#d4a0a0;text-decoration:line-through">Name</span> On PTO</div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700;color:#9a3412">COV</span> Covering</div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="color:#ef4444;font-weight:800">*</span> Comment</div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="padding:2px 8px;border-radius:4px;background:#fef3c7;border:1.5px solid #f59e0b;font-size:11px;font-weight:600">Name</span> Highlighted</div></div>`;
+    c.innerHTML=h;
+    document.getElementById("mx-r").addEventListener("change",e=>{state.mxRegion=e.target.value;build()});
+    bindWeekNav('mx',build);
+    if(document.getElementById("mx-c"))document.getElementById("mx-c").addEventListener("click",()=>{state.mxHL=null;build()});
+    c.querySelectorAll("[data-phy]").forEach(el=>{el.addEventListener("click",()=>{const n=el.dataset.phy;state.mxHL=(hl&&hl.type==='md'&&hl.name===n)?null:{type:'md',name:n};build()})});
+    c.querySelectorAll("[data-app]").forEach(el=>{el.addEventListener("click",e=>{e.stopPropagation();const n=el.dataset.app;state.mxHL=(hl&&hl.type==='app'&&hl.name===n)?null:{type:'app',name:n};build()})});
+    bindTips(c);
+  }
+  build();
+}
+
+// ═══ EXCEPTIONS & PTO ═══
+function renderExceptions(c){
+  const regions=getRegions();const locs=getActiveLocations();state.exMonth=state.exMonth||0;
+  function build(){
+    const bd=new Date();bd.setMonth(bd.getMonth()+state.exMonth);bd.setDate(1);
+    const y=bd.getFullYear(),mo=bd.getMonth();const mn=bd.toLocaleString("default",{month:"long",year:"numeric"});
+    const fd=new Date(y,mo,1).getDay();const dim=new Date(y,mo+1,0).getDate();
+    FB().innerHTML=`<div class="filters">
+      <select id="ex-type"><option>All</option><option>PTO</option><option>Covering Location</option><option>Conference</option></select>
+      <select id="ex-region"><option value="All">All Regions</option>${regions.map(r=>`<option>${esc(r)}</option>`).join("")}</select>
+      <select id="ex-loc"><option value="All">All Locations</option>${locs.map(l=>`<option value="${esc(l.locationCode)}">${esc(l.locationName)}</option>`).join("")}</select>
+      <div class="nav-arrows"><button id="ex-p">←</button><span>${mn}</span><button id="ex-n">→</button></div>
+    </div>`;
+    let h=`<div class="cal-grid">`;
+    ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d=>{h+=`<div class="cal-header">${d}</div>`});
+    for(let i=0;i<fd;i++)h+='<div class="cal-day"></div>';
+    for(let day=1;day<=dim;day++){
+      const ds=`${y}-${String(mo+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+      const dow=(fd+day-1)%7;const isWe=dow===0||dow===6;const isT=ds===TODAY;
+      const exs=getExceptionsOnDate(ds);
+      h+=`<div class="cal-day ${isWe?'weekend':''}"><div class="num ${isT?'today':''}">${day}</div>`;
+      exs.slice(0,2).forEach(ex=>{
+        const phy=DATA.physicians.find(p=>p.physicianName===ex.physicianName);
+        const tc=TYPE_COLORS[ex.type]||{bg:"#f1f5f9",text:"#334155"};
+        const ln=phy?phy.physicianName.split(" ").pop():"";
+        const sl=getSchedForDate(ex.physicianName,ds);const slLoc=sl.length>0?sl[0].location:null;
+        const isMulti=ex.startDate!==ex.endDate;
+        const rangeHint=isMulti?` (${fmtDateShort(ex.startDate)}–${fmtDateShort(ex.endDate)})`:"";
+        const tip=`${phy?.physicianName||""} · ${ex.type}${slLoc?" · Sched: "+locName(slLoc):""}${rangeHint}${ex.notes?" · "+ex.notes:""}`;
+        h+=`<div class="cal-ex" style="background:${tc.bg};color:${tc.text}" data-tip="${esc(tip)}">${esc(ln)} · ${ex.type==="Covering Location"?"→"+locName(ex.coveringLocation):ex.type}</div>`;
+      });
+      if(exs.length>2)h+=`<div style="font-size:10px;color:#94a3b8;padding:0 4px">+${exs.length-2} more</div>`;
+      h+='</div>';
+    }
+    h+='</div>';
+    const upcoming=DATA.exceptions.filter(e=>e.endDate>=TODAY).sort((a,b)=>a.startDate.localeCompare(b.startDate)).slice(0,10);
+    h+='<div style="margin-top:28px"><h3 style="font-size:15px;font-weight:700;margin-bottom:12px">Upcoming Exceptions</h3>';
+    upcoming.forEach(ex=>{
+      const phy=DATA.physicians.find(p=>p.physicianName===ex.physicianName);
+      const tc=TYPE_COLORS[ex.type]||{bg:"#f1f5f9",text:"#334155"};
+      const d=new Date(ex.startDate+"T12:00:00");
+      const sl=getSchedForDate(ex.physicianName,ex.startDate);const slLoc=sl.length>0?sl[0].location:null;const slc=slLoc?lc(slLoc):null;
+      const isMulti=ex.startDate!==ex.endDate;const days=isMulti?countWeekdays(ex.startDate,ex.endDate):1;
+      const daysLabel=isMulti?`<span style="font-size:12px;color:#64748b;margin-left:6px">${days} day${days!==1?'s':''}</span>`:'';
+      h+=`<div class="up-item"><div class="up-date"><div class="wd">${d.toLocaleDateString("en",{weekday:"short"})}</div><div class="d">${d.getDate()}</div><div class="mo">${d.toLocaleDateString("en",{month:"short"})}</div></div><div style="flex:1"><div style="font-weight:600;font-size:14px">${esc(phy?.physicianName)}${daysLabel}</div><div style="font-size:13px;color:#64748b">${ex.type==="Covering Location"?"Covering at "+locName(ex.coveringLocation):ex.type}${isMulti?" · "+fmtDateMed(ex.startDate)+" – "+fmtDateMed(ex.endDate):""}${ex.notes?" · "+esc(ex.notes):""}</div></div>`;
+      if(slLoc&&slc)h+=`<span class="badge-sm" style="background:${slc.bg};color:${slc.text};border:1px solid ${slc.border}" data-tip="Normally at ${esc(locName(slLoc))}">${esc(slLoc)}</span>`;
+      h+=`<span style="padding:4px 10px;border-radius:6px;background:${tc.bg};color:${tc.text};font-size:12px;font-weight:600">${esc(ex.type)}</span></div>`;
+    });
+    h+='</div>';
+    c.innerHTML=h;
+    document.getElementById("ex-p").addEventListener("click",()=>{state.exMonth--;build()});
+    document.getElementById("ex-n").addEventListener("click",()=>{state.exMonth++;build()});
+    bindTips(c);
+  }
+  build();
+}
+
+// ═══ PTO BALANCES ═══
+function renderPTO(c){
+  state.ptoOff=state.ptoOff||0;
+  function build(){
+    const months=[0,1,2].map(i=>{const d=new Date();d.setMonth(d.getMonth()+state.ptoOff+i);d.setDate(1);return{year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleString("default",{month:"short",year:"numeric"})}});
+    const ap=getActiveMDs();
+    FB().innerHTML=`<div class="filters"><input type="text" id="pto-s" placeholder="Search physician..."><div class="nav-arrows"><button id="pto-p">←</button><span>3-Month View</span><button id="pto-n">→</button></div></div>`;
+    let h='<div style="overflow-x:auto"><table><thead><tr><th>Physician</th>';
+    months.forEach(m=>{h+=`<th class="ctr" style="min-width:180px">${m.label}</th>`});
+    h+='</tr></thead><tbody>';
+    ap.forEach(p=>{
+      h+=`<tr class="striped"><td style="white-space:nowrap"><div style="font-weight:600">${esc(p.physicianName)}</div><div style="font-size:12px;color:#94a3b8">${esc(p.specialty)}</div></td>`;
+      months.forEach(m=>{
+        const allot=getPtoAllotment(p.physicianName);const usage=getPtoUsedInMonth(p.physicianName,m.year,m.month);const uv=usage.totalDays;
+        const pct=allot>0?(uv/allot)*100:0;const over=uv>allot;const bc=over?"#ef4444":uv>=allot?"#f59e0b":"#22c55e";
+        if(allot>0){
+          h+=`<td style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px"><span style="font-size:15px;font-weight:700;color:${over?'#ef4444':'#1e293b'}">${uv}/${allot}</span><span style="font-size:12px;color:#94a3b8">PTO days</span></div><div class="pto-bar-bg"><div class="pto-bar" style="width:${Math.min(pct,100)}%;background:${bc}"></div></div>`;
+          if(usage.dates.length>0){h+='<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">';usage.dates.forEach(ud=>{const dd=new Date(ud.date+"T12:00:00");const sl=getSchedForDate(p.physicianName,ud.date);const slLoc=sl.length>0?sl[0].location:null;const slc=slLoc?lc(slLoc):null;const vl=ud.value<1?` (${ud.value})`:"";const tip=`${dd.toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"})}${slLoc?" · "+locName(slLoc):""}${ud.value<1?" · "+ud.value+" day":""}${ud.notes?" · "+ud.notes:""}`;h+=`<span class="pto-chip" style="background:${slc?.bg||'#fee2e2'};color:${slc?.text||'#991b1b'};border:1px solid ${slc?.border||'#fca5a5'}" data-tip="${esc(tip)}">${dd.getDate()}${slLoc?' '+slLoc:''}${vl}</span>`});h+='</div>'}
+          h+='</td>';
+        }else h+='<td style="padding:14px;color:#cbd5e1;font-size:13px">No allotment</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+    c.innerHTML=h;
+    document.getElementById("pto-p").addEventListener("click",()=>{state.ptoOff-=3;build()});
+    document.getElementById("pto-n").addEventListener("click",()=>{state.ptoOff+=3;build()});
+    bindTips(c);
+  }
+  build();
+}
+
+// ═══ CHANGE LOG ═══
+function renderChangelog(c){
+  state.clMode="all";state.clPreview=false;state.clFrom="";state.clTo="";
+  function build(){
+    const schedChanges=[];
+    DATA.schedules.filter(s=>s.effectiveTo).forEach(old=>{
+      const rep=DATA.schedules.find(s=>s.physicianName===old.physicianName&&s.day===old.day&&s.effectiveFrom>old.effectiveFrom&&(!old.effectiveTo||s.effectiveFrom<=new Date(new Date(old.effectiveTo+"T12:00:00").getTime()+86400000*2).toISOString().slice(0,10)));
+      if(rep&&rep.location!==old.location)schedChanges.push({date:rep.effectiveFrom,physician:old.physicianName,type:"Schedule",oldVal:`${old.day}: ${locName(old.location)}`,newVal:`${rep.day}: ${locName(rep.location)}`,effDate:rep.effectiveFrom});
+    });
+    const exEntries=DATA.exceptions.map(e=>{const rl=e.startDate===e.endDate?e.startDate:`${e.startDate} → ${e.endDate}`;return{date:e.startDate,dateEnd:e.endDate,physician:e.physicianName,type:"Exception",oldVal:"—",newVal:`${e.type}${e.type==="Covering Location"?" → "+locName(e.coveringLocation):""}${e.startDate!==e.endDate?" ("+rl+")":""}${e.notes?" · "+e.notes:""}`,effDate:rl}});
+    let all=[...schedChanges,...exEntries].sort((a,b)=>b.date.localeCompare(a.date));
+    if(state.clMode==="schedule")all=all.filter(x=>x.type==="Schedule");
+    if(state.clMode==="exception")all=all.filter(x=>x.type==="Exception");
+    if(state.clFrom)all=all.filter(x=>(x.dateEnd||x.date)>=state.clFrom);
+    if(state.clTo)all=all.filter(x=>x.date<=state.clTo);
+
+    FB().innerHTML=`<div class="filters">
+      <select id="cl-mode"><option value="all" ${state.clMode==='all'?'selected':''}>All Changes</option><option value="schedule" ${state.clMode==='schedule'?'selected':''}>Schedule Changes</option><option value="exception" ${state.clMode==='exception'?'selected':''}>Exceptions Only</option></select>
+      <input type="date" id="cl-from" value="${state.clFrom}" title="From date">
+      <input type="date" id="cl-to" value="${state.clTo}" title="To date">
+      <button class="btn" id="cl-toggle" style="margin-left:auto">${state.clPreview?"← Back to Log":"Preview Email Report"}</button>
+    </div>`;
+    let h='';
+    if(state.clPreview){
+      h+=`<div class="email-wrap"><div class="email-header"><div style="font-size:12px;color:#94a3b8">Subject:</div><div style="font-size:14px;font-weight:600">Physician Schedule Changes${state.clFrom?" — From "+state.clFrom:""}${state.clTo?" to "+state.clTo:""}</div></div><div class="email-body"><p>Hi Team,</p><p>Please see the following changes:</p>`;
+      const sc=all.filter(x=>x.type==="Schedule");
+      if(sc.length>0){h+='<div class="email-section"><div style="font-weight:700;margin-bottom:8px">Schedule Changes</div>';sc.forEach(x=>{h+=`<div style="margin-bottom:14px"><div style="font-weight:600">${esc(x.physician)}</div><div style="margin-top:4px"><span style="color:#94a3b8;text-decoration:line-through">${esc(x.oldVal)}</span><span style="margin:0 8px;color:#94a3b8">→</span><span style="font-weight:600;color:#166534;background:#dcfce7;padding:2px 8px;border-radius:4px">${esc(x.newVal)}</span></div><div style="font-size:12px;color:#94a3b8;margin-top:4px">Effective ${x.effDate}</div></div>`});h+='</div>'}
+      const ex=all.filter(x=>x.type==="Exception");
+      if(ex.length>0){h+='<div class="email-section"><div style="font-weight:700;margin-bottom:8px">Exceptions</div>';ex.forEach(x=>{h+=`<div style="margin-bottom:4px">• <strong>${esc(x.physician)}</strong> — ${esc(x.newVal)} (${x.effDate})</div>`});h+='</div>'}
+      h+='<p>Please reach out to Scheduling with any questions.</p></div></div>';
+    }else{
+      h+='<div style="overflow-x:auto"><table><thead><tr><th>Date(s)</th><th>Physician</th><th>Type</th><th>Previous</th><th>New</th></tr></thead><tbody>';
+      all.forEach(x=>{const tc=x.type==="Schedule"?{bg:"#dbeafe",text:"#1e40af"}:{bg:"#fef9c3",text:"#854d0e"};const dd=x.dateEnd&&x.dateEnd!==x.date?`${x.date}<br><span style="color:#94a3b8;font-size:11px">→ ${x.dateEnd}</span>`:x.date;h+=`<tr class="striped"><td style="font-size:13px;color:#64748b;white-space:nowrap">${dd}</td><td style="font-weight:600;white-space:nowrap">${esc(x.physician)}</td><td><span style="padding:3px 8px;border-radius:4px;font-size:12px;font-weight:600;background:${tc.bg};color:${tc.text}">${x.type}</span></td><td style="font-size:13px;color:#94a3b8;${x.oldVal!=='—'?'text-decoration:line-through':''}">${esc(x.oldVal)}</td><td style="font-size:13px;color:#166534;font-weight:600">${esc(x.newVal)}</td></tr>`});
+      if(all.length===0)h+='<tr><td colspan="5" style="padding:24px;text-align:center;color:#94a3b8">No changes found for the selected filters.</td></tr>';
+      h+='</tbody></table></div>';
+    }
+    c.innerHTML=h;
+    document.getElementById("cl-mode").addEventListener("change",e=>{state.clMode=e.target.value;build()});
+    document.getElementById("cl-from").addEventListener("change",e=>{state.clFrom=e.target.value;build()});
+    document.getElementById("cl-to").addEventListener("change",e=>{state.clTo=e.target.value;build()});
+    document.getElementById("cl-toggle").addEventListener("click",()=>{state.clPreview=!state.clPreview;build()});
+  }
+  build();
+}
+
+// ═══ DIRECTORY ═══
+function renderDirectory(c){
+  state.dirTab="physicians";state.dirStatus="active";
+  function build(){
+    FB().innerHTML=`<div class="filters">
+      <button class="sub-tab ${state.dirTab==='physicians'?'active':''}" id="d-phy">Physicians</button>
+      <button class="sub-tab ${state.dirTab==='locations'?'active':''}" id="d-loc">Locations</button>
+      <select id="d-st" style="margin-left:auto;padding:6px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;background:#fff">
+        <option value="active" ${state.dirStatus==='active'?'selected':''}>Active</option>
+        <option value="upcoming" ${state.dirStatus==='upcoming'?'selected':''}>Upcoming</option>
+        <option value="former" ${state.dirStatus==='former'?'selected':''}>${state.dirTab==='physicians'?'Former':'Closed'}</option>
+        <option value="all" ${state.dirStatus==='all'?'selected':''}>All</option>
+      </select></div>`;
+    let h='';
+    if(state.dirTab==="physicians"){
+      const list=DATA.physicians.filter(p=>state.dirStatus==="all"||getStatus(p)===state.dirStatus);
+      h+='<div class="card-grid">';
+      list.forEach(p=>{
+        const s=getStatus(p);const sched=DATA.schedules.filter(x=>x.physicianName===p.physicianName&&x.effectiveFrom<=TODAY&&(!x.effectiveTo||x.effectiveTo>=TODAY));
+        const allot=getPtoAllotment(p.physicianName);
+        h+=`<div class="card ${s==='former'?'faded':''}"><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px"><div><div style="font-weight:700;font-size:15px">${esc(p.physicianName)}</div><div style="font-size:13px;color:#64748b">${esc(p.specialty)}${p.role?' · '+esc(p.role):''}</div></div>${s!=='active'?statusHTML(s):''}</div>`;
+        h+=`<div style="font-size:12px;color:#94a3b8;margin-bottom:4px">NPI: ${esc(p.npi)}</div>`;
+        h+=`<div style="font-size:12px;color:#94a3b8;margin-bottom:4px">${p.startDate} → ${p.endDate||'Present'}</div>`;
+        if(allot>0)h+=`<div style="font-size:12px;color:#64748b;margin-bottom:10px">PTO: ${allot} days/month</div>`;
+        if(sched.length>0){h+='<div class="mini-sched">';DAYS.forEach(d=>{const entries=sched.filter(x=>x.day===d);const e=entries[0];const cl2=e?lc(e.location):null;h+=`<div class="day-col"><div class="day-label">${d}</div><div class="day-val" style="background:${cl2?cl2.bg:'#f8fafc'};color:${cl2?cl2.text:'#cbd5e1'};border:1px solid ${cl2?cl2.border:'#f1f5f9'}">${e?esc(e.location):'—'}</div></div>`});h+='</div>'}
+        h+='</div>';
+      });
+      h+='</div>';
+    }else{
+      const list=DATA.locations.filter(l=>{const s2=l.endDate&&l.endDate<TODAY?"former":(l.startDate>TODAY?"upcoming":"active");return state.dirStatus==="all"||s2===state.dirStatus});
+      h+='<div class="card-grid">';
+      list.forEach(l=>{
+        const cl2=lc(l.locationCode);const s2=l.endDate&&l.endDate<TODAY?"closed":(l.startDate>TODAY?"upcoming":"active");
+        const sh=DATA.schedules.filter(s=>s.location===l.locationCode&&s.effectiveFrom<=TODAY&&(!s.effectiveTo||s.effectiveTo>=TODAY));const pc=new Set(sh.map(s=>s.physicianName)).size;
+        h+=`<div class="card ${s2==='closed'?'faded':''}"><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px"><div><div style="font-weight:700;font-size:15px;color:${cl2.text}"><span class="legend-dot" style="background:${cl2.bg};border:1px solid ${cl2.border};width:12px;height:12px;margin-right:8px;vertical-align:middle"></span>${esc(l.locationName)}</div><div style="font-size:13px;color:#64748b;margin-top:2px">${esc(l.locationCode)} · ${esc(l.region)}</div></div>${s2!=='active'?statusHTML(s2):''}</div>`;
+        h+=`<div style="font-size:12px;color:#94a3b8;margin-bottom:10px">${l.startDate} → ${l.endDate||'Present'}</div>`;
+        h+=`<div style="font-size:13px;color:#475569">${pc} active physician${pc!==1?'s':''}</div>`;
+        if(sh.length>0){h+='<div style="margin-top:8px;display:flex;gap:4px">';DAYS.forEach(d=>{const ct=sh.filter(s=>s.day===d).length;h+=`<div style="flex:1;text-align:center"><div style="font-size:10px;color:#94a3b8;margin-bottom:3px;font-weight:600">${d}</div><div style="padding:3px 0;border-radius:4px;font-size:12px;font-weight:600;background:${ct>0?cl2.bg:'#f8fafc'};color:${ct>0?cl2.text:'#cbd5e1'};border:1px solid ${ct>0?cl2.border:'#f1f5f9'}">${ct>0?ct:'—'}</div></div>`});h+='</div>'}
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+    c.innerHTML=h;
+    document.getElementById("d-phy").addEventListener("click",()=>{state.dirTab="physicians";build()});
+    document.getElementById("d-loc").addEventListener("click",()=>{state.dirTab="locations";build()});
+    document.getElementById("d-st").addEventListener("change",e=>{state.dirStatus=e.target.value;build()});
+  }
+  build();
+}
+
+// ═══ INIT ═══
+async function init(){
+  renderNav();
+  try{
+    const r=await fetch(API_URL);if(!r.ok)throw new Error("HTTP "+r.status);
+    DATA=await r.json();
+    DATA.physicians=DATA.physicians||[];DATA.locations=DATA.locations||[];DATA.schedules=DATA.schedules||[];DATA.exceptions=DATA.exceptions||[];
+    DATA.locations.forEach(l=>{if(l.locationCode&&!LOC_COLORS[l.locationCode]){const h2=Math.abs(l.locationCode.split("").reduce((a,c2)=>a+c2.charCodeAt(0),0)*137)%360;LOC_COLORS[l.locationCode]={bg:`hsl(${h2},80%,92%)`,text:`hsl(${h2},60%,30%)`,border:`hsl(${h2},70%,75%)`}}});
+    document.getElementById("loading").style.display="none";
+    document.getElementById("errorBox").style.display="none";
+    document.getElementById("lastUpdated").textContent=`Last updated: ${new Date(DATA.lastUpdated).toLocaleString()}`;
+    renderTab();
+  }catch(err){
+    document.getElementById("loading").style.display="none";
+    document.getElementById("errorBox").style.display="block";
+    document.getElementById("errorBox").innerHTML=`<strong>Failed to load data.</strong><br>${esc(err.message)}<br><br>Check that the Apps Script is deployed and accessible.`;
+  }
+}
+init();
+</script>
+</body>
+</html>
