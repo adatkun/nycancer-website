@@ -10,7 +10,7 @@
   .wrap{max-width:1100px;margin:0 auto;padding:24px}
   h1{font-size:22px;font-weight:800;color:#0f172a}
   .subtitle{font-size:14px;color:#94a3b8;margin-top:4px}
-  .sticky-top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #e2e8f0;padding-bottom:4px;margin:0 -24px;padding-left:24px;padding-right:24px}
+  .sticky-top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #e2e8f0;margin:0 -24px;padding:0 24px 4px}
   nav{display:flex;gap:0;border-bottom:2px solid #e2e8f0;flex-wrap:wrap}
   nav button{padding:10px 16px;font-size:13px;font-weight:500;color:#64748b;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer}
   nav button.active{font-weight:700;color:#1e40af;border-bottom-color:#1e40af}
@@ -27,8 +27,13 @@
   td{padding:10px 14px;border-bottom:1px solid #f1f5f9}
   td.ctr{text-align:center}
   tr.striped:nth-child(even){background:#f8fafc}
+  .table-scroll{overflow:auto;max-height:calc(100vh - var(--header-h,94px) - 40px);border:1px solid #e2e8f0;border-radius:10px}
+  .table-scroll table{border-collapse:separate;border-spacing:0}
+  .table-scroll th{position:sticky;top:0;background:#fff;z-index:10;border-bottom:2px solid #e2e8f0}
+  .table-scroll td{border-bottom:1px solid #f1f5f9}
   .badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:600;position:relative;cursor:default}
   .badge .star{position:absolute;top:-2px;right:-2px;font-size:13px;font-weight:800;color:#ef4444;line-height:1}
+  .badge .info-icon{position:absolute;top:-4px;left:-4px;font-size:11px;font-weight:700;color:#3b82f6;line-height:1;cursor:help}
   .badge-sm{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:600;cursor:default}
   .status{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600}
   .tip{position:absolute;background:#1e293b;color:#fff;padding:6px 12px;border-radius:8px;font-size:12px;white-space:nowrap;z-index:999;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.15);line-height:1.5}
@@ -46,9 +51,11 @@
   .cal-header{padding:8px 4px;text-align:center;font-weight:600;font-size:12px;color:#64748b;background:#f8fafc;text-transform:uppercase;letter-spacing:0.05em}
   .cal-day{min-height:80px;background:#fff;padding:4px}
   .cal-day.weekend{background:#f8fafc}
+  .cal-day.holiday-bg{background:#fffbeb}
   .cal-day .num{font-size:12px;font-weight:500;color:#64748b;padding:2px 4px}
   .cal-day .num.today{background:#1e40af;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;margin:2px}
   .cal-ex{padding:2px 4px;border-radius:4px;font-size:10px;font-weight:600;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-bottom:2px;cursor:default}
+  .cal-holiday{padding:2px 4px;border-radius:4px;font-size:9px;font-weight:700;line-height:1.3;background:#fef3c7;color:#92400e;border:1px solid #fde68a;margin-bottom:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
   .matrix-name{padding:3px 8px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;margin-bottom:3px}
   .matrix-name.pto{border-style:dashed!important;color:#d4a0a0!important;text-decoration:line-through;opacity:0.5}
   .matrix-name.highlighted{background:#fef3c7!important;border:1.5px solid #f59e0b!important}
@@ -64,9 +71,14 @@
   .pto-bar-bg{height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden}
   .pto-bar{height:100%;border-radius:3px}
   .pto-chip{padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;cursor:default;display:inline-block;margin:2px 2px 0 0}
-  .loc-block{margin-bottom:24px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
-  .loc-block-header{padding:12px 18px;display:flex;justify-content:space-between;align-items:center}
+  .loc-block{margin-bottom:16px;border:1px solid #e2e8f0;border-radius:10px}
+  .loc-block-header{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-radius:10px 10px 0 0;position:sticky;top:var(--header-h,94px);z-index:8}
+  .loc-block table{font-size:13px}
+  .loc-block th{padding:6px 10px;font-size:12px}
+  .loc-block td{padding:5px 10px}
+  .loc-block tr.striped:nth-child(even){background:#fafbfc}
   .up-item{display:flex;align-items:center;gap:14px;padding:10px 14px;background:#f8fafc;border-radius:8px;border:1px solid #f1f5f9;margin-bottom:8px}
+  .up-item.holiday-item{background:#fffbeb;border:1px solid #fde68a}
   .up-date{min-width:56px;text-align:center}
   .up-date .wd{font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:600}
   .up-date .d{font-size:20px;font-weight:700;color:#1e293b;line-height:1.1}
@@ -87,13 +99,15 @@
   .mx-app.highlighted{background:#fef3c7!important;border:1.5px solid #f59e0b!important;color:#92400e!important}
   .mx-app.dimmed{opacity:0.35}
   .mx-pair{display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap}
+  .cov-by{font-size:10px;color:#9a3412;font-weight:600;font-style:italic;margin-top:2px}
+  .mx-info{font-size:10px;color:#3b82f6;font-weight:700;cursor:help;margin-left:1px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Physician Schedule Tracker</h1>
   <p class="subtitle" id="lastUpdated">Loading...</p>
-  <div class="sticky-top">
+  <div class="sticky-top" id="stickyTop">
     <nav id="nav"></nav>
     <div id="filters-bar"></div>
   </div>
@@ -107,13 +121,139 @@ const DAYS=["Mon","Tue","Wed","Thu","Fri"];
 const TODAY=new Date().toISOString().slice(0,10);
 const LOC_COLORS={LSC:{bg:"#dbeafe",text:"#1e40af",border:"#93c5fd"},RNK:{bg:"#dcfce7",text:"#166534",border:"#86efac"},PTG:{bg:"#fef9c3",text:"#854d0e",border:"#fde047"},BSH:{bg:"#f3e8ff",text:"#6b21a8",border:"#c4b5fd"},RVC:{bg:"#ffe4e6",text:"#9f1239",border:"#fda4af"}};
 const DEFAULT_LOC={bg:"#f1f5f9",text:"#334155",border:"#cbd5e1"};
-const TYPE_COLORS={PTO:{bg:"#fee2e2",text:"#991b1b"},"Covering Location":{bg:"#fff7ed",text:"#9a3412"},Conference:{bg:"#eff6ff",text:"#1e40af"}};
+const HOSP_COLOR={bg:"#fef9c3",text:"#854d0e",border:"#fde047"};
+const OFFICE_COLOR={bg:"#f3e8ff",text:"#6b21a8",border:"#c4b5fd"};
+let REGION_COLORS_MAP=null;
+const TYPE_COLORS={PTO:{bg:"#fee2e2",text:"#991b1b"},Cover:{bg:"#fff7ed",text:"#9a3412"},Conference:{bg:"#eff6ff",text:"#1e40af"}};
 let DATA=null,activeTab="schedules",state={weekOffset:0};
 const FB=()=>document.getElementById("filters-bar");
+
+// ═══ HOLIDAYS ═══
+function nthWeekdayOfMonth(year,month,weekday,n){
+  const first=new Date(year,month,1);
+  let day=1+((weekday-first.getDay()+7)%7);
+  day+=(n-1)*7;
+  return new Date(year,month,day);
+}
+function lastWeekdayOfMonth(year,month,weekday){
+  const last=new Date(year,month+1,0);
+  let day=last.getDate()-((last.getDay()-weekday+7)%7);
+  return new Date(year,month,day);
+}
+function easterDate(year){
+  const a=year%19,b=Math.floor(year/100),c2=year%100;
+  const d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25);
+  const g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30;
+  const i=Math.floor(c2/4),k=c2%4;
+  const l=(32+2*e+2*i-h-k)%7;
+  const m=Math.floor((a+11*h+22*l)/451);
+  const mo=Math.floor((h+l-7*m+114)/31)-1;
+  const dy=((h+l-7*m+114)%31)+1;
+  return new Date(year,mo,dy);
+}
+function fmtDS(d){return d.toISOString().slice(0,10)}
+function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r}
+
+// Jewish holidays approximate (based on lookup for 2024-2028)
+const JEWISH_HOLIDAYS={
+  "2024-10-02":"Rosh Hashanah","2024-10-03":"Rosh Hashanah","2024-10-11":"Yom Kippur",
+  "2025-09-22":"Rosh Hashanah","2025-09-23":"Rosh Hashanah","2025-10-01":"Yom Kippur",
+  "2026-09-11":"Rosh Hashanah","2026-09-12":"Rosh Hashanah","2026-09-20":"Yom Kippur",
+  "2027-10-01":"Rosh Hashanah","2027-10-02":"Rosh Hashanah","2027-10-10":"Yom Kippur",
+  "2028-09-20":"Rosh Hashanah","2028-09-21":"Rosh Hashanah","2028-09-29":"Yom Kippur"
+};
+// Eid approximate dates (shift ~11 days/year, lookup for 2024-2028)
+const ISLAMIC_HOLIDAYS={
+  "2024-04-10":"Eid al-Fitr","2024-06-17":"Eid al-Adha",
+  "2025-03-30":"Eid al-Fitr","2025-06-06":"Eid al-Adha",
+  "2026-03-20":"Eid al-Fitr","2026-05-27":"Eid al-Adha",
+  "2027-03-09":"Eid al-Fitr","2027-05-16":"Eid al-Adha",
+  "2028-02-27":"Eid al-Fitr","2028-05-04":"Eid al-Adha"
+};
+// Diwali approximate
+const DIWALI_DATES={
+  "2024-11-01":"Diwali","2025-10-20":"Diwali","2026-11-08":"Diwali",
+  "2027-10-29":"Diwali","2028-10-17":"Diwali"
+};
+// Chinese New Year
+const CNY_DATES={
+  "2024-02-10":"Chinese New Year","2025-01-29":"Chinese New Year","2026-02-17":"Chinese New Year",
+  "2027-02-06":"Chinese New Year","2028-01-26":"Chinese New Year"
+};
+
+function getHolidaysForYear(year){
+  const holidays=[];
+  function add(d,name,cat){holidays.push({date:fmtDS(d),name,category:cat||"federal"})}
+  // US Federal
+  add(new Date(year,0,1),"New Year's Day","federal");
+  add(nthWeekdayOfMonth(year,0,1,3),"MLK Jr. Day","federal");
+  add(nthWeekdayOfMonth(year,1,1,3),"Presidents' Day","federal");
+  add(lastWeekdayOfMonth(year,4,1),"Memorial Day","federal");
+  add(new Date(year,5,19),"Juneteenth","federal");
+  add(new Date(year,6,4),"Independence Day","federal");
+  add(nthWeekdayOfMonth(year,8,1,1),"Labor Day","federal");
+  add(nthWeekdayOfMonth(year,9,1,2),"Columbus Day","federal");
+  add(new Date(year,10,11),"Veterans Day","federal");
+  add(nthWeekdayOfMonth(year,10,4,4),"Thanksgiving","federal");
+  add(addDays(nthWeekdayOfMonth(year,10,4,4),1),"Day After Thanksgiving","federal");
+  add(new Date(year,11,24),"Christmas Eve","federal");
+  add(new Date(year,11,25),"Christmas Day","federal");
+  add(new Date(year,11,31),"New Year's Eve","federal");
+  // Easter & Good Friday
+  const easter=easterDate(year);
+  add(addDays(easter,-2),"Good Friday","religious");
+  add(easter,"Easter Sunday","religious");
+  // Orthodox Easter (Julian calendar offset - approximate via Meeus)
+  // Passover approximate (15 Nisan) - using lookup
+  const passoverDates={"2024":"2024-04-22","2025":"2025-04-12","2026":"2026-04-01","2027":"2027-04-21","2028":"2028-04-10"};
+  if(passoverDates[year]){add(new Date(passoverDates[year]+"T12:00:00"),"Passover (1st night)","religious")}
+  // Jewish holidays from lookup
+  Object.entries(JEWISH_HOLIDAYS).forEach(([ds,name])=>{if(ds.startsWith(year+"-"))holidays.push({date:ds,name,category:"religious"})});
+  // Islamic holidays from lookup
+  Object.entries(ISLAMIC_HOLIDAYS).forEach(([ds,name])=>{if(ds.startsWith(year+"-"))holidays.push({date:ds,name,category:"religious"})});
+  // Diwali
+  Object.entries(DIWALI_DATES).forEach(([ds,name])=>{if(ds.startsWith(year+"-"))holidays.push({date:ds,name,category:"religious"})});
+  // Chinese New Year
+  Object.entries(CNY_DATES).forEach(([ds,name])=>{if(ds.startsWith(year+"-"))holidays.push({date:ds,name,category:"religious"})});
+  return holidays;
+}
+
+let HOLIDAYS_CACHE={};
+function getHolidaysForDate(dateStr){
+  const y=parseInt(dateStr.slice(0,4));
+  if(!HOLIDAYS_CACHE[y])HOLIDAYS_CACHE[y]=getHolidaysForYear(y);
+  return HOLIDAYS_CACHE[y].filter(h=>h.date===dateStr);
+}
+function getHolidaysInRange(startStr,endStr){
+  const sy=parseInt(startStr.slice(0,4)),ey=parseInt(endStr.slice(0,4));
+  let all=[];
+  for(let y=sy;y<=ey;y++){if(!HOLIDAYS_CACHE[y])HOLIDAYS_CACHE[y]=getHolidaysForYear(y);all=all.concat(HOLIDAYS_CACHE[y])}
+  return all.filter(h=>h.date>=startStr&&h.date<=endStr);
+}
+
+// ═══ HELPERS ═══
+function measureHeader(){
+  const el=document.getElementById("stickyTop");
+  if(el){const h=el.offsetHeight;document.documentElement.style.setProperty("--header-h",h+"px")}
+}
 
 function lc(code){return LOC_COLORS[code]||DEFAULT_LOC}
 function locName(code){if(!DATA)return code;const l=DATA.locations.find(x=>x.locationCode===code);return l?l.locationName:code}
 function locRegion(code){if(!DATA)return"";const l=DATA.locations.find(x=>x.locationCode===code);return l?l.region:""}
+
+function buildRegionColors(){
+  REGION_COLORS_MAP={};
+  const regions=[...new Set(DATA.locations.map(l=>l.region))].filter(Boolean).sort();
+  regions.forEach(r=>{
+    if(r.toLowerCase().includes("hosp"))REGION_COLORS_MAP[r]=HOSP_COLOR;
+    else REGION_COLORS_MAP[r]=OFFICE_COLOR;
+  });
+}
+function rc(code){
+  if(!REGION_COLORS_MAP)buildRegionColors();
+  const r=locRegion(code);return REGION_COLORS_MAP[r]||DEFAULT_LOC;
+}
+
 function getStatus(i){if(i.endDate&&i.endDate<TODAY)return"former";if(i.startDate>TODAY)return"upcoming";return"active"}
 
 function getWeekDates(offset){
@@ -137,25 +277,19 @@ function getSchedForDate(phyName,dateStr){
   return DATA.schedules.filter(s=>s.physicianName===phyName&&s.day===dn&&s.effectiveFrom<=dateStr&&(!s.effectiveTo||s.effectiveTo>=dateStr));
 }
 
-function getExceptionForDate(phyName,dateStr){
-  return DATA.exceptions.find(e=>e.physicianName===phyName&&e.startDate<=dateStr&&e.endDate>=dateStr)||null;
+function getExceptionForDate(phyName,dateStr){return DATA.exceptions.find(e=>e.physicianName===phyName&&e.startDate<=dateStr&&e.endDate>=dateStr)||null}
+function getEffectiveForDate(phyName,dateStr){const base=getSchedForDate(phyName,dateStr);const ex=getExceptionForDate(phyName,dateStr);return{entries:base,exception:ex||null}}
+function getExceptionsOnDate(dateStr){return DATA.exceptions.filter(e=>e.startDate<=dateStr&&e.endDate>=dateStr)}
+
+function getCoveredBy(phyName,dateStr){
+  return DATA.exceptions.filter(e=>e.type==="Cover"&&e.coveringFor===phyName&&e.startDate<=dateStr&&e.endDate>=dateStr);
+}
+function getCoverTargetLocation(coveringFor,dateStr){
+  const sched=getSchedForDate(coveringFor,dateStr);
+  return sched.length>0?sched[0].location:null;
 }
 
-function getEffectiveForDate(phyName,dateStr){
-  const base=getSchedForDate(phyName,dateStr);
-  const ex=getExceptionForDate(phyName,dateStr);
-  return{entries:base,exception:ex||null};
-}
-
-function getExceptionsOnDate(dateStr){
-  return DATA.exceptions.filter(e=>e.startDate<=dateStr&&e.endDate>=dateStr);
-}
-
-function countWeekdays(start,end){
-  let c=0;const d=new Date(start+"T12:00:00");const e=new Date(end+"T12:00:00");
-  while(d<=e){const dow=d.getDay();if(dow!==0&&dow!==6)c++;d.setDate(d.getDate()+1)}
-  return c;
-}
+function countWeekdays(start,end){let c=0;const d=new Date(start+"T12:00:00");const e=new Date(end+"T12:00:00");while(d<=e){const dow=d.getDay();if(dow!==0&&dow!==6)c++;d.setDate(d.getDate()+1)}return c}
 
 function getWeekdaysInMonth(startDate,endDate,year,month){
   const mStart=`${year}-${String(month+1).padStart(2,"0")}-01`;
@@ -174,25 +308,66 @@ function getSupportForDate(phyName,dateStr){
   return{support:[...s1],support2:[...s2],all:[...s1,...s2]};
 }
 
+// NEW: Location-specific support (fixes matrix AM/PM support bleed)
+function getSupportForDateAtLocation(phyName,dateStr,locCode){
+  const entries=getSchedForDate(phyName,dateStr).filter(e=>e.location===locCode);
+  const s1=new Set(),s2=new Set();
+  entries.forEach(e=>{if(e.support)s1.add(e.support);if(e.support2)s2.add(e.support2)});
+  return{support:[...s1],support2:[...s2],all:[...s1,...s2]};
+}
+
 function getActivePhysicians(){return DATA.physicians.filter(p=>getStatus(p)==="active")}
 function getActiveMDs(){return getActivePhysicians().filter(p=>p.role!=="APP")}
 function getActiveLocations(){return DATA.locations.filter(l=>!((l.endDate&&l.endDate<TODAY)||(l.startDate>TODAY)))}
 function getRegions(){return[...new Set(getActiveLocations().map(l=>l.region))].filter(Boolean).sort()}
 function getSpecialties(){return[...new Set(DATA.physicians.map(p=>p.specialty))].filter(Boolean).sort()}
-function getPtoAllotment(n){const p=DATA.physicians.find(x=>x.physicianName===n);if(!p||!p.ptoDaysMonth)return 0;return p.ptoDaysMonth}
+function getPtoAllotment(n,year){
+  if(DATA.ptoAllotments&&DATA.ptoAllotments.length>0){
+    const records=DATA.ptoAllotments.filter(a=>{
+      if(a.physicianName!==n)return false;
+      const d=new Date(a.effectiveFrom+"T12:00:00");
+      return d.getFullYear()<=year;
+    }).sort((a,b)=>{
+      const da=new Date(a.effectiveFrom+"T12:00:00"),db=new Date(b.effectiveFrom+"T12:00:00");
+      return db-da;
+    });
+    if(records.length>0)return records[0].ptoDaysMonth||0;
+  }
+  const p=DATA.physicians.find(x=>x.physicianName===n);
+  if(!p||!p.ptoDaysMonth)return 0;return p.ptoDaysMonth;
+}
+function getPtoAllotmentHistory(n){
+  if(!DATA.ptoAllotments)return[];
+  return DATA.ptoAllotments.filter(a=>a.physicianName===n).sort((a,b)=>a.effectiveFrom.localeCompare(b.effectiveFrom));
+}
 
 function getPtoUsedInMonth(n,year,month){
   const ptoEx=DATA.exceptions.filter(e=>e.physicianName===n&&e.type==="PTO");
   let totalDays=0;const dates=[];
   ptoEx.forEach(ex=>{
     const r=getWeekdaysInMonth(ex.startDate,ex.endDate,year,month);
-    const v=ex.value!=null?Number(ex.value):null;
-    if(r.count>0){
-      if(v!=null&&ex.startDate===ex.endDate){totalDays+=v;dates.push({date:ex.startDate,value:v,notes:ex.notes})}
-      else{totalDays+=r.count;r.dates.forEach(dt=>dates.push({date:dt,value:1,notes:ex.notes}))}
-    }
+    const raw=ex.value!=null?ex.value:(ex.ptoValue!=null?ex.ptoValue:null);
+    const v=(raw!=null&&raw!=="")?Number(raw):null;
+    if(r.count>0){const dayVal=(v!=null&&!isNaN(v))?v:1;totalDays+=r.count*dayVal;r.dates.forEach(dt=>dates.push({date:dt,value:dayVal,notes:ex.notes}))}
   });
   return{totalDays,dates};
+}
+
+function getPtoUsedInYear(n,year){
+  let totalDays=0;const dates=[];const byMonth={};
+  for(let mo=0;mo<12;mo++){
+    const usage=getPtoUsedInMonth(n,year,mo);
+    totalDays+=usage.totalDays;
+    dates.push(...usage.dates);
+    if(usage.totalDays>0)byMonth[mo]=usage;
+  }
+  return{totalDays,dates,byMonth};
+}
+
+function ptoRemColor(pct){
+  const p=Math.max(0,Math.min(100,pct));
+  const hue=p*1.2;
+  return{text:`hsl(${hue},72%,38%)`,bar:`hsl(${hue},78%,52%)`};
 }
 
 let tipEl=null;
@@ -203,46 +378,105 @@ function esc(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/<
 function fmtDateShort(ds){const d=new Date(ds+"T12:00:00");return`${d.getMonth()+1}/${d.getDate()}`}
 function fmtDateMed(ds){const d=new Date(ds+"T12:00:00");return d.toLocaleDateString("en",{month:"short",day:"numeric"})}
 
-function locBadgeHTML(code,comment,session,supportList){
-  const c=lc(code);const star=comment?'<span class="star">*</span>':"";
-  let tipParts=[comment||`${locName(code)} · ${locRegion(code)}${session&&session!=="Full"?" · "+session:""}`];
-  if(supportList&&supportList.length>0)tipParts.push("Support: "+supportList.join(", "));
-  const tip=tipParts.join("<br>");
-  const label=session&&session!=="Full"?code+" ("+session.substring(0,2)+")":code;
-  const wide=supportList&&supportList.length>0;
-  return`<span class="badge" style="background:${c.bg};color:${c.text};border:1px solid ${c.border}" data-tip="${esc(tip)}" ${wide?'data-tip-wide="1"':''}>${esc(label)}${star}</span>`;
+// Rounding = physician has ANY hospital-region schedule entry on that date
+function isRoundingOnDate(phyName,dateStr){
+  const entries=getSchedForDate(phyName,dateStr);
+  return entries.some(e=>{const r=locRegion(e.location);return r&&r.toLowerCase().includes("hosp")});
 }
 
-function weekCellHTML(phyName,dateInfo){
+// star = rounding (auto-detected from hospital region), ⓘ = comment
+function locBadgeHTML(code,comment,session,supportList,cf,rounding){
+  const _c=cf||lc;
+  const c=_c(code);
+  const star=rounding?'<span class="star" data-tip="Rounding (has hospital schedule today)">*</span>':"";
+  const info=comment?'<span class="info-icon" data-tip="'+esc(comment)+'" data-tip-wide="1">ⓘ</span>':"";
+  let tipParts=[`${locName(code)} · ${locRegion(code)}${session&&session!=="Full"?" · "+session:""}`];
+  if(rounding)tipParts.push("★ Rounding");
+  if(comment)tipParts.push("Note: "+comment);
+  if(supportList&&supportList.length>0)tipParts.push("Support: "+supportList.join(", "));
+  const tip=tipParts.join("<br>");const label=session&&session!=="Full"?code+" ("+session.substring(0,2)+")":code;
+  const wide=supportList&&supportList.length>0||comment||rounding;
+  return`<span class="badge" style="background:${c.bg};color:${c.text};border:1px solid ${c.border}" data-tip="${esc(tip)}" ${wide?'data-tip-wide="1"':''}>${esc(label)}${star}${info}</span>`;
+}
+
+function weekCellHTML(phyName,dateInfo,cf){
+  const _c=cf||lc;
   const{entries,exception:ex}=getEffectiveForDate(phyName,dateInfo.str);
-  const sup=getSupportForDate(phyName,dateInfo.str);
-  if(entries.length===0&&!ex)return'<span style="color:#cbd5e1">—</span>';
+  if(entries.length===0&&!ex)return'<span style="color:#b0b8c4;font-size:11px;font-weight:500">RDO</span>';
   if(ex&&(ex.type==="PTO"||ex.type==="Conference")){
-    const tip=`${ex.type}${ex.notes?" · "+ex.notes:""}`;
-    if(entries.length===0)return`<span class="badge" style="background:#fee2e2;color:#991b1b;border:1px dashed #fca5a5;opacity:0.6;font-size:11px" data-tip="${esc(tip)}">${ex.type}</span>`;
-    return entries.map(e=>{const c=lc(e.location);return`<span class="pto-overlay" data-tip="${esc(tip)}"><span class="badge" style="background:${c.bg};color:${c.text};border:1px solid ${c.border};opacity:0.35;text-decoration:line-through">${esc(e.location)}</span><span class="pto-line"></span></span>`}).join(" ");
+    const rawVal=ex.value!=null?ex.value:(ex.ptoValue!=null?ex.ptoValue:null);
+    const ptoVal=(rawVal!=null&&rawVal!=="")?Number(rawVal):1;
+    const covers=getCoveredBy(phyName,dateInfo.str);
+    const covNames=covers.map(cv=>cv.physicianName).join(", ");
+    const tipParts=[ex.type+(ptoVal<1?' ('+ptoVal+' day)':'')];
+    if(ex.notes)tipParts.push(ex.notes);
+    if(covNames)tipParts.push("Covered by: "+covNames);
+    const tip=tipParts.join(" · ");
+    let html='';
+    // Partial PTO: show location badge + small PTO tag
+    if(ptoVal<1&&entries.length>0){
+      const rounding=isRoundingOnDate(phyName,dateInfo.str);
+      html+=entries.map(e=>{
+        const locSup=getSupportForDateAtLocation(phyName,dateInfo.str,e.location);
+        const isHospEntry=locRegion(e.location).toLowerCase().includes("hosp");
+        return locBadgeHTML(e.location,e.comment,e.session,locSup.all,cf,rounding&&!isHospEntry);
+      }).join(" ");
+      html+=` <span class="badge" style="background:#fee2e2;color:#991b1b;border:1px dashed #fca5a5;font-size:10px;padding:2px 6px;opacity:0.8" data-tip="${esc(tip)}" data-tip-wide="${covNames?'1':''}">${ex.type} ${ptoVal}</span>`;
+      if(covNames)html+=`<div class="cov-by">↑ ${esc(covNames)}</div>`;
+      return html;
+    }
+    if(entries.length===0){
+      html+=`<span class="badge" style="background:#fee2e2;color:#991b1b;border:1px dashed #fca5a5;opacity:0.6;font-size:11px" data-tip="${esc(tip)}" data-tip-wide="${covNames?'1':''}">${ex.type}</span>`;
+    }else{
+      html+=entries.map(e=>{const c=_c(e.location);return`<span class="pto-overlay" data-tip="${esc(tip)}" data-tip-wide="${covNames?'1':''}"><span class="badge" style="background:${c.bg};color:${c.text};border:1px solid ${c.border};opacity:0.35;text-decoration:line-through">${esc(e.location)}</span><span class="pto-line"></span></span>`}).join(" ");
+    }
+    if(covNames)html+=`<div class="cov-by">↑ ${esc(covNames)}</div>`;
+    return html;
   }
-  if(ex&&ex.type==="Covering Location"&&ex.coveringLocation){
-    const c=lc(ex.coveringLocation);
-    let tipParts=[`Covering: ${locName(ex.coveringLocation)}${ex.notes?" · "+ex.notes:""}`];
-    if(sup.all.length>0)tipParts.push("Support: "+sup.all.join(", "));
-    return`<span class="badge" style="background:${c.bg};color:${c.text};border:2px dashed ${c.border}" data-tip="${esc(tipParts.join('<br>'))}" data-tip-wide="1">${esc(ex.coveringLocation)} <span style="font-size:9px;font-weight:700;color:#9a3412">COV</span></span>`;
+  if(ex&&ex.type==="Cover"&&ex.coveringFor){
+    const targetLoc=getCoverTargetLocation(ex.coveringFor,dateInfo.str);
+    let html='';
+    if(entries.length>0){
+      entries.forEach(e=>{const c=_c(e.location);html+=`<span class="pto-overlay"><span class="badge" style="background:${c.bg};color:${c.text};border:1px solid ${c.border};opacity:0.3;text-decoration:line-through;font-size:11px">${esc(e.location)}</span><span class="pto-line"></span></span> `});
+    }
+    if(targetLoc){
+      const c=_c(targetLoc);
+      const covSup=getSupportForDateAtLocation(ex.coveringFor,dateInfo.str,targetLoc);
+      const tipParts=[`Covering for ${ex.coveringFor} at ${locName(targetLoc)}`];
+      if(ex.notes)tipParts.push(ex.notes);
+      if(covSup.all.length>0)tipParts.push("Support: "+covSup.all.join(", "));
+      html+=`<span class="badge" style="background:${c.bg};color:${c.text};border:2px dashed ${c.border}" data-tip="${esc(tipParts.join('<br>'))}" data-tip-wide="1">${esc(targetLoc)} <span style="font-size:9px;font-weight:700;color:#9a3412">COV</span></span>`;
+    }else{
+      html+=`<span class="badge" style="background:#fff7ed;color:#9a3412;border:2px dashed #fdba74" data-tip="Covering for ${esc(ex.coveringFor)}${ex.notes?' · '+esc(ex.notes):''}" data-tip-wide="1">COV</span>`;
+    }
+    return html;
   }
   if(entries.length===0)return'<span style="color:#cbd5e1">—</span>';
-  return entries.map(e=>locBadgeHTML(e.location,e.comment,e.session,sup.all)).join(" ");
+  // pass location-specific support; rounding = has hospital schedule today, but hide * on hospital entries themselves
+  const rounding=isRoundingOnDate(phyName,dateInfo.str);
+  return entries.map(e=>{
+    const locSup=getSupportForDateAtLocation(phyName,dateInfo.str,e.location);
+    const isHospEntry=locRegion(e.location).toLowerCase().includes("hosp");
+    return locBadgeHTML(e.location,e.comment,e.session,locSup.all,cf,rounding&&!isHospEntry);
+  }).join(" ");
 }
 
 function statusHTML(s){const m={active:{bg:"#dcfce7",text:"#166534",l:"Active"},former:{bg:"#fee2e2",text:"#991b1b",l:"Former"},upcoming:{bg:"#dbeafe",text:"#1e40af",l:"Upcoming"},closed:{bg:"#fee2e2",text:"#991b1b",l:"Closed"}};const v=m[s]||m.active;return`<span class="status" style="background:${v.bg};color:${v.text}">${v.l}</span>`}
 
 function bindTips(el){el.querySelectorAll("[data-tip]").forEach(e=>{e.addEventListener("mouseenter",()=>showTip(e,e.dataset.tip,e.dataset.tipWide==="1"));e.addEventListener("mouseleave",hideTip)})}
 
-const TABS=[{id:"schedules",label:"MD Schedules"},{id:"locations",label:"Location Schedules"},{id:"matrix",label:"Weekly Matrix"},{id:"exceptions",label:"Exceptions & PTO"},{id:"pto",label:"PTO Balances"},{id:"changelog",label:"Change Log"},{id:"directory",label:"Directory"}];
+function csvEsc(v){const s=String(v==null?"":v);return s.includes(",")||s.includes('"')||s.includes("\n")?'"'+s.replace(/"/g,'""')+'"':s}
+function downloadCSV(rows,filename){const csv=rows.map(r=>r.map(csvEsc).join(",")).join("\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url)}
+
+const TABS=[{id:"schedules",label:"MD Schedules"},{id:"locations",label:"Location Schedules"},{id:"matrix",label:"Weekly Matrix"},{id:"daysworked",label:"Days Worked"},{id:"exceptions",label:"Exceptions & PTO"},{id:"pto",label:"PTO Balances"},{id:"changelog",label:"Change Log"},{id:"directory",label:"Directory"}];
 
 function renderNav(){const nav=document.getElementById("nav");nav.innerHTML=TABS.map(t=>`<button class="${t.id===activeTab?'active':''}" data-tab="${t.id}">${t.label}</button>`).join("");nav.querySelectorAll("button").forEach(b=>{b.addEventListener("click",()=>{activeTab=b.dataset.tab;renderNav();renderTab()})})}
 
 function renderTab(){if(!DATA)return;document.getElementById("errorBox").style.display="none";const c=document.getElementById("content");
-  const wo=state.weekOffset;const hl=state.mxHL;state={weekOffset:wo,mxHL:hl};
-  switch(activeTab){case"schedules":renderSchedules(c);break;case"locations":renderLocSchedules(c);break;case"matrix":renderMatrix(c);break;case"exceptions":renderExceptions(c);break;case"pto":renderPTO(c);break;case"changelog":renderChangelog(c);break;case"directory":renderDirectory(c);break;default:c.innerHTML="";FB().innerHTML=""}}
+  const wo=state.weekOffset;const hl=state.mxHL;const em=state.exMonth;state={weekOffset:wo,mxHL:hl,exMonth:em};
+  switch(activeTab){case"schedules":renderSchedules(c);break;case"locations":renderLocSchedules(c);break;case"matrix":renderMatrix(c);break;case"daysworked":renderDaysWorked(c);break;case"exceptions":renderExceptions(c);break;case"pto":renderPTO(c);break;case"changelog":renderChangelog(c);break;case"directory":renderDirectory(c);break;default:c.innerHTML="";FB().innerHTML=""}
+  requestAnimationFrame(measureHeader);
+}
 
 // ═══ MD SCHEDULES ═══
 function renderSchedules(c){
@@ -256,34 +490,49 @@ function renderSchedules(c){
       <select id="s-loc"><option value="All">All Locations</option>${locs.map(l=>`<option value="${esc(l.locationCode)}">${esc(l.locationName)}</option>`).join("")}</select>
       ${weekNavHTML('s')}
     </div>`;
-    let h=`<div style="overflow-x:auto"><table><thead><tr><th>Physician</th><th>Specialty</th>`;
-    wd.forEach(d=>{h+=`<th class="ctr" style="min-width:100px"><div>${d.day}</div><div style="font-size:11px;font-weight:500;color:#94a3b8">${d.label}</div></th>`});
+    requestAnimationFrame(measureHeader);
+    let h=`<div class="table-scroll"><table><thead><tr><th>Physician</th><th>Specialty</th>`;
+    wd.forEach(d=>{
+      const hols=getHolidaysForDate(d.str);
+      const holLabel=hols.length>0?`<div style="font-size:9px;font-weight:700;color:#92400e;background:#fef3c7;border-radius:3px;padding:0 3px;margin-top:2px">${esc(hols[0].name)}</div>`:'';
+      h+=`<th class="ctr" style="min-width:100px"><div>${d.day}</div><div style="font-size:11px;font-weight:500;color:#94a3b8">${d.label}</div>${holLabel}</th>`;
+    });
     h+=`</tr></thead><tbody id="s-body"></tbody></table></div>`;
     h+=`<div style="margin-top:10px;font-size:12px;color:#94a3b8;font-style:italic">Hover a location badge to see APP support assignments.</div>`;
+    // Legend
+    h+=`<div style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#64748b;align-items:center">
+      <span style="display:inline-flex;align-items:center;gap:4px"><span style="color:#ef4444;font-weight:800;font-size:14px">*</span> Rounding</span>
+      <span style="display:inline-flex;align-items:center;gap:4px"><span style="color:#3b82f6;font-weight:700;font-size:13px">ⓘ</span> Has comment</span>`;
+    if(REGION_COLORS_MAP){
+      h+='<span style="font-weight:600;margin-left:8px">Regions:</span>';
+      const seenColors=new Map();
+      Object.entries(REGION_COLORS_MAP).forEach(([region,clr])=>{
+        const isHosp=region.toLowerCase().includes("hosp");
+        const key=isHosp?"Hospital":region;
+        if(seenColors.has(key))return;
+        seenColors.set(key,true);
+        h+=`<span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${clr.bg};border:1px solid ${clr.border}"></span>${esc(key)}</span>`;
+      });
+    }
+    h+='</div>';
     c.innerHTML=h;
 
     function update(){
       const search=document.getElementById("s-search").value.toLowerCase();
-      const spec=document.getElementById("s-spec").value;
-      const region=document.getElementById("s-region").value;
-      const loc=document.getElementById("s-loc").value;
+      const spec=document.getElementById("s-spec").value;const region=document.getElementById("s-region").value;const loc=document.getElementById("s-loc").value;
       const phys=getActiveMDs().filter(p=>{
         if(search&&!p.physicianName.toLowerCase().includes(search)&&!(p.npi||"").includes(search))return false;
         if(spec!=="All"&&p.specialty!==spec)return false;
-        if(loc!=="All"||region!=="All"){
-          const hasMatch=wd.some(d=>{const entries=getSchedForDate(p.physicianName,d.str);return entries.some(e=>(loc==="All"||e.location===loc)&&(region==="All"||locRegion(e.location)===region))});
-          if(!hasMatch)return false;
-        }
+        if(loc!=="All"||region!=="All"){const hasMatch=wd.some(d=>{const entries=getSchedForDate(p.physicianName,d.str);return entries.some(e=>(loc==="All"||e.location===loc)&&(region==="All"||locRegion(e.location)===region))});if(!hasMatch)return false}
         return true;
-      });
+      }).sort((a,b)=>a.physicianName.localeCompare(b.physicianName));
       const tbody=document.getElementById("s-body");
-      tbody.innerHTML=phys.map(p=>`<tr class="striped"><td style="white-space:nowrap"><strong>${esc(p.physicianName)}</strong></td><td style="color:#64748b">${esc(p.specialty)}</td>`+wd.map(d=>`<td class="ctr">${weekCellHTML(p.physicianName,d)}</td>`).join("")+`</tr>`).join("")||'<tr><td colspan="7" style="padding:24px;text-align:center;color:#94a3b8">No physicians match filters.</td></tr>';
+      tbody.innerHTML=phys.map(p=>`<tr class="striped"><td style="white-space:nowrap"><strong>${esc(p.physicianName)}</strong></td><td style="color:#64748b">${esc(p.specialty)}</td>`+wd.map(d=>`<td class="ctr">${weekCellHTML(p.physicianName,d,rc)}</td>`).join("")+`</tr>`).join("")||'<tr><td colspan="7" style="padding:24px;text-align:center;color:#94a3b8">No physicians match filters.</td></tr>';
       bindTips(tbody);
     }
     ["s-search"].forEach(id=>document.getElementById(id).addEventListener("input",update));
     ["s-spec","s-region","s-loc"].forEach(id=>document.getElementById(id).addEventListener("change",update));
-    bindWeekNav('s',build);
-    update();
+    bindWeekNav('s',build);update();
   }
   build();
 }
@@ -299,53 +548,77 @@ function renderLocSchedules(c){
       <select id="ls-region"><option value="All">All Regions</option>${regions.map(r=>`<option ${r===state.lsRegion?'selected':''}>${esc(r)}</option>`).join("")}</select>
       ${weekNavHTML('ls')}
     </div>`;
+    requestAnimationFrame(measureHeader);
     c.innerHTML='<div id="ls-body"></div>';
 
     function update(){
       const search=document.getElementById("ls-search").value.toLowerCase();
-      const filtered=locsAll.filter(l=>!search||l.locationName.toLowerCase().includes(search)||l.locationCode.toLowerCase().includes(search));
-      const activeMDs=getActiveMDs();
-      const body=document.getElementById("ls-body");
+      const filtered=locsAll.filter(l=>!search||l.locationName.toLowerCase().includes(search)||l.locationCode.toLowerCase().includes(search))
+        .sort((a,b)=>{
+          const aHosp=a.region&&a.region.toLowerCase().includes("hosp")?1:0;
+          const bHosp=b.region&&b.region.toLowerCase().includes("hosp")?1:0;
+          if(aHosp!==bHosp)return aHosp-bHosp;
+          const rCmp=(a.region||"").localeCompare(b.region||"");
+          if(rCmp!==0)return rCmp;
+          return a.locationName.localeCompare(b.locationName);
+        });
+      const activeMDs=getActiveMDs();const body=document.getElementById("ls-body");
 
       body.innerHTML=filtered.map(loc=>{
-        const cl=lc(loc.locationCode);
+        const cl=rc(loc.locationCode);
         const phyNames=new Set();
         wd.forEach(d=>{
-          activeMDs.forEach(p=>{const entries=getSchedForDate(p.physicianName,d.str);if(entries.some(e=>e.location===loc.locationCode))phyNames.add(p.physicianName)});
-          getExceptionsOnDate(d.str).filter(e=>e.type==="Covering Location"&&e.coveringLocation===loc.locationCode).forEach(e=>{const phy=activeMDs.find(p=>p.physicianName===e.physicianName);if(phy)phyNames.add(e.physicianName)});
+          activeMDs.forEach(p=>{
+            const entries=getSchedForDate(p.physicianName,d.str);
+            if(entries.some(e=>e.location===loc.locationCode))phyNames.add(p.physicianName);
+            const ex=getExceptionForDate(p.physicianName,d.str);
+            if(ex&&ex.type==="Cover"&&ex.coveringFor){
+              const tgt=getCoverTargetLocation(ex.coveringFor,d.str);
+              if(tgt===loc.locationCode)phyNames.add(p.physicianName);
+            }
+          });
         });
-        const phys=[...phyNames].map(n=>activeMDs.find(p=>p.physicianName===n)).filter(Boolean);
+        const phys=[...phyNames].map(n=>activeMDs.find(p=>p.physicianName===n)).filter(Boolean).sort((a,b)=>a.physicianName.localeCompare(b.physicianName));
         let rows="";
         if(phys.length>0){
-          rows=`<table><thead><tr><th style="padding-left:18px">Physician</th><th>Specialty</th>${wd.map(d=>`<th class="ctr"><div>${d.day}</div><div style="font-size:11px;font-weight:500;color:#94a3b8">${d.label}</div></th>`).join("")}</tr></thead><tbody>`;
+          rows=`<table><thead><tr><th style="padding-left:16px">Physician</th><th>Specialty</th>${wd.map(d=>{const hols=getHolidaysForDate(d.str);const holLabel=hols.length>0?`<div style="font-size:8px;font-weight:700;color:#92400e;background:#fef3c7;border-radius:3px;padding:0 3px;margin-top:2px">${esc(hols[0].name)}</div>`:'';return`<th class="ctr"><div>${d.day}</div><div style="font-size:10px;font-weight:500;color:#94a3b8">${d.label}</div>${holLabel}</th>`}).join("")}</tr></thead><tbody>`;
           phys.forEach(p=>{
-            rows+=`<tr class="striped"><td style="padding-left:18px;font-weight:600;white-space:nowrap">${esc(p.physicianName)}</td><td style="color:#64748b">${esc(p.specialty)}</td>`;
+            rows+=`<tr class="striped"><td style="padding-left:16px;font-weight:600;white-space:nowrap;font-size:13px">${esc(p.physicianName)}</td><td style="color:#64748b;font-size:12px">${esc(p.specialty)}</td>`;
             wd.forEach(d=>{
               const{entries,exception:ex}=getEffectiveForDate(p.physicianName,d.str);
               const isPto=ex&&(ex.type==="PTO"||ex.type==="Conference");
-              const isCov=ex&&ex.type==="Covering Location";
-              if(isCov&&ex.coveringLocation===loc.locationCode){rows+=`<td class="ctr"><span data-tip="Covering from ${esc(locName(entries[0]?.location||''))}" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${cl.text};border:2px dashed #f59e0b"></span></td>`;return}
-              if(isCov&&ex.coveringLocation!==loc.locationCode){rows+=`<td class="ctr"><span data-tip="Covering at ${esc(locName(ex.coveringLocation))}" style="font-size:12px;color:#b0b8c4;font-style:italic">${esc(ex.coveringLocation)}</span></td>`;return}
+              const isCov=ex&&ex.type==="Cover"&&ex.coveringFor;
+              const covTarget=isCov?getCoverTargetLocation(ex.coveringFor,d.str):null;
+              if(isCov&&covTarget===loc.locationCode){rows+=`<td class="ctr"><span data-tip="Covering for ${esc(ex.coveringFor)}" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${cl.text};border:2px dashed #f59e0b"></span></td>`;return}
+              if(isCov&&covTarget!==loc.locationCode){const otherName=covTarget?locName(covTarget):"away";rows+=`<td class="ctr"><span data-tip="Covering for ${esc(ex.coveringFor)} at ${esc(otherName)}" style="font-size:11px;color:#b0b8c4;font-style:italic">${esc(covTarget||'COV')}</span></td>`;return}
               const hereEntries=entries.filter(e=>e.location===loc.locationCode);
-              if(hereEntries.length===0){const oe=entries[0];if(oe){rows+=`<td class="ctr"><span data-tip="${esc(locName(oe.location))}" style="font-size:12px;color:#b0b8c4;font-style:italic">${esc(oe.location)}</span></td>`}else{rows+=`<td class="ctr"><span style="color:#e2e8f0">—</span></td>`}return}
+              if(hereEntries.length===0){const oe=entries[0];if(oe){rows+=`<td class="ctr"><span data-tip="${esc(locName(oe.location))}" style="font-size:11px;color:#b0b8c4;font-style:italic">${esc(oe.location)}</span></td>`}else{rows+=`<td class="ctr"><span style="color:#e2e8f0">—</span></td>`}return}
               const isFull=hereEntries.some(e=>!e.session||e.session==="Full");const hasAM=hereEntries.some(e=>e.session==="AM");const hasPM=hereEntries.some(e=>e.session==="PM");
-              if(isPto){const tip=`${ex.type}${ex.notes?" · "+ex.notes:""}`;rows+=`<td class="ctr"><span data-tip="${esc(tip)}" style="opacity:0.3;text-decoration:line-through"><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${cl.text}"></span></span></td>`;return}
-              if(isFull||(hasAM&&hasPM)){const cm=hereEntries.find(e=>e.comment)?.comment;const tip=cm||locName(loc.locationCode);rows+=`<td class="ctr"><span data-tip="${esc(tip)}" style="position:relative;display:inline-block"><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${cl.text}"></span>${cm?'<span style="position:absolute;top:-6px;right:-8px;font-size:13px;font-weight:800;color:#ef4444">*</span>':""}</span></td>`}
-              else if(hasAM){const ot=entries.find(e=>e.session==="PM"&&e.location!==loc.locationCode);const oc=ot?lc(ot.location):DEFAULT_LOC;const tip=`AM: ${locName(loc.locationCode)}${ot?", PM: "+locName(ot.location):""}`;rows+=`<td class="ctr"><span data-tip="${esc(tip)}"><span class="half-circle"><span class="left" style="background:${cl.text}"></span><span class="right" style="background:${ot?oc.border:'#e2e8f0'}"></span></span></span></td>`}
-              else if(hasPM){const ot=entries.find(e=>e.session==="AM"&&e.location!==loc.locationCode);const oc=ot?lc(ot.location):DEFAULT_LOC;const tip=`${ot?"AM: "+locName(ot.location)+", ":""}PM: ${locName(loc.locationCode)}`;rows+=`<td class="ctr"><span data-tip="${esc(tip)}"><span class="half-circle"><span class="left" style="background:${ot?oc.border:'#e2e8f0'}"></span><span class="right" style="background:${cl.text}"></span></span></span></td>`}
+              const anyRounding=isRoundingOnDate(p.physicianName,d.str)&&!locRegion(loc.locationCode).toLowerCase().includes("hosp");
+              const anyCmt=hereEntries.find(e=>e.comment)?.comment;
+              if(isPto){const covers=getCoveredBy(p.physicianName,d.str);const covBy=covers.map(cv=>cv.physicianName).join(", ");rows+=`<td class="ctr"><span data-tip="${esc(ex.type+(ex.notes?' · '+ex.notes:'')+(covBy?' · Covered by: '+covBy:''))}" data-tip-wide="${covBy?'1':''}" style="opacity:0.3;text-decoration:line-through"><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${cl.text}"></span></span>${covBy?'<div class="cov-by">↑ '+esc(covBy)+'</div>':''}</td>`;return}
+              if(isFull||(hasAM&&hasPM)){
+                let tipText=locName(loc.locationCode);
+                if(anyRounding)tipText+=" · ★ Rounding";
+                if(anyCmt)tipText+=" · Note: "+anyCmt;
+                rows+=`<td class="ctr"><span data-tip="${esc(tipText)}" ${(anyRounding||anyCmt)?'data-tip-wide="1"':''} style="position:relative;display:inline-block"><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${cl.text}"></span>${anyRounding?'<span style="position:absolute;top:-5px;right:-7px;font-size:12px;font-weight:800;color:#ef4444">*</span>':""}${anyCmt?'<span style="position:absolute;top:-5px;left:-7px;font-size:11px;font-weight:700;color:#3b82f6">ⓘ</span>':""}</span></td>`;
+              }
+              else if(hasAM){const ot=entries.find(e=>e.session==="PM"&&e.location!==loc.locationCode);const otName=ot?locName(ot.location):'Off';
+                rows+=`<td class="ctr"><span data-tip="AM: ${esc(locName(loc.locationCode))}${ot?', PM: '+esc(otName):''}" data-tip-wide="1" style="position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:1px"><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${cl.text}"></span><span style="font-size:9px;font-weight:700;color:${cl.text};background:${cl.bg};border:1px solid ${cl.border};border-radius:3px;padding:0 3px;line-height:1.4">AM</span>${anyRounding?'<span style="position:absolute;top:-5px;right:-9px;font-size:12px;font-weight:800;color:#ef4444">*</span>':""}</span></td>`}
+              else if(hasPM){const ot=entries.find(e=>e.session==="AM"&&e.location!==loc.locationCode);const otName=ot?locName(ot.location):'Off';
+                rows+=`<td class="ctr"><span data-tip="${ot?'AM: '+esc(otName)+', ':''}PM: ${esc(locName(loc.locationCode))}" data-tip-wide="1" style="position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:1px"><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${cl.text}"></span><span style="font-size:9px;font-weight:700;color:${cl.text};background:${cl.bg};border:1px solid ${cl.border};border-radius:3px;padding:0 3px;line-height:1.4">PM</span>${anyRounding?'<span style="position:absolute;top:-5px;right:-9px;font-size:12px;font-weight:800;color:#ef4444">*</span>':""}</span></td>`}
             });
             rows+="</tr>";
           });
           rows+="</tbody></table>";
-        }else rows='<div style="padding:20px;text-align:center;color:#94a3b8;font-size:14px">No physicians scheduled this week.</div>';
-        return`<div class="loc-block"><div class="loc-block-header" style="background:${cl.bg};border-bottom:1px solid ${cl.border}"><div><span style="font-weight:700;font-size:16px;color:${cl.text}">${esc(loc.locationName)}</span><span style="margin-left:8px;font-size:13px;color:${cl.text};opacity:0.7">${esc(loc.locationCode)} · ${esc(loc.region)}</span></div><span style="font-size:13px;color:${cl.text};font-weight:600">${phys.length} physician${phys.length!==1?"s":""}</span></div>${rows}</div>`;
+        }else rows='<div style="padding:14px;text-align:center;color:#94a3b8;font-size:13px">No physicians scheduled this week.</div>';
+        return`<div class="loc-block"><div class="loc-block-header" style="background:${cl.bg};border-bottom:1px solid ${cl.border}"><div><span style="font-weight:700;font-size:15px;color:${cl.text}">${esc(loc.locationName)}</span><span style="margin-left:8px;font-size:12px;color:${cl.text};opacity:0.7">${esc(loc.locationCode)} · ${esc(loc.region)}</span></div><span style="font-size:12px;color:${cl.text};font-weight:600">${phys.length} physician${phys.length!==1?"s":""}</span></div>${rows}</div>`;
       }).join("");
       bindTips(body);
     }
     document.getElementById("ls-search").addEventListener("input",update);
     document.getElementById("ls-region").addEventListener("change",e=>{state.lsRegion=e.target.value;build()});
-    bindWeekNav('ls',build);
-    update();
+    bindWeekNav('ls',build);update();
   }
   build();
 }
@@ -356,13 +629,17 @@ function renderMatrix(c){
   if(!state.mxHL)state.mxHL=null;
   function build(){
     const wd=getWeekDates(state.weekOffset);
-    const locs=getActiveLocations().filter(l=>l.region===state.mxRegion);const ap=getActiveMDs();
-    const hl=state.mxHL;
+    const locs=getActiveLocations().filter(l=>l.region===state.mxRegion);const ap=getActiveMDs();const hl=state.mxHL;
     FB().innerHTML=`<div class="filters"><select id="mx-r">${regions.map(r=>`<option ${r===state.mxRegion?'selected':''}>${esc(r)}</option>`).join("")}</select>${weekNavHTML('mx')}</div>`;
+    requestAnimationFrame(measureHeader);
     let h='';
     if(hl)h+=`<div class="hl-banner">Highlighting: <strong>${esc(hl.name)}</strong> <span style="font-size:11px;color:#b45309">(${hl.type==='app'?'APP':'MD'})</span><button id="mx-c" style="background:none;border:none;color:#92400e;cursor:pointer;font-weight:600;font-size:13px;margin-left:8px">✕ Clear</button></div>`;
-    h+='<div style="overflow-x:auto"><table style="font-size:13px"><thead><tr><th style="min-width:130px">Location</th>';
-    wd.forEach(d=>{h+=`<th class="ctr" style="min-width:160px"><div>${d.day}</div><div style="font-size:11px;font-weight:500;color:#94a3b8">${d.label}</div></th>`});
+    h+='<div class="table-scroll"><table style="font-size:13px"><thead><tr><th style="min-width:130px">Location</th>';
+    wd.forEach(d=>{
+      const hols=getHolidaysForDate(d.str);
+      const holLabel=hols.length>0?`<div style="font-size:9px;font-weight:700;color:#92400e;background:#fef3c7;border-radius:3px;padding:0 3px;margin-top:2px">${esc(hols[0].name)}</div>`:'';
+      h+=`<th class="ctr" style="min-width:160px"><div>${d.day}</div><div style="font-size:11px;font-weight:500;color:#94a3b8">${d.label}</div>${holLabel}</th>`;
+    });
     h+='</tr></thead><tbody>';
     locs.forEach(loc=>{
       const cl2=lc(loc.locationCode);
@@ -370,21 +647,88 @@ function renderMatrix(c){
       wd.forEach(d=>{
         h+='<td style="padding:6px 8px;border-right:1px solid #f1f5f9;vertical-align:top;background:#fff"><div style="display:flex;flex-direction:column;gap:4px">';
         let has=false;
+        const shownSupport=new Set();
+        const coveringAtThisLoc=new Set();
+        const allActivePhys=getActivePhysicians();
+        const isHospLoc=locRegion(loc.locationCode).toLowerCase().includes("hosp");
+        allActivePhys.forEach(p=>{
+          const ex2=getExceptionForDate(p.physicianName,d.str);
+          if(ex2&&ex2.type==="Cover"&&ex2.coveringFor){
+            const tgt=getCoverTargetLocation(ex2.coveringFor,d.str);
+            if(tgt===loc.locationCode)coveringAtThisLoc.add(p.physicianName);
+          }
+        });
         ap.forEach(p=>{
           const sched=getSchedForDate(p.physicianName,d.str).filter(s=>s.location===loc.locationCode);
           const ex=getExceptionForDate(p.physicianName,d.str);
           const isPto=ex&&(ex.type==="PTO"||ex.type==="Conference");
-          const isCov=ex&&ex.type==="Covering Location";
-          if(sched.length===0&&!(isCov&&ex.coveringLocation===loc.locationCode))return;
+          const isCov=ex&&ex.type==="Cover"&&ex.coveringFor;
+          const covTarget=isCov?getCoverTargetLocation(ex.coveringFor,d.str):null;
+          if(isCov&&covTarget===loc.locationCode&&sched.length===0)return;
+          if(sched.length===0&&!(isCov&&covTarget===loc.locationCode))return;
           const nm=esc(p.physicianName.replace("Dr. ",""));
-          const sup=getSupportForDate(p.physicianName,d.str);
-          const mdHl=hl&&((hl.type==='md'&&hl.name===p.physicianName)||(hl.type==='app'&&sup.all.includes(hl.name)));
-          const mdDim=hl&&!mdHl;
+          // CHANGED: use location-specific support
+          const sup=getSupportForDateAtLocation(p.physicianName,d.str,loc.locationCode);
+          sup.all.forEach(a=>shownSupport.add(a));
+          const mdHl=hl&&((hl.type==='md'&&hl.name===p.physicianName)||(hl.type==='app'&&sup.all.includes(hl.name)));const mdDim=hl&&!mdHl;
           const appTags=sup.all.map(a=>{const aHl=hl&&((hl.type==='app'&&hl.name===a)||(hl.type==='md'&&hl.name===p.physicianName));const aDim=hl&&!aHl;return`<span class="mx-app ${aHl?'highlighted':''} ${aDim?'dimmed':''}" data-app="${esc(a)}">${esc(a)}</span>`}).join('');
-          if(sched.length>0&&isPto){h+=`<div class="mx-pair"><div class="matrix-name pto ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" data-tip="${esc(p.physicianName+' — '+ex.type)}" style="background:#fef2f2;border:1px dashed #fca5a5">${nm}</div></div>`;has=true;return}
-          if(sched.length>0&&isCov&&ex.coveringLocation!==loc.locationCode){h+=`<div class="mx-pair"><div class="matrix-name pto ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" data-tip="${esc(p.physicianName+' — Covering at '+locName(ex.coveringLocation))}" style="background:#fef2f2;border:1px dashed #fca5a5">${nm}</div></div>`;has=true;return}
-          if(isCov&&ex.coveringLocation===loc.locationCode){h+=`<div class="mx-pair"><div class="matrix-name ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" style="background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b">${nm}<span style="font-size:9px;margin-left:4px;color:#9a3412;font-weight:700">COV</span></div>${appTags}</div>`;has=true;return}
-          if(sched.length>0){const cmt=sched[0].comment;h+=`<div class="mx-pair"><div class="matrix-name ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" style="background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b">${nm}${cmt?'<span style="color:#ef4444;margin-left:2px;font-weight:800">*</span>':''}</div>${appTags}</div>`;has=true}
+          // Rounding = has any hospital-region schedule on this date
+          const anyRounding=isRoundingOnDate(p.physicianName,d.str);
+          const cmt=sched.find(s=>s.comment)?.comment;
+          const roundingStar=anyRounding?'<span style="color:#ef4444;margin-left:2px;font-weight:800" data-tip="Rounding">*</span>':'';
+          const infoIcon=cmt?'<span class="mx-info" data-tip="'+esc(cmt)+'" data-tip-wide="1">ⓘ</span>':'';
+          if(sched.length>0&&isPto){const covers=getCoveredBy(p.physicianName,d.str).filter(cv=>coveringAtThisLoc.has(cv.physicianName));const covBy=covers.map(cv=>cv.physicianName.replace("Dr. ","")).join(", ");const tipText=p.physicianName+' — '+ex.type+(covBy?' · Covered by: '+covBy:'');h+=`<div class="mx-pair"><div class="matrix-name pto ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" data-tip="${esc(tipText)}" data-tip-wide="${covBy?'1':''}" style="background:#fef2f2;border:1px dashed #fca5a5">${nm}</div>${covBy?'<span style="font-size:9px;color:#9a3412;font-weight:600">↑'+esc(covBy)+'</span>':''}${appTags}</div>`;has=true;return}
+          if(sched.length>0&&isCov&&covTarget!==loc.locationCode){const tipText=p.physicianName+' — Covering for '+ex.coveringFor+(covTarget?' at '+locName(covTarget):'');h+=`<div class="mx-pair"><div class="matrix-name pto ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" data-tip="${esc(tipText)}" data-tip-wide="1" style="background:#fef2f2;border:1px dashed #fca5a5">${nm}</div>${appTags}</div>`;has=true;return}
+          if(sched.length>0){
+            const sessions=sched.map(s=>s.session).filter(Boolean);
+            const isAMOnly=sessions.length>0&&sessions.every(s=>s==="AM");
+            const isPMOnly=sessions.length>0&&sessions.every(s=>s==="PM");
+            const sessionTag=(isAMOnly||isPMOnly)?`<span style="font-size:9px;font-weight:700;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:3px;padding:0 3px;margin-left:3px;vertical-align:middle">${isAMOnly?'AM':'PM'}</span>`:'';
+            h+=`<div class="mx-pair"><div class="matrix-name ${mdHl?'highlighted':''} ${mdDim?'dimmed':''}" data-phy="${esc(p.physicianName)}" style="background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b">${nm}${roundingStar}${infoIcon}${sessionTag}</div>${appTags}</div>`;has=true}
+        });
+        const activeApps=getActivePhysicians().filter(p=>p.role==="APP");
+        activeApps.forEach(p=>{
+          const ex=getExceptionForDate(p.physicianName,d.str);
+          const isPto=ex&&(ex.type==="PTO"||ex.type==="Conference");
+          const isCov=ex&&ex.type==="Cover"&&ex.coveringFor;
+          const covTarget=isCov?getCoverTargetLocation(ex.coveringFor,d.str):null;
+          const appSched=getSchedForDate(p.physicianName,d.str).filter(s=>s.location===loc.locationCode);
+          // APP covering someone at this location (even if not normally scheduled here)
+          if(isCov&&covTarget===loc.locationCode&&appSched.length===0){
+            if(shownSupport.has(p.physicianName))return;
+            const nm=esc(p.physicianName.replace("Dr. ",""));
+            const aHl=hl&&hl.type==='app'&&hl.name===p.physicianName;const aDim=hl&&!aHl;
+            h+=`<div class="mx-pair"><span class="mx-app ${aHl?'highlighted':''} ${aDim?'dimmed':''}" data-app="${esc(p.physicianName)}" style="font-size:12px;padding:3px 8px;border:2px dashed #fdba74;background:#fff7ed;color:#9a3412">${nm} <span style="font-size:9px;font-weight:700">COV</span></span></div>`;
+            has=true;return;
+          }
+          if(appSched.length===0)return;
+          if(shownSupport.has(p.physicianName))return;
+          const nm=esc(p.physicianName.replace("Dr. ",""));
+          const aHl=hl&&hl.type==='app'&&hl.name===p.physicianName;const aDim=hl&&!aHl;
+          if(isPto){
+            const covers=getCoveredBy(p.physicianName,d.str).filter(cv=>coveringAtThisLoc.has(cv.physicianName));
+            const covBy=covers.map(cv=>cv.physicianName.replace("Dr. ","")).join(", ");
+            h+=`<div class="mx-pair"><span class="mx-app ${aHl?'highlighted':''} ${aDim?'dimmed':''}" data-app="${esc(p.physicianName)}" style="text-decoration:line-through;opacity:0.5;font-size:12px;padding:3px 8px">${nm} <span style="font-size:9px">PTO</span></span>${covBy?'<span style="font-size:9px;color:#9a3412;font-weight:600">↑'+esc(covBy)+'</span>':''}</div>`;
+          }else if(isCov&&covTarget!==loc.locationCode){
+            h+=`<div class="mx-pair"><span class="mx-app ${aHl?'highlighted':''} ${aDim?'dimmed':''}" data-app="${esc(p.physicianName)}" style="text-decoration:line-through;opacity:0.5;font-size:12px;padding:3px 8px">${nm} <span style="font-size:9px">COV</span></span></div>`;
+          }else{
+            const appSessions=appSched.map(s=>s.session).filter(Boolean);
+            const appAM=appSessions.length>0&&appSessions.every(s=>s==="AM");
+            const appPM=appSessions.length>0&&appSessions.every(s=>s==="PM");
+            const appSessTag=(appAM||appPM)?` <span style="font-size:8px;font-weight:700;color:#64748b">${appAM?'AM':'PM'}</span>`:'';
+            h+=`<div class="mx-pair"><span class="mx-app ${aHl?'highlighted':''} ${aDim?'dimmed':''}" data-app="${esc(p.physicianName)}" style="font-size:12px;padding:3px 8px">${nm}${appSessTag}</span></div>`;
+          }
+          has=true;
+        });
+        const allSchedHere=DATA.schedules.filter(s=>s.effectiveFrom<=d.str&&(!s.effectiveTo||s.effectiveTo>=d.str)&&s.location===loc.locationCode&&["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date(d.str+"T12:00:00").getDay()]===s.day);
+        const orphanSupport=new Set();
+        allSchedHere.forEach(s=>{
+          [s.support,s.support2].filter(Boolean).forEach(nm=>{if(!shownSupport.has(nm)&&!activeApps.some(a=>a.physicianName===nm))orphanSupport.add(nm)});
+        });
+        orphanSupport.forEach(nm=>{
+          const aHl=hl&&hl.type==='app'&&hl.name===nm;const aDim=hl&&!aHl;
+          h+=`<div class="mx-pair"><span class="mx-app ${aHl?'highlighted':''} ${aDim?'dimmed':''}" data-app="${esc(nm)}" style="font-size:12px;padding:3px 8px">${esc(nm)}</span></div>`;
+          has=true;
         });
         if(!has)h+='<span style="color:#e2e8f0;font-size:11px">—</span>';
         h+='</div></td>';
@@ -392,12 +736,15 @@ function renderMatrix(c){
       h+='</tr>';
     });
     h+='</tbody></table></div>';
+    // CHANGED: updated legend with rounding and comment icons
     h+=`<div style="margin-top:16px;display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#64748b">
       <div style="display:flex;align-items:center;gap:6px"><span style="padding:2px 8px;border-radius:4px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;font-weight:600">Name</span> Scheduled</div>
       <div style="display:flex;align-items:center;gap:6px"><span class="mx-app" style="display:inline-block">APP Name</span> Support (click to highlight)</div>
       <div style="display:flex;align-items:center;gap:6px"><span style="padding:2px 8px;border-radius:4px;background:#fef2f2;border:1px dashed #fca5a5;font-size:11px;font-weight:600;color:#d4a0a0;text-decoration:line-through">Name</span> On PTO</div>
       <div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;font-weight:700;color:#9a3412">COV</span> Covering</div>
-      <div style="display:flex;align-items:center;gap:6px"><span style="color:#ef4444;font-weight:800">*</span> Comment</div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="color:#ef4444;font-weight:800">*</span> Rounding</div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="color:#3b82f6;font-weight:700;font-size:13px">ⓘ</span> Comment</div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="font-size:9px;font-weight:700;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:3px;padding:0 4px">AM</span> / <span style="font-size:9px;font-weight:700;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:3px;padding:0 4px">PM</span> Half day</div>
       <div style="display:flex;align-items:center;gap:6px"><span style="padding:2px 8px;border-radius:4px;background:#fef3c7;border:1.5px solid #f59e0b;font-size:11px;font-weight:600">Name</span> Highlighted</div></div>`;
     c.innerHTML=h;
     document.getElementById("mx-r").addEventListener("change",e=>{state.mxRegion=e.target.value;build()});
@@ -410,6 +757,183 @@ function renderMatrix(c){
   build();
 }
 
+// ═══ DAYS WORKED ═══
+function renderDaysWorked(c){
+  state.dwMonth=state.dwMonth||0;state.dwMode=state.dwMode||"physician";
+  function isHospRegion(regionStr){return regionStr&&regionStr.toLowerCase().includes("hosp")}
+
+  function getMonthWeekdays(year,month){
+    const days=[];const dim=new Date(year,month+1,0).getDate();
+    for(let d=1;d<=dim;d++){const dt=new Date(year,month,d);const dow=dt.getDay();if(dow!==0&&dow!==6){days.push(dt.toISOString().slice(0,10))}}
+    return days;
+  }
+
+  function getWorkDay(phyName,dateStr){
+    const ex=getExceptionForDate(phyName,dateStr);
+    if(ex&&(ex.type==="PTO"||ex.type==="Conference"))return null;
+    if(ex&&ex.type==="Cover"&&ex.coveringFor){
+      const tgt=getCoverTargetLocation(ex.coveringFor,dateStr);
+      if(tgt)return[{location:tgt,fraction:1}];
+      return null;
+    }
+    const entries=getSchedForDate(phyName,dateStr);
+    if(entries.length===0)return null;
+    const hasAM=entries.some(e=>e.session==="AM");const hasPM=entries.some(e=>e.session==="PM");
+    if(hasAM||hasPM){
+      const result=[];
+      const amEntries=entries.filter(e=>e.session==="AM");const pmEntries=entries.filter(e=>e.session==="PM");
+      const fullEntries=entries.filter(e=>!e.session||e.session==="Full");
+      if(fullEntries.length>0)return[{location:fullEntries[0].location,fraction:1}];
+      amEntries.forEach(e=>result.push({location:e.location,fraction:0.5}));
+      pmEntries.forEach(e=>result.push({location:e.location,fraction:0.5}));
+      return result.length>0?result:null;
+    }
+    const seen=new Set();const result=[];
+    entries.forEach(e=>{if(!seen.has(e.location)){seen.add(e.location);result.push({location:e.location,fraction:1})}});
+    return result.length>0?result:null;
+  }
+
+  function fmtNum(n){return n%1===0?n:n.toFixed(1)}
+
+  function exportDW(weekdays,monthLabel){
+    let rows=[];
+    if(state.dwMode==="physician"){
+      rows.push(["Physician","NPI","Specialty","Role","Hospital Days","Office Days","Total Worked","PTO Days"]);
+      const allPhys=getActivePhysicians();
+      allPhys.forEach(p=>{
+        let hosp=0,office=0,pto=0;
+        weekdays.forEach(ds=>{
+          const ex=getExceptionForDate(p.physicianName,ds);
+          if(ex&&(ex.type==="PTO"||ex.type==="Conference")){pto++;return}
+          const work=getWorkDay(p.physicianName,ds);
+          if(!work)return;
+          work.forEach(w=>{const reg=locRegion(w.location);if(isHospRegion(reg))hosp+=w.fraction;else office+=w.fraction});
+        });
+        const total=hosp+office;
+        if(total>0||pto>0)rows.push([p.physicianName,p.npi||"",p.specialty||"",p.role||"MD",fmtNum(hosp),fmtNum(office),fmtNum(total),pto>0?pto:0]);
+      });
+    }else{
+      const allPhys=getActivePhysicians();const locData={};
+      allPhys.forEach(p=>{weekdays.forEach(ds=>{const work=getWorkDay(p.physicianName,ds);if(!work)return;work.forEach(w=>{if(!locData[w.location])locData[w.location]={total:0,md:0,app:0,physicians:new Set()};const ld=locData[w.location];ld.total+=w.fraction;ld.physicians.add(p.physicianName);const role=p.role||"MD";if(role==="APP")ld.app+=w.fraction;else ld.md+=w.fraction})})});
+      rows.push(["Location","Code","Region","Type","Physicians","Total Days","MD Days","APP Days"]);
+      Object.keys(locData).sort((a,b)=>locData[b].total-locData[a].total).forEach(locCode=>{
+        const ld=locData[locCode];const reg=locRegion(locCode);
+        rows.push([locName(locCode),locCode,reg,isHospRegion(reg)?"Hospital":"Office",ld.physicians.size,fmtNum(ld.total),fmtNum(ld.md),fmtNum(ld.app)]);
+      });
+    }
+    downloadCSV(rows,`Days_Worked_${state.dwMode}_${monthLabel.replace(/\s+/g,"_")}.csv`);
+  }
+
+  function build(){
+    const bd=new Date();bd.setMonth(bd.getMonth()+state.dwMonth);bd.setDate(1);
+    const y=bd.getFullYear(),mo=bd.getMonth();
+    const mn=bd.toLocaleString("default",{month:"long",year:"numeric"});
+    const weekdays=getMonthWeekdays(y,mo);
+
+    FB().innerHTML=`<div class="filters">
+      <button class="sub-tab ${state.dwMode==='physician'?'active':''}" id="dw-phy">By Physician</button>
+      <button class="sub-tab ${state.dwMode==='location'?'active':''}" id="dw-loc">By Location</button>
+      <div class="nav-arrows"><button class="btn" id="dw-export" style="background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;font-weight:500">Export CSV</button><button id="dw-prev">←</button><span>${mn}</span><button id="dw-next">→</button></div>
+    </div>`;
+    requestAnimationFrame(measureHeader);
+
+    let h='';
+    if(state.dwMode==="physician"){h+=renderDWPhysician(weekdays,y,mo)}else{h+=renderDWLocation(weekdays,y,mo)}
+    c.innerHTML=h;
+    document.getElementById("dw-phy").addEventListener("click",()=>{state.dwMode="physician";build()});
+    document.getElementById("dw-loc").addEventListener("click",()=>{state.dwMode="location";build()});
+    document.getElementById("dw-prev").addEventListener("click",()=>{state.dwMonth--;build()});
+    document.getElementById("dw-next").addEventListener("click",()=>{state.dwMonth++;build()});
+    document.getElementById("dw-export").addEventListener("click",()=>{exportDW(weekdays,mn)});
+    bindTips(c);
+  }
+
+  function renderDWPhysician(weekdays){
+    const allPhys=getActivePhysicians();
+    const rows=allPhys.map(p=>{
+      let hosp=0,office=0,pto=0;
+      weekdays.forEach(ds=>{
+        const ex=getExceptionForDate(p.physicianName,ds);
+        if(ex&&(ex.type==="PTO"||ex.type==="Conference")){pto++;return}
+        const work=getWorkDay(p.physicianName,ds);
+        if(!work)return;
+        work.forEach(w=>{const reg=locRegion(w.location);if(isHospRegion(reg))hosp+=w.fraction;else office+=w.fraction});
+      });
+      const total=hosp+office;
+      return{name:p.physicianName,specialty:p.specialty,role:p.role||"MD",hosp,office,total,pto};
+    }).filter(r=>r.total>0||r.pto>0);
+    rows.sort((a,b)=>a.name.localeCompare(b.name));
+    const tH=rows.reduce((s,r)=>s+r.hosp,0);const tO=rows.reduce((s,r)=>s+r.office,0);const tT=rows.reduce((s,r)=>s+r.total,0);const tP=rows.reduce((s,r)=>s+r.pto,0);
+    let h='<div class="table-scroll"><table><thead><tr><th>Physician</th><th>Specialty</th><th>Role</th><th class="ctr">Hospital Days</th><th class="ctr">Office Days</th><th class="ctr">Total Worked</th><th class="ctr">PTO Days</th></tr></thead><tbody>';
+    rows.forEach(r=>{
+      const hospPct=r.total>0?Math.round((r.hosp/r.total)*100):0;
+      const tipText=`${r.hosp} hospital (${hospPct}%) · ${r.office} office (${100-hospPct}%)`;
+      h+=`<tr class="striped"><td style="font-weight:600;white-space:nowrap">${esc(r.name)}</td><td style="color:#64748b">${esc(r.specialty)}</td><td><span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;${r.role==='APP'?'background:#f3e8ff;color:#6b21a8':'background:#dbeafe;color:#1e40af'}">${esc(r.role)}</span></td>`;
+      h+=`<td class="ctr" style="font-weight:600"><span data-tip="${esc(tipText)}">${fmtNum(r.hosp)}</span></td>`;
+      h+=`<td class="ctr" style="font-weight:600">${fmtNum(r.office)}</td>`;
+      h+=`<td class="ctr"><span style="font-weight:700;font-size:15px">${fmtNum(r.total)}</span></td>`;
+      h+=`<td class="ctr" style="color:${r.pto>0?'#dc2626':'#cbd5e1'}">${r.pto>0?r.pto:'—'}</td></tr>`;
+    });
+    h+=`<tr style="border-top:2px solid #e2e8f0;background:#f8fafc"><td style="font-weight:700" colspan="3">Totals</td><td class="ctr" style="font-weight:700">${fmtNum(tH)}</td><td class="ctr" style="font-weight:700">${fmtNum(tO)}</td><td class="ctr" style="font-weight:700;font-size:15px">${fmtNum(tT)}</td><td class="ctr" style="font-weight:700;color:${tP>0?'#dc2626':'#cbd5e1'}">${tP>0?tP:'—'}</td></tr>`;
+    h+='</tbody></table></div>';
+    const hospPctAll=tT>0?Math.round((tH/tT)*100):0;
+    h+=`<div style="display:flex;gap:14px;margin-top:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:140px;padding:16px;border-radius:10px;background:#dbeafe;border:1px solid #93c5fd;text-align:center"><div style="font-size:24px;font-weight:800;color:#1e40af">${fmtNum(tH)}</div><div style="font-size:12px;color:#1e40af;font-weight:600;margin-top:2px">Hospital Days (${hospPctAll}%)</div></div>
+      <div style="flex:1;min-width:140px;padding:16px;border-radius:10px;background:#dcfce7;border:1px solid #86efac;text-align:center"><div style="font-size:24px;font-weight:800;color:#166534">${fmtNum(tO)}</div><div style="font-size:12px;color:#166534;font-weight:600;margin-top:2px">Office Days (${100-hospPctAll}%)</div></div>
+      <div style="flex:1;min-width:140px;padding:16px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;text-align:center"><div style="font-size:24px;font-weight:800;color:#1e293b">${fmtNum(tT)}</div><div style="font-size:12px;color:#64748b;font-weight:600;margin-top:2px">Total Worked</div></div>
+      <div style="flex:1;min-width:140px;padding:16px;border-radius:10px;background:#fee2e2;border:1px solid #fca5a5;text-align:center"><div style="font-size:24px;font-weight:800;color:#991b1b">${tP}</div><div style="font-size:12px;color:#991b1b;font-weight:600;margin-top:2px">PTO Days</div></div>
+    </div>`;
+    return h;
+  }
+
+  function renderDWLocation(weekdays){
+    const allPhys=getActivePhysicians();const locData={};
+    allPhys.forEach(p=>{weekdays.forEach(ds=>{const work=getWorkDay(p.physicianName,ds);if(!work)return;work.forEach(w=>{if(!locData[w.location])locData[w.location]={bySpecialty:{},byRole:{},total:0,physicians:new Set()};const ld=locData[w.location];ld.total+=w.fraction;ld.physicians.add(p.physicianName);const spec=p.specialty||"Unknown";ld.bySpecialty[spec]=(ld.bySpecialty[spec]||0)+w.fraction;const role=p.role||"MD";ld.byRole[role]=(ld.byRole[role]||0)+w.fraction})})});
+    const locKeys=Object.keys(locData).sort((a,b)=>{
+      const aHosp=locRegion(a).toLowerCase().includes("hosp")?1:0;
+      const bHosp=locRegion(b).toLowerCase().includes("hosp")?1:0;
+      if(aHosp!==bHosp)return aHosp-bHosp;
+      const rCmp=(locRegion(a)||"").localeCompare(locRegion(b)||"");
+      if(rCmp!==0)return rCmp;
+      return locName(a).localeCompare(locName(b));
+    });
+    const allSpecs=new Set();locKeys.forEach(k=>Object.keys(locData[k].bySpecialty).forEach(s=>allSpecs.add(s)));
+    const specList=[...allSpecs].sort();
+    let h='<div class="table-scroll"><table><thead><tr><th>Location</th><th>Region</th><th class="ctr">Type</th><th class="ctr">Physicians</th><th class="ctr">Total Days</th><th class="ctr">MD Days</th><th class="ctr">APP Days</th>';
+    specList.forEach(s=>{h+=`<th class="ctr" style="font-size:11px">${esc(s)}</th>`});
+    h+='</tr></thead><tbody>';
+    let grandTotal=0,grandMD=0,grandAPP=0;
+    locKeys.forEach(locCode=>{
+      const ld=locData[locCode];const cl=lc(locCode);const reg=locRegion(locCode);const isHosp=isHospRegion(reg);
+      const mdDays=ld.byRole["MD"]||0;const appDays=ld.byRole["APP"]||0;
+      grandTotal+=ld.total;grandMD+=mdDays;grandAPP+=appDays;
+      h+=`<tr class="striped"><td style="font-weight:600;white-space:nowrap"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${cl.text};margin-right:6px;vertical-align:middle"></span>${esc(locName(locCode))}<span style="margin-left:6px;font-size:11px;color:#94a3b8">${esc(locCode)}</span></td>`;
+      h+=`<td style="color:#64748b;font-size:13px">${esc(reg)}</td>`;
+      h+=`<td class="ctr"><span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;${isHosp?'background:#dbeafe;color:#1e40af':'background:#dcfce7;color:#166534'}">${isHosp?'Hospital':'Office'}</span></td>`;
+      h+=`<td class="ctr" style="color:#64748b">${ld.physicians.size}</td>`;
+      h+=`<td class="ctr" style="font-weight:700;font-size:15px">${fmtNum(ld.total)}</td>`;
+      h+=`<td class="ctr" style="font-weight:600;color:#1e40af">${fmtNum(mdDays)}</td>`;
+      h+=`<td class="ctr" style="font-weight:600;color:#6b21a8">${fmtNum(appDays)}</td>`;
+      specList.forEach(s=>{const v=ld.bySpecialty[s]||0;h+=`<td class="ctr" style="color:${v>0?'#334155':'#cbd5e1'};font-size:13px">${v>0?fmtNum(v):'—'}</td>`});
+      h+='</tr>';
+    });
+    h+=`<tr style="border-top:2px solid #e2e8f0;background:#f8fafc"><td style="font-weight:700" colspan="3">Totals</td><td class="ctr" style="font-weight:700">${new Set(locKeys.flatMap(k=>[...locData[k].physicians])).size}</td><td class="ctr" style="font-weight:700;font-size:15px">${fmtNum(grandTotal)}</td><td class="ctr" style="font-weight:700;color:#1e40af">${fmtNum(grandMD)}</td><td class="ctr" style="font-weight:700;color:#6b21a8">${fmtNum(grandAPP)}</td>`;
+    specList.forEach(s=>{const v=locKeys.reduce((sum,k)=>(locData[k].bySpecialty[s]||0)+sum,0);h+=`<td class="ctr" style="font-weight:700;font-size:13px">${fmtNum(v)}</td>`});
+    h+='</tr></tbody></table></div>';
+    let hospTotal=0,offTotal=0;
+    locKeys.forEach(k=>{if(isHospRegion(locRegion(k)))hospTotal+=locData[k].total;else offTotal+=locData[k].total});
+    const hospPct=grandTotal>0?Math.round((hospTotal/grandTotal)*100):0;
+    h+=`<div style="display:flex;gap:14px;margin-top:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:160px;padding:16px;border-radius:10px;background:#dbeafe;border:1px solid #93c5fd;text-align:center"><div style="font-size:24px;font-weight:800;color:#1e40af">${fmtNum(hospTotal)}</div><div style="font-size:12px;color:#1e40af;font-weight:600;margin-top:2px">Hospital Days (${hospPct}%)</div></div>
+      <div style="flex:1;min-width:160px;padding:16px;border-radius:10px;background:#dcfce7;border:1px solid #86efac;text-align:center"><div style="font-size:24px;font-weight:800;color:#166534">${fmtNum(offTotal)}</div><div style="font-size:12px;color:#166534;font-weight:600;margin-top:2px">Office Days (${100-hospPct}%)</div></div>
+      <div style="flex:1;min-width:160px;padding:16px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;text-align:center"><div style="font-size:24px;font-weight:800;color:#1e293b">${locKeys.length}</div><div style="font-size:12px;color:#64748b;font-weight:600;margin-top:2px">Active Locations</div></div>
+    </div>`;
+    return h;
+  }
+
+  build();
+}
+
 // ═══ EXCEPTIONS & PTO ═══
 function renderExceptions(c){
   const regions=getRegions();const locs=getActiveLocations();state.exMonth=state.exMonth||0;
@@ -417,45 +941,101 @@ function renderExceptions(c){
     const bd=new Date();bd.setMonth(bd.getMonth()+state.exMonth);bd.setDate(1);
     const y=bd.getFullYear(),mo=bd.getMonth();const mn=bd.toLocaleString("default",{month:"long",year:"numeric"});
     const fd=new Date(y,mo,1).getDay();const dim=new Date(y,mo+1,0).getDate();
+    // Precompute holidays for this month
+    const monthStart=`${y}-${String(mo+1).padStart(2,"0")}-01`;
+    const monthEnd=`${y}-${String(mo+1).padStart(2,"0")}-${String(dim).padStart(2,"0")}`;
+    const monthHolidays=getHolidaysInRange(monthStart,monthEnd);
+    const holidayMap={};
+    monthHolidays.forEach(h2=>{if(!holidayMap[h2.date])holidayMap[h2.date]=[];holidayMap[h2.date].push(h2)});
+
     FB().innerHTML=`<div class="filters">
-      <select id="ex-type"><option>All</option><option>PTO</option><option>Covering Location</option><option>Conference</option></select>
+      <select id="ex-type"><option>All</option><option>PTO</option><option>Cover</option><option>Conference</option></select>
       <select id="ex-region"><option value="All">All Regions</option>${regions.map(r=>`<option>${esc(r)}</option>`).join("")}</select>
       <select id="ex-loc"><option value="All">All Locations</option>${locs.map(l=>`<option value="${esc(l.locationCode)}">${esc(l.locationName)}</option>`).join("")}</select>
       <div class="nav-arrows"><button id="ex-p">←</button><span>${mn}</span><button id="ex-n">→</button></div>
     </div>`;
+    requestAnimationFrame(measureHeader);
     let h=`<div class="cal-grid">`;
     ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d=>{h+=`<div class="cal-header">${d}</div>`});
     for(let i=0;i<fd;i++)h+='<div class="cal-day"></div>';
     for(let day=1;day<=dim;day++){
       const ds=`${y}-${String(mo+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-      const dow=(fd+day-1)%7;const isWe=dow===0||dow===6;const isT=ds===TODAY;
-      const exs=getExceptionsOnDate(ds);
-      h+=`<div class="cal-day ${isWe?'weekend':''}"><div class="num ${isT?'today':''}">${day}</div>`;
-      exs.slice(0,2).forEach(ex=>{
+      const dow=(fd+day-1)%7;const isWe=dow===0||dow===6;const isT=ds===TODAY;const exs=getExceptionsOnDate(ds);
+      const dayHols=holidayMap[ds]||[];
+      const hasHol=dayHols.length>0;
+      h+=`<div class="cal-day ${isWe?'weekend':''} ${hasHol?'holiday-bg':''}"><div class="num ${isT?'today':''}">${day}</div>`;
+      // Show holidays first
+      dayHols.forEach(hol=>{
+        const catIcon=hol.category==='religious'?'🕊️':'🏛️';
+        h+=`<div class="cal-holiday" data-tip="${esc(hol.name+(hol.category==='religious'?' (Religious observance)':' (Federal holiday)'))}">${catIcon} ${esc(hol.name)}</div>`;
+      });
+      exs.slice(0,hasHol?1:2).forEach(ex=>{
         const phy=DATA.physicians.find(p=>p.physicianName===ex.physicianName);
         const tc=TYPE_COLORS[ex.type]||{bg:"#f1f5f9",text:"#334155"};
         const ln=phy?phy.physicianName.split(" ").pop():"";
         const sl=getSchedForDate(ex.physicianName,ds);const slLoc=sl.length>0?sl[0].location:null;
-        const isMulti=ex.startDate!==ex.endDate;
-        const rangeHint=isMulti?` (${fmtDateShort(ex.startDate)}–${fmtDateShort(ex.endDate)})`:"";
-        const tip=`${phy?.physicianName||""} · ${ex.type}${slLoc?" · Sched: "+locName(slLoc):""}${rangeHint}${ex.notes?" · "+ex.notes:""}`;
-        h+=`<div class="cal-ex" style="background:${tc.bg};color:${tc.text}" data-tip="${esc(tip)}">${esc(ln)} · ${ex.type==="Covering Location"?"→"+locName(ex.coveringLocation):ex.type}</div>`;
+        const isMulti=ex.startDate!==ex.endDate;const rangeHint=isMulti?` (${fmtDateShort(ex.startDate)}–${fmtDateShort(ex.endDate)})`:"";
+        let calLabel='',tip='';
+        if(ex.type==="Cover"&&ex.coveringFor){const tgt=getCoverTargetLocation(ex.coveringFor,ds);calLabel=`${esc(ln)} → COV`;tip=`${phy?.physicianName||""} · Covering for ${ex.coveringFor}${tgt?' at '+locName(tgt):''}${rangeHint}${ex.notes?" · "+ex.notes:""}`}
+        else{calLabel=`${esc(ln)} · ${ex.type}`;const covers=ex.type==="PTO"?getCoveredBy(ex.physicianName,ds):[];const covBy=covers.map(cv=>cv.physicianName).join(", ");tip=`${phy?.physicianName||""} · ${ex.type}${slLoc?" · Sched: "+locName(slLoc):""}${rangeHint}${covBy?" · Covered by: "+covBy:""}${ex.notes?" · "+ex.notes:""}`}
+        h+=`<div class="cal-ex" style="background:${tc.bg};color:${tc.text}" data-tip="${esc(tip)}" data-tip-wide="1">${calLabel}</div>`;
       });
-      if(exs.length>2)h+=`<div style="font-size:10px;color:#94a3b8;padding:0 4px">+${exs.length-2} more</div>`;
+      const remaining=exs.length-(hasHol?1:2);
+      if(remaining>0)h+=`<div style="font-size:10px;color:#94a3b8;padding:0 4px">+${remaining} more</div>`;
       h+='</div>';
     }
     h+='</div>';
-    const upcoming=DATA.exceptions.filter(e=>e.endDate>=TODAY).sort((a,b)=>a.startDate.localeCompare(b.startDate)).slice(0,10);
-    h+='<div style="margin-top:28px"><h3 style="font-size:15px;font-weight:700;margin-bottom:12px">Upcoming Exceptions</h3>';
-    upcoming.forEach(ex=>{
+
+    // Holiday legend
+    h+=`<div style="margin-top:12px;display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#64748b;align-items:center">
+      <span style="font-weight:600">Legend:</span>
+      <span style="display:inline-flex;align-items:center;gap:4px"><span style="background:#fef3c7;border:1px solid #fde68a;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700;color:#92400e">🏛️ Holiday</span> Federal</span>
+      <span style="display:inline-flex;align-items:center;gap:4px"><span style="background:#fef3c7;border:1px solid #fde68a;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700;color:#92400e">🕊️ Holiday</span> Religious observance</span>
+    </div>`;
+
+    // Upcoming section: interleave holidays and exceptions
+    const futureEnd=new Date();futureEnd.setMonth(futureEnd.getMonth()+3);
+    const futureEndStr=futureEnd.toISOString().slice(0,10);
+    const upcomingEx=DATA.exceptions.filter(e=>e.endDate>=TODAY).sort((a,b)=>a.startDate.localeCompare(b.startDate)).slice(0,10);
+    const upcomingHols=getHolidaysInRange(TODAY,futureEndStr);
+    // Merge into a single timeline
+    const timeline=[];
+    upcomingEx.forEach(ex=>timeline.push({type:'exception',date:ex.startDate,data:ex}));
+    upcomingHols.forEach(hol=>timeline.push({type:'holiday',date:hol.date,data:hol}));
+    timeline.sort((a,b)=>a.date.localeCompare(b.date));
+
+    h+='<div style="margin-top:28px"><h3 style="font-size:15px;font-weight:700;margin-bottom:12px">Upcoming Exceptions & Holidays</h3>';
+    timeline.slice(0,15).forEach(item=>{
+      if(item.type==='holiday'){
+        const hol=item.data;const d=new Date(hol.date+"T12:00:00");
+        const catIcon=hol.category==='religious'?'🕊️':'🏛️';
+        h+=`<div class="up-item holiday-item"><div class="up-date"><div class="wd">${d.toLocaleDateString("en",{weekday:"short"})}</div><div class="d">${d.getDate()}</div><div class="mo">${d.toLocaleDateString("en",{month:"short"})}</div></div><div style="flex:1"><div style="font-weight:600;font-size:14px;color:#92400e">${catIcon} ${esc(hol.name)}</div><div style="font-size:13px;color:#b45309">${hol.category==='religious'?'Religious observance':'Federal holiday'}</div></div><span style="padding:4px 10px;border-radius:6px;background:#fef3c7;color:#92400e;font-size:12px;font-weight:600;border:1px solid #fde68a">Holiday</span></div>`;
+        return;
+      }
+      const ex=item.data;
       const phy=DATA.physicians.find(p=>p.physicianName===ex.physicianName);
       const tc=TYPE_COLORS[ex.type]||{bg:"#f1f5f9",text:"#334155"};
       const d=new Date(ex.startDate+"T12:00:00");
-      const sl=getSchedForDate(ex.physicianName,ex.startDate);const slLoc=sl.length>0?sl[0].location:null;const slc=slLoc?lc(slLoc):null;
-      const isMulti=ex.startDate!==ex.endDate;const days=isMulti?countWeekdays(ex.startDate,ex.endDate):1;
-      const daysLabel=isMulti?`<span style="font-size:12px;color:#64748b;margin-left:6px">${days} day${days!==1?'s':''}</span>`:'';
-      h+=`<div class="up-item"><div class="up-date"><div class="wd">${d.toLocaleDateString("en",{weekday:"short"})}</div><div class="d">${d.getDate()}</div><div class="mo">${d.toLocaleDateString("en",{month:"short"})}</div></div><div style="flex:1"><div style="font-weight:600;font-size:14px">${esc(phy?.physicianName)}${daysLabel}</div><div style="font-size:13px;color:#64748b">${ex.type==="Covering Location"?"Covering at "+locName(ex.coveringLocation):ex.type}${isMulti?" · "+fmtDateMed(ex.startDate)+" – "+fmtDateMed(ex.endDate):""}${ex.notes?" · "+esc(ex.notes):""}</div></div>`;
-      if(slLoc&&slc)h+=`<span class="badge-sm" style="background:${slc.bg};color:${slc.text};border:1px solid ${slc.border}" data-tip="Normally at ${esc(locName(slLoc))}">${esc(slLoc)}</span>`;
+      const sl=getSchedForDate(ex.physicianName,ex.startDate);const slLoc=sl.length>0?sl[0].location:null;const slc=slLoc?rc(slLoc):null;
+      const isMulti=ex.startDate!==ex.endDate;const days=isMulti?countWeekdays(ex.startDate,ex.endDate):1;const daysLabel=isMulti?`<span style="font-size:12px;color:#64748b;margin-left:6px">${days} day${days!==1?'s':''}</span>`:'';
+      let descText='';let locBadges='';
+      if(ex.type==="Cover"&&ex.coveringFor){
+        const tgt=getCoverTargetLocation(ex.coveringFor,ex.startDate);
+        const origSched=getSchedForDate(ex.physicianName,ex.startDate);
+        const origLoc=origSched.length>0?origSched[0].location:null;
+        descText=`Covering for ${ex.coveringFor}`;
+        if(origLoc||tgt){
+          const oc=origLoc?rc(origLoc):null;
+          const tc2=tgt?rc(tgt):null;
+          locBadges='<div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">';
+          if(origLoc&&oc)locBadges+=`<span class="badge-sm" style="background:${oc.bg};color:${oc.text};border:1px solid ${oc.border};text-decoration:line-through;opacity:0.5">${esc(origLoc)}</span>`;
+          if(origLoc&&tgt)locBadges+='<span style="color:#9a3412;font-weight:700;font-size:13px">→</span>';
+          if(tgt&&tc2)locBadges+=`<span class="badge-sm" style="background:${tc2.bg};color:${tc2.text};border:1px solid ${tc2.border};font-weight:700">${esc(tgt)}</span>`;
+          locBadges+='</div>';
+        }
+      }else{descText=ex.type}
+      h+=`<div class="up-item"><div class="up-date"><div class="wd">${d.toLocaleDateString("en",{weekday:"short"})}</div><div class="d">${d.getDate()}</div><div class="mo">${d.toLocaleDateString("en",{month:"short"})}</div></div><div style="flex:1"><div style="font-weight:600;font-size:14px">${esc(phy?.physicianName)}${daysLabel}</div><div style="font-size:13px;color:#64748b">${esc(descText)}${isMulti?" · "+fmtDateMed(ex.startDate)+" – "+fmtDateMed(ex.endDate):""}${ex.notes?" · "+esc(ex.notes):""}</div></div>${locBadges}`;
+      if(slLoc&&slc&&ex.type!=="Cover")h+=`<span class="badge-sm" style="background:${slc.bg};color:${slc.text};border:1px solid ${slc.border}" data-tip="Normally at ${esc(locName(slLoc))}">${esc(slLoc)}</span>`;
       h+=`<span style="padding:4px 10px;border-radius:6px;background:${tc.bg};color:${tc.text};font-size:12px;font-weight:600">${esc(ex.type)}</span></div>`;
     });
     h+='</div>';
@@ -469,31 +1049,88 @@ function renderExceptions(c){
 
 // ═══ PTO BALANCES ═══
 function renderPTO(c){
-  state.ptoOff=state.ptoOff||0;
+  state.ptoYear=state.ptoYear||new Date().getFullYear();
   function build(){
-    const months=[0,1,2].map(i=>{const d=new Date();d.setMonth(d.getMonth()+state.ptoOff+i);d.setDate(1);return{year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleString("default",{month:"short",year:"numeric"})}});
+    const y=state.ptoYear;
     const ap=getActiveMDs();
-    FB().innerHTML=`<div class="filters"><input type="text" id="pto-s" placeholder="Search physician..."><div class="nav-arrows"><button id="pto-p">←</button><span>3-Month View</span><button id="pto-n">→</button></div></div>`;
-    let h='<div style="overflow-x:auto"><table><thead><tr><th>Physician</th>';
-    months.forEach(m=>{h+=`<th class="ctr" style="min-width:180px">${m.label}</th>`});
-    h+='</tr></thead><tbody>';
-    ap.forEach(p=>{
-      h+=`<tr class="striped"><td style="white-space:nowrap"><div style="font-weight:600">${esc(p.physicianName)}</div><div style="font-size:12px;color:#94a3b8">${esc(p.specialty)}</div></td>`;
-      months.forEach(m=>{
-        const allot=getPtoAllotment(p.physicianName);const usage=getPtoUsedInMonth(p.physicianName,m.year,m.month);const uv=usage.totalDays;
-        const pct=allot>0?(uv/allot)*100:0;const over=uv>allot;const bc=over?"#ef4444":uv>=allot?"#f59e0b":"#22c55e";
-        if(allot>0){
-          h+=`<td style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px"><span style="font-size:15px;font-weight:700;color:${over?'#ef4444':'#1e293b'}">${uv}/${allot}</span><span style="font-size:12px;color:#94a3b8">PTO days</span></div><div class="pto-bar-bg"><div class="pto-bar" style="width:${Math.min(pct,100)}%;background:${bc}"></div></div>`;
-          if(usage.dates.length>0){h+='<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">';usage.dates.forEach(ud=>{const dd=new Date(ud.date+"T12:00:00");const sl=getSchedForDate(p.physicianName,ud.date);const slLoc=sl.length>0?sl[0].location:null;const slc=slLoc?lc(slLoc):null;const vl=ud.value<1?` (${ud.value})`:"";const tip=`${dd.toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"})}${slLoc?" · "+locName(slLoc):""}${ud.value<1?" · "+ud.value+" day":""}${ud.notes?" · "+ud.notes:""}`;h+=`<span class="pto-chip" style="background:${slc?.bg||'#fee2e2'};color:${slc?.text||'#991b1b'};border:1px solid ${slc?.border||'#fca5a5'}" data-tip="${esc(tip)}">${dd.getDate()}${slLoc?' '+slLoc:''}${vl}</span>`});h+='</div>'}
-          h+='</td>';
-        }else h+='<td style="padding:14px;color:#cbd5e1;font-size:13px">No allotment</td>';
-      });
+    const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    FB().innerHTML=`<div class="filters"><input type="text" id="pto-s" placeholder="Search physician..."><div class="nav-arrows"><button id="pto-p">←</button><span>${y}</span><button id="pto-n">→</button></div></div>`;
+    requestAnimationFrame(measureHeader);
+    let h='<div style="overflow-x:auto"><table><thead><tr><th>Physician</th><th>Specialty</th><th class="ctr">Allotment</th><th class="ctr">Used</th><th class="ctr">Remaining</th>';
+    MONTHS.forEach(m=>{h+=`<th class="ctr" style="font-size:11px;min-width:44px">${m}</th>`});
+    h+='</tr></thead><tbody id="pto-body">';
+    const rowData=ap.map(p=>{
+      const allot=getPtoAllotment(p.physicianName,y);
+      const usage=getPtoUsedInYear(p.physicianName,y);
+      return{p,allot,usage};
+    });
+    rowData.forEach(({p,allot,usage})=>{
+      const uv=usage.totalDays;const remaining=allot-uv;const over=uv>allot;
+      h+=`<tr class="striped"><td style="font-weight:600;white-space:nowrap">${esc(p.physicianName)}</td><td style="color:#64748b">${esc(p.specialty)}</td>`;
+      if(allot>0){
+        h+=`<td class="ctr"><span style="font-size:15px;font-weight:700">${allot}</span></td>`;
+        h+=`<td class="ctr" style="font-weight:600;color:${uv>0?'#1e293b':'#cbd5e1'}">${uv>0?uv:'—'}</td>`;
+        const remPct=allot>0?Math.max(0,(remaining/allot)*100):0;
+        const remClr=over?{text:'#ef4444',bar:'#ef4444'}:ptoRemColor(remPct);
+        h+=`<td class="ctr"><div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px"><span style="font-weight:700;font-size:15px;color:${remClr.text}">${remaining}</span><div class="pto-bar-bg" style="width:60px"><div class="pto-bar" style="width:${Math.min(over?100:remPct,100)}%;background:${remClr.bar}"></div></div></div></td>`;
+        // Monthly breakdown
+        for(let mo=0;mo<12;mo++){
+          const mu=usage.byMonth[mo];
+          if(mu&&mu.totalDays>0){
+            const tipDates=mu.dates.map(ud=>{const dd=new Date(ud.date+"T12:00:00");return dd.toLocaleDateString("en",{month:"short",day:"numeric"})+(ud.value<1?' ('+ud.value+')':'')+(ud.notes?' · '+ud.notes:'')}).join("<br>");
+            h+=`<td class="ctr"><span style="font-weight:700;color:#1e293b;cursor:default" data-tip="${esc(tipDates)}" data-tip-wide="1">${mu.totalDays}</span></td>`;
+          }else{
+            h+=`<td class="ctr" style="color:#e2e8f0">·</td>`;
+          }
+        }
+      }else{
+        h+='<td class="ctr" style="color:#cbd5e1">—</td><td class="ctr" style="color:#cbd5e1">—</td><td class="ctr" style="color:#cbd5e1">—</td>';
+        for(let mo=0;mo<12;mo++)h+='<td class="ctr" style="color:#e2e8f0">·</td>';
+      }
       h+='</tr>';
     });
+    // Totals row
+    const totalAllot=rowData.reduce((s,r)=>s+r.allot,0);
+    const totalUsed=rowData.reduce((s,r)=>s+r.usage.totalDays,0);
+    const totalRem=totalAllot-totalUsed;
+    h+=`<tr style="border-top:2px solid #e2e8f0;background:#f8fafc"><td style="font-weight:700" colspan="2">Totals</td><td class="ctr" style="font-weight:700">${totalAllot}</td><td class="ctr" style="font-weight:700">${totalUsed}</td><td class="ctr" style="font-weight:700">${totalRem}</td>`;
+    for(let mo=0;mo<12;mo++){
+      const moTotal=rowData.reduce((s,r)=>{const mu=r.usage.byMonth[mo];return s+(mu?mu.totalDays:0)},0);
+      h+=`<td class="ctr" style="font-weight:600;color:${moTotal>0?'#1e293b':'#e2e8f0'}">${moTotal>0?moTotal:'·'}</td>`;
+    }
+    h+='</tr>';
     h+='</tbody></table></div>';
+    // Summary cards
+    const pctUsed=totalAllot>0?Math.round((totalUsed/totalAllot)*100):0;
+    h+=`<div style="display:flex;gap:14px;margin-top:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:140px;padding:16px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;text-align:center"><div style="font-size:24px;font-weight:800;color:#1e293b">${totalAllot}</div><div style="font-size:12px;color:#64748b;font-weight:600;margin-top:2px">Total Allotted</div></div>
+      <div style="flex:1;min-width:140px;padding:16px;border-radius:10px;background:#fee2e2;border:1px solid #fca5a5;text-align:center"><div style="font-size:24px;font-weight:800;color:#991b1b">${totalUsed}</div><div style="font-size:12px;color:#991b1b;font-weight:600;margin-top:2px">Used (${pctUsed}%)</div></div>
+      <div style="flex:1;min-width:140px;padding:16px;border-radius:10px;background:#dcfce7;border:1px solid #86efac;text-align:center"><div style="font-size:24px;font-weight:800;color:#166534">${totalRem}</div><div style="font-size:12px;color:#166534;font-weight:600;margin-top:2px">Remaining (${100-pctUsed}%)</div></div>
+    </div>`;
+    // Allotment change history
+    if(DATA.ptoAllotments&&DATA.ptoAllotments.length>0){
+      const sorted=[...DATA.ptoAllotments].sort((a,b)=>b.effectiveFrom.localeCompare(a.effectiveFrom));
+      const recent=sorted.slice(0,15);
+      h+='<div style="margin-top:28px"><h3 style="font-size:15px;font-weight:700;margin-bottom:12px">Allotment Change History</h3>';
+      h+='<div class="table-scroll" style="max-height:300px"><table><thead><tr><th>Physician</th><th class="ctr">PTO Days/Year</th><th>Effective From</th><th>Notes</th></tr></thead><tbody>';
+      recent.forEach(a=>{
+        const d=new Date(a.effectiveFrom+"T12:00:00");
+        const effLabel=d.toLocaleDateString("en",{month:"short",year:"numeric"});
+        h+=`<tr class="striped"><td style="font-weight:600;white-space:nowrap">${esc(a.physicianName)}</td><td class="ctr"><span style="font-size:15px;font-weight:700">${a.ptoDaysMonth}</span></td><td style="color:#64748b">${esc(effLabel)}</td><td style="color:#64748b;font-size:13px">${esc(a.notes||'')}</td></tr>`;
+      });
+      if(sorted.length>15)h+=`<tr><td colspan="4" style="padding:10px;text-align:center;color:#94a3b8;font-size:12px">${sorted.length-15} more records not shown</td></tr>`;
+      h+='</tbody></table></div></div>';
+    }
     c.innerHTML=h;
-    document.getElementById("pto-p").addEventListener("click",()=>{state.ptoOff-=3;build()});
-    document.getElementById("pto-n").addEventListener("click",()=>{state.ptoOff+=3;build()});
+    document.getElementById("pto-p").addEventListener("click",()=>{state.ptoYear--;build()});
+    document.getElementById("pto-n").addEventListener("click",()=>{state.ptoYear++;build()});
+    document.getElementById("pto-s").addEventListener("input",()=>{
+      const search=document.getElementById("pto-s").value.toLowerCase();
+      document.querySelectorAll("#pto-body tr.striped").forEach(row=>{
+        const name=row.querySelector("td")?.textContent?.toLowerCase()||"";
+        row.style.display=(!search||name.includes(search))?"":"none";
+      });
+    });
     bindTips(c);
   }
   build();
@@ -504,30 +1141,23 @@ function renderChangelog(c){
   state.clMode="all";state.clPreview=false;state.clFrom="";state.clTo="";
   function build(){
     const schedChanges=[];
-    DATA.schedules.filter(s=>s.effectiveTo).forEach(old=>{
-      const rep=DATA.schedules.find(s=>s.physicianName===old.physicianName&&s.day===old.day&&s.effectiveFrom>old.effectiveFrom&&(!old.effectiveTo||s.effectiveFrom<=new Date(new Date(old.effectiveTo+"T12:00:00").getTime()+86400000*2).toISOString().slice(0,10)));
-      if(rep&&rep.location!==old.location)schedChanges.push({date:rep.effectiveFrom,physician:old.physicianName,type:"Schedule",oldVal:`${old.day}: ${locName(old.location)}`,newVal:`${rep.day}: ${locName(rep.location)}`,effDate:rep.effectiveFrom});
+    DATA.schedules.filter(s=>s.effectiveTo).forEach(old=>{const rep=DATA.schedules.find(s=>s.physicianName===old.physicianName&&s.day===old.day&&s.effectiveFrom>old.effectiveFrom&&(!old.effectiveTo||s.effectiveFrom<=new Date(new Date(old.effectiveTo+"T12:00:00").getTime()+86400000*2).toISOString().slice(0,10)));if(rep&&rep.location!==old.location)schedChanges.push({date:rep.effectiveFrom,physician:old.physicianName,type:"Schedule",oldVal:`${old.day}: ${locName(old.location)}`,newVal:`${rep.day}: ${locName(rep.location)}`,effDate:rep.effectiveFrom})});
+    const exEntries=DATA.exceptions.map(e=>{
+      const rl=e.startDate===e.endDate?e.startDate:`${e.startDate} → ${e.endDate}`;
+      let desc=e.type;
+      if(e.type==="Cover"&&e.coveringFor){const tgt=getCoverTargetLocation(e.coveringFor,e.startDate);desc=`Cover for ${e.coveringFor}${tgt?' → '+locName(tgt):''}`}
+      return{date:e.startDate,dateEnd:e.endDate,physician:e.physicianName,type:"Exception",oldVal:"—",newVal:`${desc}${e.startDate!==e.endDate?" ("+rl+")":""}${e.notes?" · "+e.notes:""}`,effDate:rl};
     });
-    const exEntries=DATA.exceptions.map(e=>{const rl=e.startDate===e.endDate?e.startDate:`${e.startDate} → ${e.endDate}`;return{date:e.startDate,dateEnd:e.endDate,physician:e.physicianName,type:"Exception",oldVal:"—",newVal:`${e.type}${e.type==="Covering Location"?" → "+locName(e.coveringLocation):""}${e.startDate!==e.endDate?" ("+rl+")":""}${e.notes?" · "+e.notes:""}`,effDate:rl}});
     let all=[...schedChanges,...exEntries].sort((a,b)=>b.date.localeCompare(a.date));
-    if(state.clMode==="schedule")all=all.filter(x=>x.type==="Schedule");
-    if(state.clMode==="exception")all=all.filter(x=>x.type==="Exception");
-    if(state.clFrom)all=all.filter(x=>(x.dateEnd||x.date)>=state.clFrom);
-    if(state.clTo)all=all.filter(x=>x.date<=state.clTo);
-
-    FB().innerHTML=`<div class="filters">
-      <select id="cl-mode"><option value="all" ${state.clMode==='all'?'selected':''}>All Changes</option><option value="schedule" ${state.clMode==='schedule'?'selected':''}>Schedule Changes</option><option value="exception" ${state.clMode==='exception'?'selected':''}>Exceptions Only</option></select>
-      <input type="date" id="cl-from" value="${state.clFrom}" title="From date">
-      <input type="date" id="cl-to" value="${state.clTo}" title="To date">
-      <button class="btn" id="cl-toggle" style="margin-left:auto">${state.clPreview?"← Back to Log":"Preview Email Report"}</button>
-    </div>`;
+    if(state.clMode==="schedule")all=all.filter(x=>x.type==="Schedule");if(state.clMode==="exception")all=all.filter(x=>x.type==="Exception");
+    if(state.clFrom)all=all.filter(x=>(x.dateEnd||x.date)>=state.clFrom);if(state.clTo)all=all.filter(x=>x.date<=state.clTo);
+    FB().innerHTML=`<div class="filters"><select id="cl-mode"><option value="all" ${state.clMode==='all'?'selected':''}>All Changes</option><option value="schedule" ${state.clMode==='schedule'?'selected':''}>Schedule Changes</option><option value="exception" ${state.clMode==='exception'?'selected':''}>Exceptions Only</option></select><input type="date" id="cl-from" value="${state.clFrom}" title="From date"><input type="date" id="cl-to" value="${state.clTo}" title="To date"><button class="btn" id="cl-toggle" style="margin-left:auto">${state.clPreview?"← Back to Log":"Preview Email Report"}</button></div>`;
+    requestAnimationFrame(measureHeader);
     let h='';
     if(state.clPreview){
       h+=`<div class="email-wrap"><div class="email-header"><div style="font-size:12px;color:#94a3b8">Subject:</div><div style="font-size:14px;font-weight:600">Physician Schedule Changes${state.clFrom?" — From "+state.clFrom:""}${state.clTo?" to "+state.clTo:""}</div></div><div class="email-body"><p>Hi Team,</p><p>Please see the following changes:</p>`;
-      const sc=all.filter(x=>x.type==="Schedule");
-      if(sc.length>0){h+='<div class="email-section"><div style="font-weight:700;margin-bottom:8px">Schedule Changes</div>';sc.forEach(x=>{h+=`<div style="margin-bottom:14px"><div style="font-weight:600">${esc(x.physician)}</div><div style="margin-top:4px"><span style="color:#94a3b8;text-decoration:line-through">${esc(x.oldVal)}</span><span style="margin:0 8px;color:#94a3b8">→</span><span style="font-weight:600;color:#166534;background:#dcfce7;padding:2px 8px;border-radius:4px">${esc(x.newVal)}</span></div><div style="font-size:12px;color:#94a3b8;margin-top:4px">Effective ${x.effDate}</div></div>`});h+='</div>'}
-      const ex=all.filter(x=>x.type==="Exception");
-      if(ex.length>0){h+='<div class="email-section"><div style="font-weight:700;margin-bottom:8px">Exceptions</div>';ex.forEach(x=>{h+=`<div style="margin-bottom:4px">• <strong>${esc(x.physician)}</strong> — ${esc(x.newVal)} (${x.effDate})</div>`});h+='</div>'}
+      const sc=all.filter(x=>x.type==="Schedule");if(sc.length>0){h+='<div class="email-section"><div style="font-weight:700;margin-bottom:8px">Schedule Changes</div>';sc.forEach(x=>{h+=`<div style="margin-bottom:14px"><div style="font-weight:600">${esc(x.physician)}</div><div style="margin-top:4px"><span style="color:#94a3b8;text-decoration:line-through">${esc(x.oldVal)}</span><span style="margin:0 8px;color:#94a3b8">→</span><span style="font-weight:600;color:#166534;background:#dcfce7;padding:2px 8px;border-radius:4px">${esc(x.newVal)}</span></div><div style="font-size:12px;color:#94a3b8;margin-top:4px">Effective ${x.effDate}</div></div>`});h+='</div>'}
+      const ex=all.filter(x=>x.type==="Exception");if(ex.length>0){h+='<div class="email-section"><div style="font-weight:700;margin-bottom:8px">Exceptions</div>';ex.forEach(x=>{h+=`<div style="margin-bottom:4px">• <strong>${esc(x.physician)}</strong> — ${esc(x.newVal)} (${x.effDate})</div>`});h+='</div>'}
       h+='<p>Please reach out to Scheduling with any questions.</p></div></div>';
     }else{
       h+='<div style="overflow-x:auto"><table><thead><tr><th>Date(s)</th><th>Physician</th><th>Type</th><th>Previous</th><th>New</th></tr></thead><tbody>';
@@ -548,43 +1178,24 @@ function renderChangelog(c){
 function renderDirectory(c){
   state.dirTab="physicians";state.dirStatus="active";
   function build(){
-    FB().innerHTML=`<div class="filters">
-      <button class="sub-tab ${state.dirTab==='physicians'?'active':''}" id="d-phy">Physicians</button>
-      <button class="sub-tab ${state.dirTab==='locations'?'active':''}" id="d-loc">Locations</button>
-      <select id="d-st" style="margin-left:auto;padding:6px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;background:#fff">
-        <option value="active" ${state.dirStatus==='active'?'selected':''}>Active</option>
-        <option value="upcoming" ${state.dirStatus==='upcoming'?'selected':''}>Upcoming</option>
-        <option value="former" ${state.dirStatus==='former'?'selected':''}>${state.dirTab==='physicians'?'Former':'Closed'}</option>
-        <option value="all" ${state.dirStatus==='all'?'selected':''}>All</option>
-      </select></div>`;
+    FB().innerHTML=`<div class="filters"><button class="sub-tab ${state.dirTab==='physicians'?'active':''}" id="d-phy">Physicians</button><button class="sub-tab ${state.dirTab==='locations'?'active':''}" id="d-loc">Locations</button><select id="d-st" style="margin-left:auto;padding:6px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;background:#fff"><option value="active" ${state.dirStatus==='active'?'selected':''}>Active</option><option value="upcoming" ${state.dirStatus==='upcoming'?'selected':''}>Upcoming</option><option value="former" ${state.dirStatus==='former'?'selected':''}>${state.dirTab==='physicians'?'Former':'Closed'}</option><option value="all" ${state.dirStatus==='all'?'selected':''}>All</option></select></div>`;
+    requestAnimationFrame(measureHeader);
     let h='';
     if(state.dirTab==="physicians"){
-      const list=DATA.physicians.filter(p=>state.dirStatus==="all"||getStatus(p)===state.dirStatus);
-      h+='<div class="card-grid">';
-      list.forEach(p=>{
-        const s=getStatus(p);const sched=DATA.schedules.filter(x=>x.physicianName===p.physicianName&&x.effectiveFrom<=TODAY&&(!x.effectiveTo||x.effectiveTo>=TODAY));
-        const allot=getPtoAllotment(p.physicianName);
+      const list=DATA.physicians.filter(p=>state.dirStatus==="all"||getStatus(p)===state.dirStatus);h+='<div class="card-grid">';
+      list.forEach(p=>{const s=getStatus(p);const sched=DATA.schedules.filter(x=>x.physicianName===p.physicianName&&x.effectiveFrom<=TODAY&&(!x.effectiveTo||x.effectiveTo>=TODAY));const nowD=new Date();const allot=getPtoAllotment(p.physicianName,nowD.getFullYear());
         h+=`<div class="card ${s==='former'?'faded':''}"><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px"><div><div style="font-weight:700;font-size:15px">${esc(p.physicianName)}</div><div style="font-size:13px;color:#64748b">${esc(p.specialty)}${p.role?' · '+esc(p.role):''}</div></div>${s!=='active'?statusHTML(s):''}</div>`;
-        h+=`<div style="font-size:12px;color:#94a3b8;margin-bottom:4px">NPI: ${esc(p.npi)}</div>`;
-        h+=`<div style="font-size:12px;color:#94a3b8;margin-bottom:4px">${p.startDate} → ${p.endDate||'Present'}</div>`;
-        if(allot>0)h+=`<div style="font-size:12px;color:#64748b;margin-bottom:10px">PTO: ${allot} days/month</div>`;
+        h+=`<div style="font-size:12px;color:#94a3b8;margin-bottom:4px">NPI: ${esc(p.npi)}</div><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">${p.startDate} → ${p.endDate||'Present'}</div>`;
+        if(allot>0)h+=`<div style="font-size:12px;color:#64748b;margin-bottom:10px">PTO: ${allot} days/year</div>`;
         if(sched.length>0){h+='<div class="mini-sched">';DAYS.forEach(d=>{const entries=sched.filter(x=>x.day===d);const e=entries[0];const cl2=e?lc(e.location):null;h+=`<div class="day-col"><div class="day-label">${d}</div><div class="day-val" style="background:${cl2?cl2.bg:'#f8fafc'};color:${cl2?cl2.text:'#cbd5e1'};border:1px solid ${cl2?cl2.border:'#f1f5f9'}">${e?esc(e.location):'—'}</div></div>`});h+='</div>'}
-        h+='</div>';
-      });
-      h+='</div>';
+        h+='</div>'});h+='</div>';
     }else{
-      const list=DATA.locations.filter(l=>{const s2=l.endDate&&l.endDate<TODAY?"former":(l.startDate>TODAY?"upcoming":"active");return state.dirStatus==="all"||s2===state.dirStatus});
-      h+='<div class="card-grid">';
-      list.forEach(l=>{
-        const cl2=lc(l.locationCode);const s2=l.endDate&&l.endDate<TODAY?"closed":(l.startDate>TODAY?"upcoming":"active");
-        const sh=DATA.schedules.filter(s=>s.location===l.locationCode&&s.effectiveFrom<=TODAY&&(!s.effectiveTo||s.effectiveTo>=TODAY));const pc=new Set(sh.map(s=>s.physicianName)).size;
+      const list=DATA.locations.filter(l=>{const s2=l.endDate&&l.endDate<TODAY?"former":(l.startDate>TODAY?"upcoming":"active");return state.dirStatus==="all"||s2===state.dirStatus});h+='<div class="card-grid">';
+      list.forEach(l=>{const cl2=lc(l.locationCode);const s2=l.endDate&&l.endDate<TODAY?"closed":(l.startDate>TODAY?"upcoming":"active");const sh=DATA.schedules.filter(s=>s.location===l.locationCode&&s.effectiveFrom<=TODAY&&(!s.effectiveTo||s.effectiveTo>=TODAY));const pc=new Set(sh.map(s=>s.physicianName)).size;
         h+=`<div class="card ${s2==='closed'?'faded':''}"><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px"><div><div style="font-weight:700;font-size:15px;color:${cl2.text}"><span class="legend-dot" style="background:${cl2.bg};border:1px solid ${cl2.border};width:12px;height:12px;margin-right:8px;vertical-align:middle"></span>${esc(l.locationName)}</div><div style="font-size:13px;color:#64748b;margin-top:2px">${esc(l.locationCode)} · ${esc(l.region)}</div></div>${s2!=='active'?statusHTML(s2):''}</div>`;
-        h+=`<div style="font-size:12px;color:#94a3b8;margin-bottom:10px">${l.startDate} → ${l.endDate||'Present'}</div>`;
-        h+=`<div style="font-size:13px;color:#475569">${pc} active physician${pc!==1?'s':''}</div>`;
+        h+=`<div style="font-size:12px;color:#94a3b8;margin-bottom:10px">${l.startDate} → ${l.endDate||'Present'}</div><div style="font-size:13px;color:#475569">${pc} active physician${pc!==1?'s':''}</div>`;
         if(sh.length>0){h+='<div style="margin-top:8px;display:flex;gap:4px">';DAYS.forEach(d=>{const ct=sh.filter(s=>s.day===d).length;h+=`<div style="flex:1;text-align:center"><div style="font-size:10px;color:#94a3b8;margin-bottom:3px;font-weight:600">${d}</div><div style="padding:3px 0;border-radius:4px;font-size:12px;font-weight:600;background:${ct>0?cl2.bg:'#f8fafc'};color:${ct>0?cl2.text:'#cbd5e1'};border:1px solid ${ct>0?cl2.border:'#f1f5f9'}">${ct>0?ct:'—'}</div></div>`});h+='</div>'}
-        h+='</div>';
-      });
-      h+='</div>';
+        h+='</div>'});h+='</div>';
     }
     c.innerHTML=h;
     document.getElementById("d-phy").addEventListener("click",()=>{state.dirTab="physicians";build()});
@@ -600,8 +1211,14 @@ async function init(){
   try{
     const r=await fetch(API_URL);if(!r.ok)throw new Error("HTTP "+r.status);
     DATA=await r.json();
-    DATA.physicians=DATA.physicians||[];DATA.locations=DATA.locations||[];DATA.schedules=DATA.schedules||[];DATA.exceptions=DATA.exceptions||[];
+    DATA.physicians=DATA.physicians||[];DATA.locations=DATA.locations||[];DATA.schedules=DATA.schedules||[];DATA.exceptions=DATA.exceptions||[];DATA.ptoAllotments=DATA.ptoAllotments||[];
     DATA.locations.forEach(l=>{if(l.locationCode&&!LOC_COLORS[l.locationCode]){const h2=Math.abs(l.locationCode.split("").reduce((a,c2)=>a+c2.charCodeAt(0),0)*137)%360;LOC_COLORS[l.locationCode]={bg:`hsl(${h2},80%,92%)`,text:`hsl(${h2},60%,30%)`,border:`hsl(${h2},70%,75%)`}}});
+    buildRegionColors();
+    // Pre-cache current year holidays
+    const cy=new Date().getFullYear();
+    HOLIDAYS_CACHE[cy]=getHolidaysForYear(cy);
+    HOLIDAYS_CACHE[cy-1]=getHolidaysForYear(cy-1);
+    HOLIDAYS_CACHE[cy+1]=getHolidaysForYear(cy+1);
     document.getElementById("loading").style.display="none";
     document.getElementById("errorBox").style.display="none";
     document.getElementById("lastUpdated").textContent=`Last updated: ${new Date(DATA.lastUpdated).toLocaleString()}`;
