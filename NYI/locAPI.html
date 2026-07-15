@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Locations Data Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <style>
+    :root {
+      --nyh-primary: #2b3990;
+      --nyh-secondary: #0074b8;
+      --nyh-slate: #313743;
+      --color-nyh: #0074b8;
+      --color-nycbs: #7B2D8E;
+      --color-breast: #E91E8C;
+      --color-imaging: #00B4D8;
+      --color-admin: #DC2626;
+      --color-default: #333333;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; 
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+    
+    .portal-wrapper { display: flex; min-height: 100vh; }
+    
+    .column-sidebar {
+      width: 120px;
+      background: #fff;
+      border-right: 1px solid #e0e0e0;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    
+    .column-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-family: inherit;
+    }
+    
+    .column-toggle:hover { border-color: #666; }
+    .column-toggle.active { background: var(--nyh-slate); border-color: var(--nyh-slate); color: #fff; }
+    
+    .sidebar-divider { height: 1px; background: #e0e0e0; margin: 8px 0; }
+    .sidebar-label { font-size: 9px; text-transform: uppercase; color: #999; font-weight: 600; text-align: center; margin-top: 4px; }
+    
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 8px;
+      background: #f8f8f8;
+      border-radius: 6px;
+    }
+    .slider-group label { font-size: 10px; color: #666; text-align: center; }
+    .slider-group input[type="range"] { width: 100%; cursor: pointer; }
+    
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    
+    .filter-bar {
+      background: #fff;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-bar-left { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+    .filter-bar-right { display: flex; align-items: center; gap: 16px; }
+    .results-count { font-size: 13px; color: #666; white-space: nowrap; }
+    .results-count strong { color: #333; }
+    
+    .filter-group { display: flex; flex-direction: column; gap: 4px; position: relative; }
+    .filter-group label { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; }
+    
+    .multi-select { position: relative; min-width: 140px; }
+    
+    .multi-select-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      min-width: 120px;
+      font-family: inherit;
+      text-align: left;
+    }
+    
+    .multi-select-btn:hover { border-color: #999; }
+    .multi-select-btn.active { border-color: var(--nyh-secondary); }
+    .multi-select-btn i { font-size: 10px; color: #999; transition: transform 0.2s; }
+    .multi-select-btn.active i { transform: rotate(180deg); }
+    
+    .multi-select-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 280px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: none;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .multi-select-dropdown.open { display: block; }
+    
+    .dropdown-search {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      background: #fff;
+    }
+    
+    .dropdown-search input {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: inherit;
+    }
+    
+    .dropdown-search input:focus { outline: none; border-color: var(--nyh-secondary); }
+    
+    .dropdown-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.15s;
+      user-select: none;
+    }
+    
+    .dropdown-option:hover { background: #f5f5f5; }
+    .dropdown-option.selected { background: #e8f4fc; }
+    .dropdown-option input { margin: 0; pointer-events: none; }
+    .dropdown-option .option-count { margin-left: auto; font-size: 11px; color: #999; }
+    
+    .dropdown-actions {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      border-top: 1px solid #eee;
+      background: #fafafa;
+      position: sticky;
+      bottom: 0;
+    }
+    
+    .dropdown-action {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    
+    .dropdown-action.clear { background: #eee; color: #666; }
+    .dropdown-action.clear:hover { background: #ddd; }
+    .dropdown-action.done { background: var(--nyh-secondary); color: #fff; }
+    .dropdown-action.done:hover { background: var(--nyh-primary); }
+    
+    .filter-input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      min-width: 140px;
+      font-family: inherit;
+    }
+    
+    .filter-input:focus { outline: none; border-color: var(--nyh-secondary); }
+    
+    .content-area {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      overflow: hidden;
+    }
+    
+    .map-container {
+      flex: 1;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      min-width: 400px;
+      position: relative;
+    }
+    
+    #map { width: 100%; height: 100%; min-height: 400px; }
+    
+    .table-panel {
+      width: 500px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    
+    .table-container {
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 180px);
+    }
+    
+    .table-scroll { flex: 1; overflow: auto; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; }
+    
+    .data-table th {
+      background: #f8f8f8;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    
+    .data-table th:hover { background: #f0f0f0; }
+    .data-table th .sort-icon { margin-left: 6px; font-size: 10px; color: #999; }
+    .data-table th.sorted .sort-icon { color: var(--nyh-secondary); }
+    .data-table th.sorted { color: var(--nyh-secondary); }
+    
+    .data-table td { padding: 10px 16px; border-bottom: 1px solid #f0f0f0; color: #333; vertical-align: top; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #fafafa; }
+    .data-table tr.selected td { background: #e8f4fc; }
+    .data-table tr { cursor: pointer; }
+    .data-table a { color: var(--nyh-secondary); text-decoration: none; }
+    .data-table a:hover { text-decoration: underline; }
+    
+    .export-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 6px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      border: none; font-family: inherit;
+    }
+    .export-btn.primary { background: var(--nyh-secondary); color: #fff; }
+    .export-btn.primary:hover { background: var(--nyh-primary); }
+    .export-btn.secondary { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
+    .export-btn.secondary:hover { background: #eee; }
+    
+    .loading { display: flex; align-items: center; justify-content: center; padding: 60px; color: #666; }
+    .loading i { font-size: 24px; animation: spin 1s linear infinite; margin-right: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 60px 20px; color: #999; }
+    
+    .leaflet-popup-content-wrapper { border-radius: 8px; }
+    .popup-content h4 { margin: 0 0 8px; color: var(--nyh-primary); }
+    .popup-content p { margin: 4px 0; font-size: 13px; color: #666; }
+    .popup-content .popup-address { font-style: italic; }
+    
+    .map-legend {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: #fff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 1000;
+      font-size: 12px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    
+    .location-label {
+      background: rgba(255,255,255,0.95);
+      border: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    
+    .leaflet-tooltip.location-label::before { display: none; }
+    
+    .fullscreen-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      width: 36px;
+      height: 36px;
+      background: #fff;
+      border: 2px solid rgba(0,0,0,0.2);
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #333;
+      transition: background 0.2s;
+    }
+    .fullscreen-btn:hover { background: #f0f0f0; }
+    
+    .map-container.fullscreen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 9999;
+      border-radius: 0;
+      min-width: unset;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="portal-wrapper">
+    <div class="column-sidebar">
+      <button class="column-toggle" data-view="default" onclick="loadDefaultView()">Default View</button>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">Map Options</div>
+      <button class="column-toggle" id="toggleLabels" onclick="toggleMapLabels()"><i class="fas fa-tag"></i> Labels</button>
+      <div class="slider-group">
+        <label>Dot Size</label>
+        <input type="range" id="dotSizeSlider" min="4" max="20" value="8" oninput="updateDotSize(this.value)">
+      </div>
+      <div class="slider-group">
+        <label>Label Size</label>
+        <input type="range" id="labelSizeSlider" min="8" max="18" value="11" oninput="updateLabelSize(this.value)">
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">Table Columns</div>
+      <button class="column-toggle active" data-column="name">Name</button>
+      <button class="column-toggle active" data-column="address">Address</button>
+      <button class="column-toggle active" data-column="location_types">Location Type</button>
+      <button class="column-toggle" data-column="providers">Providers</button>
+      <button class="column-toggle" data-column="rad_modality">Rad Modality</button>
+      <button class="column-toggle active" data-column="domains">Domains</button>
+      <button class="column-toggle" data-column="services">Services</button>
+      <button class="column-toggle" data-column="slug">Slug</button>
+      <button class="column-toggle active" data-column="phone">Phone</button>
+    </div>
+    
+    <div class="main-content">
+      <div class="filter-bar">
+        <div class="filter-bar-left">
+          <div class="filter-group">
+            <label>Location Name</label>
+            <input type="text" class="filter-input" id="filterName" placeholder="Search...">
+          </div>
+          <div class="filter-group">
+            <label>Domain</label>
+            <div class="multi-select" id="filterDomain"></div>
+          </div>
+          <div class="filter-group">
+            <label>Location Type</label>
+            <div class="multi-select" id="filterType"></div>
+          </div>
+
+        </div>
+        <div class="filter-bar-right">
+          <span class="results-count"><strong id="filteredCount">0</strong> of <strong id="totalCount">0</strong></span>
+          <button class="export-btn secondary" onclick="copyToClipboard()"><i class="fas fa-copy"></i> Copy</button>
+          <button class="export-btn primary" onclick="exportCSV()"><i class="fas fa-download"></i> Export</button>
+        </div>
+      </div>
+      
+      <div class="content-area">
+        <div class="map-container">
+          <div id="map"></div>
+          <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle fullscreen"><i class="fas fa-expand" id="fullscreenIcon"></i></button>
+          <div class="map-legend">
+            <div class="legend-item"><div class="legend-dot" style="background: var(--color-nycbs);"></div> NYCBS</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--color-breast);"></div> Breast</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--color-imaging);"></div> Imaging</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--color-nyh);"></div> NYH</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--color-admin);"></div> Administrative</div>
+            <div class="legend-item"><div class="legend-dot" style="background: var(--color-default);"></div> Other</div>
+          </div>
+        </div>
+        <div class="table-panel">
+          <div class="table-container">
+            <div class="table-scroll">
+              <table class="data-table" id="dataTable">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody">
+                  <tr><td colspan="10" class="loading"><i class="fas fa-spinner"></i> Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script>
+    const LOCATIONS_API = 'https://api.nycancer.com/open/directory/locations/all';
+    const DEFAULT_DOMAIN = 'nycancer.com';
+    
+    const DOMAIN_PRIORITY = [
+      { id: 6, color: '#7B2D8E' },
+      { id: 8, color: '#E91E8C' },
+      { id: 10, color: '#00B4D8' },
+      { id: 3, color: '#0074b8' }
+    ];
+    const ADMIN_COLOR = '#DC2626';
+    const DEFAULT_COLOR = '#333333';
+    
+    let allLocations = [];
+    let map = null;
+    let markers = {};
+    let tooltips = {};
+    let selectedLocationId = null;
+    let sortColumn = null;
+    let sortDirection = 'asc';
+    let showLabels = false;
+    let dotSize = 8;
+    let labelSize = 11;
+    
+    const filters = { domainList: [], types: [] };
+    const pendingFilters = { domainList: [], types: [] };
+    
+    const filterConfig = [
+      { id: 'filterDomain', key: 'domainList', label: 'Domain', isArray: true },
+      { id: 'filterType', key: 'types', label: 'Location Type', isArray: true }
+    ];
+    
+    const columns = [
+      { key: 'name', label: 'Name', alwaysVisible: true },
+      { key: 'address', label: 'Address' },
+      { key: 'location_types', label: 'Location Type', type: 'array' },
+      { key: 'providers', label: 'Providers', type: 'array' },
+      { key: 'rad_modality', label: 'Rad Modality', type: 'array' },
+      { key: 'domains', label: 'Domains', type: 'array' },
+      { key: 'services', label: 'Services', type: 'array' },
+      { key: 'slug', label: 'Slug' },
+      { key: 'phone', label: 'Phone' }
+    ];
+    
+    const defaultColumns = ['name', 'address', 'location_types', 'domains', 'phone'];
+    let visibleColumns = [...defaultColumns];
+    
+    function getMarkerColor(loc) {
+      if (loc.isAdmin) return ADMIN_COLOR;
+      const domainIds = loc.domainIds || [];
+      for (const priority of DOMAIN_PRIORITY) {
+        if (domainIds.includes(priority.id)) return priority.color;
+      }
+      return DEFAULT_COLOR;
+    }
+    
+    function toggleMapLabels() {
+      showLabels = !showLabels;
+      document.getElementById('toggleLabels').classList.toggle('active', showLabels);
+      renderMap(true);
+    }
+    
+    function updateDotSize(val) {
+      dotSize = parseInt(val);
+      renderMap(true);
+    }
+    
+    function updateLabelSize(val) {
+      labelSize = parseInt(val);
+      renderMap(true);
+    }
+    
+    async function init() {
+      initMap();
+      
+      try {
+        const response = await fetch(LOCATIONS_API);
+        const json = await response.json();
+        const rawData = Array.isArray(json) ? json : (json.data || []);
+        
+        allLocations = rawData.map(loc => {
+          const domains = loc.domains || [];
+          const domainList = domains.map(d => d.domain);
+          const domainIds = domains.map(d => d.domain_id);
+          const locTypes = loc.location_types || loc.types || [];
+          const isAdmin = locTypes.length === 0;
+          
+          return {
+            id: loc.slug || loc.id || Math.random().toString(36).substr(2, 9),
+            name: loc.name || loc.location_name || 'Unknown',
+            address: loc.address || '',
+            city: loc.city || '',
+            state: loc.state || '',
+            zip: loc.zip || loc.zipcode || '',
+            phone: loc.phone || loc.internal_phone || loc.telephone || '',
+            fax: loc.fax || '',
+            types: isAdmin ? ['Administrative'] : locTypes,
+            location_types: isAdmin ? ['Administrative'] : locTypes,
+            domain: domainList.join(', ') || loc.domain || '',
+            domainList: domainList,
+            domainIds: domainIds,
+            domains: domains.map(d => d.display_name),
+            lat: parseFloat(loc.latitude || loc.lat) || null,
+            lng: parseFloat(loc.longitude || loc.lng) || null,
+            link: loc.link || '',
+            providers: (loc.active_providers || []).map(p => p.name),
+            providerCount: (loc.active_providers || []).length,
+            rad_modality: loc.rad_modality || [],
+            services: loc.services || [],
+            slug: loc.slug || '',
+            isAdmin: isAdmin
+          };
+        }).filter(loc => loc.lat && loc.lng);
+        
+        document.getElementById('totalCount').textContent = allLocations.length;
+        
+        filters.domainList = [DEFAULT_DOMAIN];
+        pendingFilters.domainList = [DEFAULT_DOMAIN];
+        
+        filterConfig.forEach(fc => initMultiSelect(fc));
+        
+        document.getElementById('filterName').addEventListener('input', () => { updateAvailableOptions(); renderAll(); });
+        setupColumnToggles();
+        
+        updateAvailableOptions();
+        renderAll();
+        
+      } catch (err) {
+        console.error('Failed to load:', err);
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" class="empty-state">Failed to load: ${err.message}</td></tr>`;
+      }
+    }
+    
+    function initMap() {
+      map = L.map('map').setView([40.7128, -73.9060], 10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+    }
+    
+    function initMultiSelect(config) {
+      const container = document.getElementById(config.id);
+      container.innerHTML = `
+        <button class="multi-select-btn" onclick="toggleDropdown('${config.id}', '${config.key}')">
+          <span class="btn-text">All</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="multi-select-dropdown" id="${config.id}-dropdown">
+          <div class="dropdown-search">
+            <input type="text" placeholder="Search..." oninput="filterDropdownOptions('${config.id}', this.value)">
+          </div>
+          <div class="dropdown-options"></div>
+          <div class="dropdown-actions">
+            <button class="dropdown-action clear" onclick="clearPendingFilter('${config.key}')">Clear</button>
+            <button class="dropdown-action clear" onclick="selectAllPendingFilter('${config.key}', '${config.id}')">Select All</button>
+            <button class="dropdown-action done" onclick="applyFilter('${config.key}', '${config.id}')">Done</button>
+          </div>
+        </div>
+      `;
+    }
+    
+    function toggleDropdown(id, key) {
+      const dropdown = document.getElementById(`${id}-dropdown`);
+      const btn = document.querySelector(`#${id} .multi-select-btn`);
+      const isOpen = dropdown.classList.contains('open');
+      
+      document.querySelectorAll('.multi-select-dropdown').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.multi-select-btn').forEach(b => b.classList.remove('active'));
+      
+      if (!isOpen) {
+        pendingFilters[key] = [...filters[key]];
+        updateDropdownOptions(key, id);
+        dropdown.classList.add('open');
+        btn.classList.add('active');
+        dropdown.querySelector('input').focus();
+      }
+    }
+    
+    document.addEventListener('click', (e) => {
+      const option = e.target.closest('.dropdown-option');
+      if (option) {
+        const key = option.dataset.key;
+        const idx = parseInt(option.dataset.value);
+        const id = option.dataset.id;
+        const optionsContainer = option.closest('.dropdown-options');
+        const value = optionsContainer._values[idx];
+        togglePendingOption(key, value, id);
+        return;
+      }
+      
+      if (!e.target.closest('.multi-select')) {
+        document.querySelectorAll('.multi-select-dropdown').forEach(d => d.classList.remove('open'));
+        document.querySelectorAll('.multi-select-btn').forEach(b => b.classList.remove('active'));
+        Object.keys(filters).forEach(k => pendingFilters[k] = [...filters[k]]);
+      }
+    });
+    
+    function filterDropdownOptions(id, search) {
+      const dropdown = document.getElementById(`${id}-dropdown`);
+      const options = dropdown.querySelectorAll('.dropdown-option');
+      const searchLower = search.toLowerCase();
+      options.forEach(opt => {
+        const text = opt.querySelector('.option-text').textContent.toLowerCase();
+        opt.style.display = text.includes(searchLower) ? 'flex' : 'none';
+      });
+    }
+    
+    function getFilteredDataExcluding(excludeKey) {
+      let data = [...allLocations];
+      
+      const nameFilter = document.getElementById('filterName').value.toLowerCase();
+      if (nameFilter) data = data.filter(loc => loc.name.toLowerCase().includes(nameFilter));
+      
+      filterConfig.forEach(fc => {
+        if (fc.key === excludeKey) return;
+        const selected = filters[fc.key];
+        if (selected.length === 0) return;
+        
+        data = data.filter(loc => {
+          const val = loc[fc.key];
+          if (fc.isArray) return selected.some(s => val.includes(s));
+          return selected.includes(val);
+        });
+      });
+      
+      return data;
+    }
+    
+    function getFilteredData() { return getFilteredDataExcluding(null); }
+    
+    function updateDropdownOptions(key, id) {
+      const fc = filterConfig.find(f => f.key === key);
+      const availableData = getFilteredDataExcluding(fc.key);
+      
+      const availableValues = new Map();
+      availableData.forEach(loc => {
+        const val = loc[fc.key];
+        if (fc.isArray) {
+          val.forEach(v => { if (v) availableValues.set(v, (availableValues.get(v) || 0) + 1); });
+        } else {
+          if (val) availableValues.set(val, (availableValues.get(val) || 0) + 1);
+        }
+      });
+      
+      const dropdown = document.getElementById(`${id}-dropdown`);
+      const optionsContainer = dropdown.querySelector('.dropdown-options');
+      const pending = pendingFilters[key];
+      const sortedValues = [...availableValues.keys()].sort();
+      
+      optionsContainer.innerHTML = sortedValues.map((val, idx) => {
+        const isSelected = pending.includes(val);
+        const count = availableValues.get(val) || 0;
+        return `
+          <div class="dropdown-option ${isSelected ? 'selected' : ''}" data-key="${key}" data-value="${idx}" data-id="${id}">
+            <input type="checkbox" ${isSelected ? 'checked' : ''}>
+            <span class="option-text">${val}</span>
+            <span class="option-count">${count}</span>
+          </div>
+        `;
+      }).join('');
+      
+      optionsContainer._values = sortedValues;
+      
+      if (sortedValues.length === 0) {
+        optionsContainer.innerHTML = '<div style="padding: 12px; color: #999; text-align: center;">No options available</div>';
+      }
+    }
+    
+    function updateAvailableOptions() {
+      filterConfig.forEach(fc => {
+        const btn = document.querySelector(`#${fc.id} .multi-select-btn`);
+        const btnText = btn.querySelector('.btn-text');
+        const selected = filters[fc.key];
+        
+        if (selected.length === 0) btnText.innerHTML = 'All';
+        else if (selected.length === 1) btnText.innerHTML = selected[0].length > 12 ? selected[0].substring(0, 12) + '...' : selected[0];
+        else btnText.innerHTML = `${selected.length} selected`;
+      });
+    }
+    
+    function togglePendingOption(key, value, id) {
+      const idx = pendingFilters[key].indexOf(value);
+      if (idx > -1) pendingFilters[key].splice(idx, 1);
+      else pendingFilters[key].push(value);
+      updateDropdownOptions(key, id);
+    }
+    
+    function applyFilter(key, id) {
+      filters[key] = [...pendingFilters[key]];
+      document.getElementById(`${id}-dropdown`).classList.remove('open');
+      document.querySelector(`#${id} .multi-select-btn`).classList.remove('active');
+      selectedLocationId = null;
+      updateAvailableOptions();
+      renderAll();
+    }
+    
+    function clearPendingFilter(key) {
+      pendingFilters[key] = [];
+      const fc = filterConfig.find(f => f.key === key);
+      updateDropdownOptions(key, fc.id);
+    }
+    
+    function selectAllPendingFilter(key, id) {
+      const dropdown = document.getElementById(`${id}-dropdown`);
+      const optionsContainer = dropdown.querySelector('.dropdown-options');
+      const allValues = optionsContainer._values || [];
+      pendingFilters[key] = [...allValues];
+      updateDropdownOptions(key, id);
+    }
+    
+    function setupColumnToggles() {
+      document.querySelectorAll('.column-toggle[data-column]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const col = btn.dataset.column;
+          btn.classList.toggle('active');
+          
+          if (visibleColumns.includes(col)) visibleColumns = visibleColumns.filter(c => c !== col);
+          else {
+            const colIndex = columns.findIndex(c => c.key === col);
+            let insertIndex = visibleColumns.length;
+            for (let i = 0; i < visibleColumns.length; i++) {
+              if (columns.findIndex(c => c.key === visibleColumns[i]) > colIndex) { insertIndex = i; break; }
+            }
+            visibleColumns.splice(insertIndex, 0, col);
+          }
+          
+          if (!visibleColumns.includes('name')) visibleColumns.unshift('name');
+          renderTable();
+        });
+      });
+    }
+    
+    function loadDefaultView() {
+      visibleColumns = [...defaultColumns];
+      document.querySelectorAll('.column-toggle[data-column]').forEach(btn => {
+        btn.classList.toggle('active', defaultColumns.includes(btn.dataset.column));
+      });
+      
+      document.getElementById('filterName').value = '';
+      Object.keys(filters).forEach(k => { filters[k] = []; pendingFilters[k] = []; });
+      filters.domainList = [DEFAULT_DOMAIN];
+      pendingFilters.domainList = [DEFAULT_DOMAIN];
+      
+      selectedLocationId = null;
+      sortColumn = null;
+      sortDirection = 'asc';
+      
+      updateAvailableOptions();
+      renderAll();
+    }
+    
+    function renderAll() {
+      renderTable();
+      renderMap();
+    }
+    
+    function renderTable() {
+      let data = getFilteredData();
+      document.getElementById('filteredCount').textContent = data.length;
+      
+      if (sortColumn) {
+        data = [...data].sort((a, b) => {
+          let valA = a[sortColumn], valB = b[sortColumn];
+          if (Array.isArray(valA)) valA = valA.join(', ');
+          if (Array.isArray(valB)) valB = valB.join(', ');
+          valA = valA || ''; valB = valB || '';
+          const cmp = String(valA).toLowerCase().localeCompare(String(valB).toLowerCase());
+          return sortDirection === 'asc' ? cmp : -cmp;
+        });
+      }
+      
+      const visibleColDefs = columns.filter(c => c.alwaysVisible || visibleColumns.includes(c.key));
+      
+      document.getElementById('tableHead').innerHTML = `<tr>${visibleColDefs.map(c => {
+        const isSorted = sortColumn === c.key;
+        const icon = isSorted ? (sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort';
+        return `<th class="${isSorted ? 'sorted' : ''}" onclick="sortBy('${c.key}')">${c.label}<i class="fas ${icon} sort-icon"></i></th>`;
+      }).join('')}</tr>`;
+      
+      if (data.length === 0) {
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="${visibleColDefs.length}" class="empty-state">No locations match</td></tr>`;
+        return;
+      }
+      
+      document.getElementById('tableBody').innerHTML = data.map(loc => `
+        <tr class="${loc.id === selectedLocationId ? 'selected' : ''}" onclick="selectLocation('${loc.id}')">
+          ${visibleColDefs.map(col => {
+            const val = loc[col.key];
+            if (col.type === 'link' && val) return `<td><a href="${val}" target="_blank" onclick="event.stopPropagation()">View</a></td>`;
+            if (col.type === 'array') return `<td>${(Array.isArray(val) ? val : []).join(', ') || '-'}</td>`;
+            if (col.type === 'count') return `<td>${val || 0}</td>`;
+            return `<td>${val || '-'}</td>`;
+          }).join('')}
+        </tr>
+      `).join('');
+    }
+    
+    function renderMap(preserveView = false) {
+      // Save current view before clearing
+      const savedCenter = preserveView ? map.getCenter() : null;
+      const savedZoom = preserveView ? map.getZoom() : null;
+
+      Object.values(markers).forEach(m => map.removeLayer(m));
+      Object.values(tooltips).forEach(t => map.removeLayer(t));
+      markers = {};
+      tooltips = {};
+      
+      const data = getFilteredData();
+      const bounds = [];
+      
+      data.forEach(loc => {
+        if (!loc.lat || !loc.lng) return;
+        
+        const isSelected = loc.id === selectedLocationId;
+        const markerColor = getMarkerColor(loc);
+        
+        const marker = L.circleMarker([loc.lat, loc.lng], {
+          radius: isSelected ? dotSize * 1.5 : dotSize,
+          fillColor: markerColor,
+          color: '#fff',
+          weight: 2,
+          fillOpacity: 0.9
+        }).addTo(map);
+        
+        marker.bindPopup(`
+          <div class="popup-content">
+            <h4>${loc.name}</h4>
+            <p class="popup-address">${loc.address}</p>
+            <p>${loc.city}, ${loc.state} ${loc.zip}</p>
+            ${loc.phone ? `<p><i class="fas fa-phone"></i> ${loc.phone}</p>` : ''}
+            ${loc.providerCount ? `<p><i class="fas fa-user-md"></i> ${loc.providerCount} providers</p>` : ''}
+            ${loc.domains.length ? `<p><i class="fas fa-globe"></i> ${loc.domains.join(', ')}</p>` : ''}
+          </div>
+        `);
+        
+        marker.on('click', () => selectLocation(loc.id));
+        markers[loc.id] = marker;
+        bounds.push([loc.lat, loc.lng]);
+      });
+      
+      if (showLabels) {
+        const labelDirs = computeLabelDirections(data);
+        
+        data.forEach(loc => {
+          if (!loc.lat || !loc.lng) return;
+          const dirInfo = labelDirs[loc.id] || { dir: 'right', offset: [10, 0] };
+          
+          const tooltip = L.tooltip({
+            permanent: true,
+            direction: dirInfo.dir,
+            offset: dirInfo.offset,
+            className: 'location-label'
+          })
+          .setLatLng([loc.lat, loc.lng])
+          .setContent(`<span style="font-size:${labelSize}px">${loc.name}</span>`)
+          .addTo(map);
+          tooltips[loc.id] = tooltip;
+        });
+      }
+      
+      // Restore view if preserving, otherwise fit bounds as before
+      if (preserveView && savedCenter && savedZoom != null) {
+        map.setView(savedCenter, savedZoom);
+      } else if (bounds.length > 0) {
+        if (selectedLocationId && markers[selectedLocationId]) {
+          map.setView(markers[selectedLocationId].getLatLng(), 13);
+          markers[selectedLocationId].openPopup();
+        } else {
+          map.fitBounds(bounds, { padding: [30, 30] });
+        }
+      }
+    }
+    
+    function computeLabelDirections(data) {
+      const directions = {};
+      const PROXIMITY_PX = 80; // pixel distance to consider "nearby"
+      const zoom = map.getZoom();
+      
+      // Convert all lat/lng to pixel points
+      const points = data
+        .filter(loc => loc.lat && loc.lng)
+        .map(loc => ({
+          id: loc.id,
+          px: map.latLngToContainerPoint([loc.lat, loc.lng])
+        }));
+      
+      const dirOptions = [
+        { dir: 'right',  offset: [10, 0] },
+        { dir: 'left',   offset: [-10, 0] },
+        { dir: 'bottom', offset: [0, 10] },
+        { dir: 'top',    offset: [0, -10] }
+      ];
+      
+      points.forEach((pt, i) => {
+        // Find nearby neighbors
+        const neighbors = points.filter((other, j) => {
+          if (i === j) return false;
+          const dx = pt.px.x - other.px.x;
+          const dy = pt.px.y - other.px.y;
+          return Math.sqrt(dx * dx + dy * dy) < PROXIMITY_PX;
+        });
+        
+        if (neighbors.length === 0) {
+          directions[pt.id] = { dir: 'right', offset: [10, 0] };
+          return;
+        }
+        
+        // Compute average vector pointing FROM neighbors TO this point
+        let avgDx = 0, avgDy = 0;
+        neighbors.forEach(n => {
+          avgDx += pt.px.x - n.px.x;
+          avgDy += pt.px.y - n.px.y;
+        });
+        
+        // Pick direction that best matches "away from neighbors"
+        // Map avg vector to best cardinal direction
+        const angle = Math.atan2(avgDy, avgDx); // radians
+        // right=0, bottom=π/2, left=±π, top=-π/2
+        let bestIdx;
+        if (angle >= -Math.PI/4 && angle < Math.PI/4) bestIdx = 0;       // right
+        else if (angle >= Math.PI/4 && angle < 3*Math.PI/4) bestIdx = 2;  // bottom
+        else if (angle >= -3*Math.PI/4 && angle < -Math.PI/4) bestIdx = 3; // top
+        else bestIdx = 1; // left
+        
+        directions[pt.id] = dirOptions[bestIdx];
+      });
+      
+      return directions;
+    }
+    
+    function toggleFullscreen() {
+      const container = document.querySelector('.map-container');
+      const icon = document.getElementById('fullscreenIcon');
+      container.classList.toggle('fullscreen');
+      const isFS = container.classList.contains('fullscreen');
+      icon.className = isFS ? 'fas fa-compress' : 'fas fa-expand';
+      setTimeout(() => map.invalidateSize(), 200);
+    }
+    
+    function selectLocation(id) {
+      selectedLocationId = selectedLocationId === id ? null : id;
+      renderAll();
+    }
+    
+    function sortBy(columnKey) {
+      if (sortColumn === columnKey) sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      else { sortColumn = columnKey; sortDirection = 'asc'; }
+      renderTable();
+    }
+    
+    function getExportTimestamp() {
+      const now = new Date();
+      return `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    }
+    
+    function getFilterSummary() {
+      const parts = [];
+      const nameFilter = document.getElementById('filterName').value;
+      if (nameFilter) parts.push(`Name: "${nameFilter}"`);
+      if (filters.domainList.length) parts.push(`Domain: ${filters.domainList.join(', ')}`);
+      if (filters.types.length) parts.push(`Type: ${filters.types.join(', ')}`);
+      return parts.length ? parts.join(' | ') : 'No filters applied';
+    }
+    
+    function exportCSV() {
+      const visibleColDefs = columns.filter(c => c.alwaysVisible || visibleColumns.includes(c.key));
+      const data = getFilteredData();
+      const headers = visibleColDefs.map(c => c.label);
+      const rows = data.map(item => visibleColDefs.map(col => {
+        let val = item[col.key];
+        if (col.type === 'array') val = (Array.isArray(val) ? val : []).join(' | ');
+        return `"${String(val || '').replace(/"/g, '""')}"`;
+      }));
+      
+      const timestamp = getExportTimestamp();
+      const blankRow = new Array(headers.length).fill('""');
+      const exportInfo = [blankRow.join(','),
+        `"Export Details:"${',""'.repeat(headers.length-1)}`,
+        `"Date/Time: ${timestamp}"${',""'.repeat(headers.length-1)}`,
+        `"Filters: ${getFilterSummary()}"${',""'.repeat(headers.length-1)}`,
+        `"Total Records: ${data.length}"${',""'.repeat(headers.length-1)}`
+      ];
+      
+      const csv = [headers.join(','), ...rows.map(r => r.join(',')), ...exportInfo].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `locations_${timestamp}.csv`;
+      a.click();
+    }
+    
+    function copyToClipboard() {
+      const visibleColDefs = columns.filter(c => c.alwaysVisible || visibleColumns.includes(c.key));
+      const data = getFilteredData();
+      const headers = visibleColDefs.map(c => c.label);
+      const rows = data.map(item => visibleColDefs.map(col => {
+        let val = item[col.key];
+        if (col.type === 'array') val = (Array.isArray(val) ? val : []).join(' | ');
+        return val || '';
+      }));
+      
+      const timestamp = getExportTimestamp();
+      const exportInfo = ['', `Export Details:`, `Date/Time: ${timestamp}`, `Filters: ${getFilterSummary()}`, `Total Records: ${data.length}`];
+      const text = [headers.join('\t'), ...rows.map(r => r.join('\t')), ...exportInfo].join('\n');
+      navigator.clipboard.writeText(text).then(() => alert(`Copied ${data.length} rows!`));
+    }
+    
+    init();
+  </script>
+</body>
+</html>
