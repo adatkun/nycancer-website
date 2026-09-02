@@ -89,7 +89,7 @@
 }
 
 .appointment-button {
-  background: var(--nyi-purple);
+  background: linear-gradient(135deg, var(--nyi-purple) 0%, var(--nyi-purple-deep) 100%);
   color: white;
   padding: 12px 28px;
   border-radius: var(--radius-full);
@@ -100,12 +100,22 @@
   gap: 8px;
   transition: var(--transition);
   text-decoration: none;
+  box-shadow: 0 4px 14px rgba(91, 77, 153, 0.28);
 }
 
 .appointment-button:hover {
-  background: var(--nyi-blue-light);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(91, 77, 153, 0.38);
   color: white;
+}
+
+.appointment-button:focus-visible,
+.call-button:focus-visible,
+.portal-link:focus-visible,
+.nav-links a:focus-visible,
+.hamburger:focus-visible {
+  outline: 2px solid var(--nyi-cyan, #00c2c6);
+  outline-offset: 3px;
 }
 
 /* ================================================
@@ -136,7 +146,7 @@ nav.navbar {
 .nav-links a {
   color: var(--text-primary);
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
   padding: 10px 0;
   position: relative;
   display: flex;
@@ -153,9 +163,9 @@ nav.navbar {
   bottom: -2px;
   left: 0;
   width: 0;
-  height: 3px;
-  background: var(--nyi-blue);
-  transition: width 0.3s ease;
+  height: 2px;
+  background: var(--nyi-cyan);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-links > a:hover,
@@ -306,11 +316,11 @@ nav.navbar {
 
 /* Hamburger animation when active */
 .hamburger.active {
-  background: rgba(30, 58, 95, 0.05);
+  background: rgba(18, 35, 58, 0.05);
 }
 
 .hamburger.active:hover {
-  background: rgba(30, 58, 95, 0.1);
+  background: rgba(18, 35, 58, 0.1);
 }
 
 .hamburger.active span:nth-child(1) {
@@ -380,7 +390,7 @@ nav.navbar {
 
 .mobile-nav a.active {
   color: var(--nyi-blue);
-  background: rgba(0, 163, 224, 0.05);
+  background: rgba(0, 194, 198, 0.05);
 }
 
 /* Mobile nav footer */
@@ -419,7 +429,7 @@ nav.navbar {
 }
 
 .mobile-portal-btn:hover {
-  background: #e2e8f0;
+  background: #e4e7e2;
   color: var(--text-primary) !important;
 }
 
@@ -600,7 +610,7 @@ body.mobile-menu-open {
 .mobile-nav-submenu a:hover,
 .mobile-nav-submenu a:active {
   color: var(--nyi-blue) !important;
-  background: rgba(0, 163, 224, 0.05) !important;
+  background: rgba(0, 194, 198, 0.05) !important;
 }
 
 .mobile-nav-submenu a:last-child {

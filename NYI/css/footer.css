@@ -8,8 +8,8 @@
    FOOTER BASE STYLES
    ================================================ */
 .site-footer {
-  background: var(--bg-light, #f8f9fa);
-  color: var(--text-primary, #1a1a1a);
+  background: var(--bg-light, #f5f6f4);
+  color: var(--text-primary, #16202c);
   margin-top: 80px;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
@@ -33,7 +33,7 @@
    FOOTER COLUMN HEADINGS
    ================================================ */
 .footer-column h4 {
-  color: var(--nyi-teal, #23738a);
+  color: var(--nyi-teal, #1c6b78);
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 20px;
@@ -48,7 +48,7 @@
   left: 0;
   width: 40px;
   height: 3px;
-  background: var(--nyi-purple, #4c4189);
+  background: var(--nyi-purple, #5b4d99);
   border-radius: 2px;
 }
 
@@ -66,7 +66,7 @@
 }
 
 .footer-link {
-  color: var(--text-secondary, #5a5a5a);
+  color: var(--text-secondary, #55606c);
   font-size: 15px;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -75,7 +75,7 @@
 }
 
 .footer-link:hover {
-  color: var(--nyi-teal, #23738a);
+  color: var(--nyi-teal, #1c6b78);
   transform: translateX(3px);
 }
 
@@ -87,7 +87,7 @@
   transform: translateY(-50%);
   width: 0;
   height: 2px;
-  background: var(--nyi-purple, #4c4189);
+  background: var(--nyi-purple, #5b4d99);
   transition: width 0.3s ease;
 }
 
@@ -111,20 +111,20 @@
   width: 42px;
   height: 42px;
   background: white;
-  border: 2px solid rgba(35, 115, 138, 0.2);
+  border: 2px solid rgba(28, 107, 120, 0.2);
   border-radius: 50%;
-  color: var(--nyi-teal, #23738a);
+  color: var(--nyi-teal, #1c6b78);
   transition: all 0.3s ease;
   text-decoration: none;
   font-size: 18px;
 }
 
 .social-link:hover {
-  background: var(--nyi-teal, #23738a);
-  border-color: var(--nyi-teal, #23738a);
+  background: var(--nyi-teal, #1c6b78);
+  border-color: var(--nyi-teal, #1c6b78);
   color: white;
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(35, 115, 138, 0.3);
+  box-shadow: 0 5px 15px rgba(28, 107, 120, 0.3);
 }
 
 /* ================================================
@@ -151,7 +151,7 @@
 
 .footer-tagline {
   font-style: italic;
-  color: var(--text-secondary, #5a5a5a);
+  color: var(--text-secondary, #55606c);
   font-size: 15px;
 }
 
@@ -172,7 +172,7 @@
 
 .footer-bottom p {
   margin: 0;
-  color: var(--text-secondary, #5a5a5a);
+  color: var(--text-secondary, #55606c);
   font-size: 14px;
 }
 
@@ -249,26 +249,26 @@
 .footer-gradient {
   background: linear-gradient(
     135deg,
-    rgba(35, 115, 138, 0.05) 0%,
-    rgba(76, 65, 137, 0.05) 100%
+    rgba(28, 107, 120, 0.05) 0%,
+    rgba(91, 77, 153, 0.05) 100%
   );
 }
 
 /* Option 2: Clean White Footer */
 .footer-white {
   background: white;
-  border-top: 3px solid var(--nyi-teal, #23738a);
+  border-top: 3px solid var(--nyi-teal, #1c6b78);
 }
 
 .footer-white .footer-bottom {
-  background: var(--bg-light, #f8f9fa);
+  background: var(--bg-light, #f5f6f4);
 }
 
 /* Option 3: Navy Accent Footer */
 .footer-navy-accent .footer-column h4 {
-  color: var(--nyi-navy, #1e3a5f);
+  color: var(--nyi-navy, #12233a);
 }
 
 .footer-navy-accent .footer-column h4::after {
-  background: var(--nyi-teal, #23738a);
+  background: var(--nyi-teal, #1c6b78);
 }

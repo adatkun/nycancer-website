@@ -43,7 +43,7 @@
   position: relative;
   border-radius: var(--radius-lg, 16px);
   overflow: hidden;
-  background: var(--bg-light, #f8f9fa);
+  background: var(--bg-light, #f5f6f4);
   box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.07));
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -85,8 +85,8 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(30, 58, 95, 0.95) 0%,
-    rgba(30, 58, 95, 0.4) 50%,
+    rgba(18, 35, 58, 0.95) 0%,
+    rgba(18, 35, 58, 0.4) 50%,
     transparent 100%
   );
   opacity: 0;
@@ -143,7 +143,7 @@
 
 .gallery-zoom i {
   font-size: 24px;
-  color: var(--nyi-navy, #1e3a5f);
+  color: var(--nyi-navy, #12233a);
 }
 
 .gallery-item:hover .gallery-zoom {
@@ -285,8 +285,8 @@
 
 .gallery-filter-btn {
   background: var(--bg-white, #ffffff);
-  border: 2px solid #e2e8f0;
-  color: var(--text-secondary, #5a5a5a);
+  border: 2px solid #e4e7e2;
+  color: var(--text-secondary, #55606c);
   padding: 10px 24px;
   border-radius: var(--radius-full, 9999px);
   font-size: 15px;
@@ -296,14 +296,14 @@
 }
 
 .gallery-filter-btn:hover {
-  border-color: var(--nyi-navy, #1e3a5f);
-  color: var(--nyi-navy, #1e3a5f);
+  border-color: var(--nyi-navy, #12233a);
+  color: var(--nyi-navy, #12233a);
 }
 
 .gallery-filter-btn.active {
-  background: var(--nyi-navy, #1e3a5f);
+  background: var(--nyi-navy, #12233a);
   color: white;
-  border-color: var(--nyi-navy, #1e3a5f);
+  border-color: var(--nyi-navy, #12233a);
 }
 
 /* ================================================
@@ -312,12 +312,12 @@
 .gallery-loading {
   text-align: center;
   padding: 60px 20px;
-  color: var(--text-secondary, #5a5a5a);
+  color: var(--text-secondary, #55606c);
 }
 
 .gallery-loading i {
   font-size: 48px;
-  color: var(--nyi-blue, #152a45);
+  color: var(--nyi-blue, #2f6fa3);
   animation: spin 1s linear infinite;
   margin-bottom: 16px;
 }
@@ -346,13 +346,13 @@
 .gallery-empty {
   text-align: center;
   padding: 80px 20px;
-  background: var(--bg-light, #f8f9fa);
+  background: var(--bg-light, #f5f6f4);
   border-radius: var(--radius-lg, 16px);
 }
 
 .gallery-empty i {
   font-size: 64px;
-  color: var(--text-light, #7a7a7a);
+  color: var(--text-light, #8b95a0);
   margin-bottom: 20px;
 }
 
@@ -362,7 +362,7 @@
 }
 
 .gallery-empty p {
-  color: var(--text-secondary, #5a5a5a);
+  color: var(--text-secondary, #55606c);
 }
 
 /* ================================================

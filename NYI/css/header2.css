@@ -65,13 +65,13 @@ body {
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    var(--nyi-purple-accent) 20%,
-    var(--nyi-purple-accent) 80%,
+    var(--nyi-cyan) 20%,
+    var(--nyi-cyan) 80%,
     transparent 100%
   );
   box-shadow: 
-    0 0 20px 5px rgba(0, 180, 180, 0.3),
-    0 0 40px 10px rgba(0, 180, 180, 0.15);
+    0 0 20px 5px rgba(0, 194, 198, 0.3),
+    0 0 40px 10px rgba(0, 194, 198, 0.15);
   opacity: 0;
   animation: scanMove 14s ease-in-out 1s infinite;
 }
@@ -321,12 +321,12 @@ body {
   background: linear-gradient(135deg, var(--nyi-purple-accent), var(--nyi-purple));
   overflow: hidden;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 180, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 194, 198, 0.3);
 }
 
 .scan-cta-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(0, 180, 180, 0.4);
+  box-shadow: 0 6px 25px rgba(0, 194, 198, 0.4);
   color: #fff;
 }
 
@@ -484,7 +484,7 @@ body {
 
 .mobile-nav a.active {
   color: var(--nyi-teal);
-  background: rgba(35, 115, 138, 0.08);
+  background: rgba(28, 107, 120, 0.08);
 }
 
 /* Mobile nav footer */
