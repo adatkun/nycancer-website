@@ -7,7 +7,7 @@
   :root{
     --bg:#F7F6F3; --panel:#FFFFFF; --border:#DCD9D1; --border-strong:#B8B4AA;
     --text:#26241F; --text-secondary:#68655D; --text-muted:#928E83;
-    --initial:#B5502E; --secondary:#2E7A5B; --accent:#3A6EA5;
+    --initial:#B5502E; --secondary:#2E7A5B; --accent:#3A6EA5; --lock:#9A6B12;
     font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
   }
   *{box-sizing:border-box;}
@@ -30,7 +30,6 @@
   }
   #controls.show{display:flex;}
   .ctrl{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text-secondary);}
-  .ctrl input[type=text]{font-size:13px;padding:6px 10px;border:1px solid var(--border-strong);border-radius:6px;width:180px;color:var(--text);}
   .ctrl input[type=range]{width:150px;}
   .ctrl .val{font-size:12px;color:var(--text);font-weight:600;}
   #fileMeta{font-size:12px;color:var(--text-muted);margin-left:auto;align-self:center;}
@@ -50,12 +49,25 @@
   #warnings{margin-top:12px;}
   .warn{font-size:12px;background:#FBF0E2;border:1px solid #E7C48F;color:#8A5A0F;border-radius:8px;padding:8px 12px;margin-bottom:6px;}
 
-  #filterBar{
-    display:none;margin-top:14px;background:#EEF3F9;border:1px solid #C7D8EA;border-radius:8px;
-    padding:8px 14px;font-size:12px;color:var(--text);align-items:center;gap:10px;
-  }
-  #filterBar.show{display:flex;}
-  #filterBar button{font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;}
+  #searchRow{display:none;margin-top:14px;gap:16px;flex-wrap:wrap;}
+  #searchRow.show{display:flex;}
+  .search-col{flex:1;min-width:260px;}
+  .search-col .ctrl-label{font-size:12px;color:var(--text-secondary);margin-bottom:6px;display:block;}
+  .search-box{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--border-strong);border-radius:8px;padding:4px 4px 4px 10px;}
+  .search-box input{border:none;outline:none;font-size:13px;flex:1;background:transparent;color:var(--text);padding:6px 0;}
+
+  .filter-accordion{max-height:0;opacity:0;overflow:hidden;transition:max-height .22s ease, opacity .18s ease, margin-top .22s ease;margin-top:0;}
+  .filter-accordion.open{max-height:56px;opacity:1;margin-top:8px;}
+  .filter-chip{display:flex;align-items:center;gap:8px;background:#EEF3F9;border:1px solid #C7D8EA;border-radius:8px;padding:8px 12px;font-size:13px;}
+  .filter-chip.locked{background:#FBF0E2;border-color:#E0C58A;}
+  .filter-chip .pin{font-size:13px;}
+  .filter-chip .filter-label{flex:1;color:var(--text);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .filter-chip .filter-label .muted{color:var(--text-secondary);font-weight:400;}
+  .chip-btn{font-size:12px;border:1px solid var(--border-strong);background:#fff;border-radius:6px;padding:5px 9px;cursor:pointer;white-space:nowrap;}
+  .chip-btn.lock-btn{color:var(--lock);border-color:#E0C58A;}
+  .chip-btn.lock-btn:hover{background:#F6E4C4;}
+  .chip-btn.clear-btn{color:var(--text-secondary);}
+  .chip-btn.clear-btn:hover{background:#E4E1D8;}
 
   #stage{
     display:none;margin-top:14px;background:var(--panel);border:1px solid var(--border);
@@ -82,7 +94,7 @@
 <body>
 
 <h1>Shared patient network</h1>
-<p class="subtitle">Drop a CSV to map initial and secondary providers by shared-patient volume. Click a bubble to isolate its connections.</p>
+<p class="subtitle">Drop a CSV to map initial and secondary providers by shared-patient volume. Search boxes are free-text only; click a bubble to hold a filter, and lock an affiliation to drill into its providers.</p>
 
 <div id="dropzone">
   <p class="main">Drop your CSV here</p>
@@ -106,10 +118,6 @@
     </div>
   </div>
   <div class="ctrl">
-    <span>Search</span>
-    <input type="text" id="searchBox" placeholder="Name or affiliation">
-  </div>
-  <div class="ctrl">
     <span>Minimum shared patients per pair: <span class="val" id="minValLabel">0</span></span>
     <input type="range" id="minShared" min="0" max="0" value="0">
   </div>
@@ -121,9 +129,35 @@
   <button id="resetBtn">Load a different file</button>
 </div>
 
-<div id="filterBar">
-  <span id="filterText"></span>
-  <button id="clearFilterBtn">Clear</button>
+<div id="searchRow">
+  <div class="search-col">
+    <span class="ctrl-label">Initial side search</span>
+    <div class="search-box">
+      <input type="text" id="leftSearchInput" placeholder="Type a provider or affiliation…" autocomplete="off">
+    </div>
+    <div class="filter-accordion" id="leftFilterAccordion">
+      <div class="filter-chip" id="leftFilterChip">
+        <span class="pin">📌</span>
+        <span class="filter-label" id="leftFilterLabel"></span>
+        <button class="chip-btn lock-btn" id="leftLockBtn">🔒 Lock</button>
+        <button class="chip-btn clear-btn" id="leftClearBtn">✕</button>
+      </div>
+    </div>
+  </div>
+  <div class="search-col">
+    <span class="ctrl-label">Secondary side search</span>
+    <div class="search-box">
+      <input type="text" id="rightSearchInput" placeholder="Type a provider or affiliation…" autocomplete="off">
+    </div>
+    <div class="filter-accordion" id="rightFilterAccordion">
+      <div class="filter-chip" id="rightFilterChip">
+        <span class="pin">📌</span>
+        <span class="filter-label" id="rightFilterLabel"></span>
+        <button class="chip-btn lock-btn" id="rightLockBtn">🔒 Lock</button>
+        <button class="chip-btn clear-btn" id="rightClearBtn">✕</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="warnings"></div>
@@ -157,12 +191,12 @@ const REQUIRED = {
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
 const controls = document.getElementById('controls');
+const searchRow = document.getElementById('searchRow');
 const stage = document.getElementById('stage');
 const emptyMsg = document.getElementById('emptyMsg');
 const legend = document.getElementById('legend');
 const warningsEl = document.getElementById('warnings');
 const fileMeta = document.getElementById('fileMeta');
-const searchBox = document.getElementById('searchBox');
 const minShared = document.getElementById('minShared');
 const minValLabel = document.getElementById('minValLabel');
 const colSpacing = document.getElementById('colSpacing');
@@ -170,16 +204,27 @@ const colSpacingLabel = document.getElementById('colSpacingLabel');
 const resetBtn = document.getElementById('resetBtn');
 const tooltip = document.getElementById('tooltip');
 const svg = document.getElementById('net');
-const filterBar = document.getElementById('filterBar');
-const filterText = document.getElementById('filterText');
-const clearFilterBtn = document.getElementById('clearFilterBtn');
 const initGroupToggle = document.getElementById('initGroupToggle');
 const secGroupToggle = document.getElementById('secGroupToggle');
+
+const leftSearchInput = document.getElementById('leftSearchInput');
+const rightSearchInput = document.getElementById('rightSearchInput');
+const leftFilterAccordion = document.getElementById('leftFilterAccordion');
+const rightFilterAccordion = document.getElementById('rightFilterAccordion');
+const leftFilterChip = document.getElementById('leftFilterChip');
+const rightFilterChip = document.getElementById('rightFilterChip');
+const leftFilterLabel = document.getElementById('leftFilterLabel');
+const rightFilterLabel = document.getElementById('rightFilterLabel');
+const leftLockBtn = document.getElementById('leftLockBtn');
+const rightLockBtn = document.getElementById('rightLockBtn');
+const leftClearBtn = document.getElementById('leftClearBtn');
+const rightClearBtn = document.getElementById('rightClearBtn');
 
 let allRows = [];
 let groupInitial = 'provider';
 let groupSecondary = 'provider';
-let selectedFilter = null; // {side:'left'|'right', key:string}
+let leftPick = null, rightPick = null;
+let leftLockedAff = null, rightLockedAff = null;
 let colGapPct = 60;
 
 let initialProviderMeta = {}, secondaryProviderMeta = {};
@@ -201,12 +246,16 @@ fileInput.addEventListener('change', e=>{
 });
 resetBtn.addEventListener('click', ()=>{
   allRows = [];
-  selectedFilter = null;
+  leftPick = rightPick = null;
+  leftLockedAff = rightLockedAff = null;
+  groupInitial = groupSecondary = 'provider';
+  leftSearchInput.value = '';
+  rightSearchInput.value = '';
   fileInput.value = '';
   controls.classList.remove('show');
+  searchRow.classList.remove('show');
   stage.classList.remove('show');
   legend.style.display = 'none';
-  filterBar.classList.remove('show');
   warningsEl.innerHTML = '';
   svg.innerHTML = '';
 });
@@ -225,13 +274,43 @@ function setupToggle(groupEl, onChange){
 setupToggle(initGroupToggle, val => groupInitial = val);
 setupToggle(secGroupToggle, val => groupSecondary = val);
 
-clearFilterBtn.addEventListener('click', ()=>{ selectedFilter = null; render(); });
-
-colSpacing.addEventListener('input', ()=>{
+function updateColSpacing(){
   colGapPct = Number(colSpacing.value);
   colSpacingLabel.textContent = colGapPct + '%';
   render();
-});
+}
+colSpacing.addEventListener('input', updateColSpacing);
+
+function clearSide(side){
+  if(side === 'left'){
+    leftPick = null;
+    if(leftLockedAff){ leftLockedAff = null; groupInitial = 'affiliation'; }
+  } else {
+    rightPick = null;
+    if(rightLockedAff){ rightLockedAff = null; groupSecondary = 'affiliation'; }
+  }
+  render();
+}
+function lockSide(side){
+  if(side === 'left' && leftPick && groupInitial === 'affiliation'){
+    leftLockedAff = leftPick;
+    leftPick = null;
+    groupInitial = 'provider';
+  } else if(side === 'right' && rightPick && groupSecondary === 'affiliation'){
+    rightLockedAff = rightPick;
+    rightPick = null;
+    groupSecondary = 'provider';
+  }
+  render();
+}
+leftClearBtn.addEventListener('click', ()=>clearSide('left'));
+rightClearBtn.addEventListener('click', ()=>clearSide('right'));
+leftLockBtn.addEventListener('click', ()=>lockSide('left'));
+rightLockBtn.addEventListener('click', ()=>lockSide('right'));
+
+leftSearchInput.addEventListener('input', render);
+rightSearchInput.addEventListener('input', render);
+minShared.addEventListener('input', ()=>{ minValLabel.textContent = minShared.value; render(); });
 
 function handleFile(file){
   fileMeta.textContent = file.name;
@@ -270,6 +349,7 @@ function processData(rows, headers){
     w.textContent = "No usable rows found — check that Initial Provider, Secondary Provider, and Shared Patients are populated.";
     warningsEl.appendChild(w);
     controls.classList.remove('show');
+    searchRow.classList.remove('show');
     stage.classList.remove('show');
     legend.style.display = 'none';
     return;
@@ -296,20 +376,26 @@ function processData(rows, headers){
   minShared.max = maxShared;
   minShared.value = 0;
   minValLabel.textContent = '0';
-  selectedFilter = null;
+  leftPick = rightPick = null;
+  leftLockedAff = rightLockedAff = null;
+  leftSearchInput.value = '';
+  rightSearchInput.value = '';
 
   controls.classList.add('show');
+  searchRow.classList.add('show');
   stage.classList.add('show');
   legend.style.display = 'flex';
-  render();
+  // Call the exact same function the spacing slider calls, right away,
+  // so the first draw gets the same treatment a manual nudge would give it.
+  updateColSpacing();
+  requestAnimationFrame(()=>requestAnimationFrame(updateColSpacing));
 }
-
-searchBox.addEventListener('input', render);
-minShared.addEventListener('input', ()=>{ minValLabel.textContent = minShared.value; render(); });
 
 function buildPairs(){
   const map = new Map();
   allRows.forEach(r=>{
+    if(leftLockedAff && r.initialAff !== leftLockedAff) return;
+    if(rightLockedAff && r.secondaryAff !== rightLockedAff) return;
     const lk = groupInitial === 'provider' ? r.initial : r.initialAff;
     const rk = groupSecondary === 'provider' ? r.secondary : r.secondaryAff;
     if(!lk || !rk) return;
@@ -340,43 +426,91 @@ function nodeMetaLines(side, key){
   }
 }
 
+// Free-text search still matches provider name OR their affiliation in provider mode.
+function searchableText(side, key){
+  if(side === 'left'){
+    if(groupInitial === 'provider'){
+      const m = initialProviderMeta[key] || {};
+      return (key + ' ' + (m.aff||'')).toLowerCase();
+    }
+    return key.toLowerCase();
+  } else {
+    if(groupSecondary === 'provider'){
+      const m = secondaryProviderMeta[key] || {};
+      return (key + ' ' + (m.aff||'')).toLowerCase();
+    }
+    return key.toLowerCase();
+  }
+}
+
 function updateToggleAvailability(){
-  const leftLocked = !!(selectedFilter && selectedFilter.side === 'left');
-  const rightLocked = !!(selectedFilter && selectedFilter.side === 'right');
+  const leftDisabled = !!(leftPick || leftLockedAff);
+  const rightDisabled = !!(rightPick || rightLockedAff);
   initGroupToggle.querySelectorAll('button').forEach(b=>{
-    b.disabled = leftLocked;
-    b.title = leftLocked ? 'Clear the current filter to change this' : '';
+    b.disabled = leftDisabled;
+    b.title = leftDisabled ? 'Clear the current hold to change this' : '';
   });
   secGroupToggle.querySelectorAll('button').forEach(b=>{
-    b.disabled = rightLocked;
-    b.title = rightLocked ? 'Clear the current filter to change this' : '';
+    b.disabled = rightDisabled;
+    b.title = rightDisabled ? 'Clear the current hold to change this' : '';
   });
+  initGroupToggle.querySelectorAll('button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.val === groupInitial);
+  });
+  secGroupToggle.querySelectorAll('button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.val === groupSecondary);
+  });
+}
+
+function syncFilterUI(side){
+  const accordion = side === 'left' ? leftFilterAccordion : rightFilterAccordion;
+  const chip = side === 'left' ? leftFilterChip : rightFilterChip;
+  const label = side === 'left' ? leftFilterLabel : rightFilterLabel;
+  const lockBtn = side === 'left' ? leftLockBtn : rightLockBtn;
+  const pick = side === 'left' ? leftPick : rightPick;
+  const lockedAff = side === 'left' ? leftLockedAff : rightLockedAff;
+  const group = side === 'left' ? groupInitial : groupSecondary;
+
+  if(lockedAff){
+    accordion.classList.add('open');
+    chip.classList.add('locked');
+    label.innerHTML = '🔒 ' + esc(lockedAff) + ' <span class="muted">— showing its providers</span>';
+    lockBtn.style.display = 'none';
+  } else if(pick){
+    accordion.classList.add('open');
+    chip.classList.remove('locked');
+    label.textContent = pick;
+    lockBtn.style.display = (group === 'affiliation') ? 'inline-flex' : 'none';
+  } else {
+    accordion.classList.remove('open');
+    chip.classList.remove('locked');
+    lockBtn.style.display = 'none';
+  }
 }
 
 function render(){
   if(!allRows.length) return;
 
   updateToggleAvailability();
+  syncFilterUI('left');
+  syncFilterUI('right');
 
-  if(selectedFilter){
-    filterBar.classList.add('show');
-    filterText.innerHTML = 'Showing connections for <b>' + esc(selectedFilter.key) + '</b>';
-  } else {
-    filterBar.classList.remove('show');
-  }
-
-  const q = searchBox.value.trim().toLowerCase();
   const minVal = Number(minShared.value);
-
   let pairs = buildPairs().filter(p => p.shared >= minVal);
-  if(q){
-    pairs = pairs.filter(p => p.left.toLowerCase().includes(q) || p.right.toLowerCase().includes(q));
+
+  if(leftPick){
+    pairs = pairs.filter(p => p.left === leftPick);
   }
-  if(selectedFilter){
-    pairs = pairs.filter(p =>
-      (selectedFilter.side === 'left' && p.left === selectedFilter.key) ||
-      (selectedFilter.side === 'right' && p.right === selectedFilter.key)
-    );
+  {
+    const lq = leftSearchInput.value.trim().toLowerCase();
+    if(lq) pairs = pairs.filter(p => searchableText('left', p.left).includes(lq));
+  }
+  if(rightPick){
+    pairs = pairs.filter(p => p.right === rightPick);
+  }
+  {
+    const rq = rightSearchInput.value.trim().toLowerCase();
+    if(rq) pairs = pairs.filter(p => searchableText('right', p.right).includes(rq));
   }
 
   svg.innerHTML = '';
@@ -464,7 +598,7 @@ function render(){
   function drawNode(id, x, y, color, side){
     const g = el('g', {style:'cursor:pointer'});
     const r = rScale(totals[id]);
-    const isSelected = selectedFilter && selectedFilter.side === side && selectedFilter.key === id;
+    const isSelected = (side === 'left' ? leftPick : rightPick) === id;
     g.appendChild(el('circle', {
       cx:x, cy:y, r, fill:color, 'fill-opacity':0.88,
       stroke: isSelected ? '#1A1917' : color, 'stroke-width': isSelected ? 2 : 0.5
@@ -483,11 +617,8 @@ function render(){
     g.addEventListener('mousemove', e=>showTip(html,e));
     g.addEventListener('mouseleave', hideTip);
     g.addEventListener('click', ()=>{
-      if(selectedFilter && selectedFilter.side === side && selectedFilter.key === id){
-        selectedFilter = null;
-      } else {
-        selectedFilter = {side, key:id};
-      }
+      if(side === 'left') leftPick = (leftPick === id) ? null : id;
+      else rightPick = (rightPick === id) ? null : id;
       render();
     });
     nodeLayer.appendChild(g);
