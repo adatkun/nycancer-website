@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shared patient network</title>
+<style>
+  :root{
+    --bg:#F7F6F3; --panel:#FFFFFF; --border:#DCD9D1; --border-strong:#B8B4AA;
+    --text:#26241F; --text-secondary:#68655D; --text-muted:#928E83;
+    --initial:#B5502E; --secondary:#2E7A5B; --accent:#3A6EA5;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);padding:28px 32px 60px;}
+  h1{font-size:20px;font-weight:600;margin:0 0 4px;}
+  .subtitle{font-size:13px;color:var(--text-secondary);margin:0 0 22px;}
+
+  #dropzone{
+    border:1.5px dashed var(--border-strong);border-radius:10px;background:var(--panel);
+    padding:34px 20px;text-align:center;cursor:pointer;transition:border-color .15s, background .15s;
+  }
+  #dropzone.drag{border-color:var(--accent);background:#EEF3F9;}
+  #dropzone p{margin:0;font-size:14px;color:var(--text-secondary);}
+  #dropzone p.main{font-size:15px;color:var(--text);font-weight:600;margin-bottom:4px;}
+  #dropzone input{display:none;}
+
+  #controls{
+    display:none;margin-top:18px;background:var(--panel);border:1px solid var(--border);
+    border-radius:10px;padding:14px 18px;gap:22px;flex-wrap:wrap;align-items:flex-end;
+  }
+  #controls.show{display:flex;}
+  .ctrl{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text-secondary);}
+  .ctrl input[type=text]{font-size:13px;padding:6px 10px;border:1px solid var(--border-strong);border-radius:6px;width:180px;color:var(--text);}
+  .ctrl input[type=range]{width:150px;}
+  .ctrl .val{font-size:12px;color:var(--text);font-weight:600;}
+  #fileMeta{font-size:12px;color:var(--text-muted);margin-left:auto;align-self:center;}
+  #resetBtn{font-size:12px;color:var(--accent);background:none;border:1px solid var(--border-strong);border-radius:6px;padding:7px 12px;cursor:pointer;align-self:center;}
+  #resetBtn:hover{background:#EEF3F9;}
+
+  .toggle-group{display:flex;border:1px solid var(--border-strong);border-radius:6px;overflow:hidden;}
+  .toggle-group button{
+    font-size:12px;padding:6px 12px;border:none;background:var(--panel);color:var(--text-secondary);
+    cursor:pointer;border-right:1px solid var(--border-strong);
+  }
+  .toggle-group button:last-child{border-right:none;}
+  .toggle-group button.active{background:var(--text);color:#fff;}
+  .toggle-group button:hover:not(.active):not(:disabled){background:#EFEDE7;}
+  .toggle-group button:disabled{opacity:.4;cursor:not-allowed;}
+
+  #warnings{margin-top:12px;}
+  .warn{font-size:12px;background:#FBF0E2;border:1px solid #E7C48F;color:#8A5A0F;border-radius:8px;padding:8px 12px;margin-bottom:6px;}
+
+  #filterBar{
+    display:none;margin-top:14px;background:#EEF3F9;border:1px solid #C7D8EA;border-radius:8px;
+    padding:8px 14px;font-size:12px;color:var(--text);align-items:center;gap:10px;
+  }
+  #filterBar.show{display:flex;}
+  #filterBar button{font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;}
+
+  #stage{
+    display:none;margin-top:14px;background:var(--panel);border:1px solid var(--border);
+    border-radius:10px;padding:16px;position:relative;overflow:auto;max-height:78vh;
+  }
+  #stage.show{display:block;}
+  #emptyMsg{font-size:13px;color:var(--text-muted);text-align:center;padding:40px 0;}
+
+  #legend{display:flex;gap:18px;margin-top:12px;font-size:12px;color:var(--text-secondary);flex-wrap:wrap;}
+  .legend-item{display:flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+  #tooltip{
+    position:fixed;pointer-events:none;opacity:0;transition:opacity .1s;
+    background:var(--text);color:#fff;border-radius:6px;padding:8px 11px;
+    font-size:12px;line-height:1.5;max-width:260px;z-index:50;
+  }
+  #tooltip b{font-weight:600;}
+  #tooltip .lbl{color:#C9C6BE;}
+
+  text.node-label{font-size:12px;fill:var(--text);font-weight:600;}
+</style>
+</head>
+<body>
+
+<h1>Shared patient network</h1>
+<p class="subtitle">Drop a CSV to map initial and secondary providers by shared-patient volume. Click a bubble to isolate its connections.</p>
+
+<div id="dropzone">
+  <p class="main">Drop your CSV here</p>
+  <p>or click to browse — expects the standard shared-patients export headers</p>
+  <input type="file" id="fileInput" accept=".csv">
+</div>
+
+<div id="controls">
+  <div class="ctrl">
+    <span>Initial side shows</span>
+    <div class="toggle-group" id="initGroupToggle">
+      <button data-val="provider" class="active">Provider</button>
+      <button data-val="affiliation">Affiliation</button>
+    </div>
+  </div>
+  <div class="ctrl">
+    <span>Secondary side shows</span>
+    <div class="toggle-group" id="secGroupToggle">
+      <button data-val="provider" class="active">Provider</button>
+      <button data-val="affiliation">Affiliation</button>
+    </div>
+  </div>
+  <div class="ctrl">
+    <span>Search</span>
+    <input type="text" id="searchBox" placeholder="Name or affiliation">
+  </div>
+  <div class="ctrl">
+    <span>Minimum shared patients per pair: <span class="val" id="minValLabel">0</span></span>
+    <input type="range" id="minShared" min="0" max="0" value="0">
+  </div>
+  <div class="ctrl">
+    <span>Distance between columns: <span class="val" id="colSpacingLabel">60%</span></span>
+    <input type="range" id="colSpacing" min="20" max="80" value="60">
+  </div>
+  <span id="fileMeta"></span>
+  <button id="resetBtn">Load a different file</button>
+</div>
+
+<div id="filterBar">
+  <span id="filterText"></span>
+  <button id="clearFilterBtn">Clear</button>
+</div>
+
+<div id="warnings"></div>
+
+<div id="stage">
+  <div id="emptyMsg">No pairs match the current filters.</div>
+  <svg id="net" width="100%" style="display:block"></svg>
+</div>
+
+<div id="legend" style="display:none">
+  <span class="legend-item"><span class="dot" style="background:var(--initial)"></span>Initial side</span>
+  <span class="legend-item"><span class="dot" style="background:var(--secondary)"></span>Secondary side</span>
+  <span class="legend-item"><span style="width:20px;height:2px;background:#8A877D;opacity:.3;display:inline-block"></span>Fewer shared patients</span>
+  <span class="legend-item"><span style="width:20px;height:4px;background:#8A877D;opacity:1;display:inline-block"></span>More shared patients</span>
+</div>
+
+<div id="tooltip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+const REQUIRED = {
+  initialProvider: "Initial Provider",
+  initialSpecialty: "Initial Specialty",
+  initialAffiliation: "Initial Primary Affiliation",
+  secondaryProvider: "Secondary Provider",
+  secondarySpecialty: "Secondary Specialty",
+  secondaryAffiliation: "Secondary Primary Affiliation",
+  shared: "Shared Patients"
+};
+
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const controls = document.getElementById('controls');
+const stage = document.getElementById('stage');
+const emptyMsg = document.getElementById('emptyMsg');
+const legend = document.getElementById('legend');
+const warningsEl = document.getElementById('warnings');
+const fileMeta = document.getElementById('fileMeta');
+const searchBox = document.getElementById('searchBox');
+const minShared = document.getElementById('minShared');
+const minValLabel = document.getElementById('minValLabel');
+const colSpacing = document.getElementById('colSpacing');
+const colSpacingLabel = document.getElementById('colSpacingLabel');
+const resetBtn = document.getElementById('resetBtn');
+const tooltip = document.getElementById('tooltip');
+const svg = document.getElementById('net');
+const filterBar = document.getElementById('filterBar');
+const filterText = document.getElementById('filterText');
+const clearFilterBtn = document.getElementById('clearFilterBtn');
+const initGroupToggle = document.getElementById('initGroupToggle');
+const secGroupToggle = document.getElementById('secGroupToggle');
+
+let allRows = [];
+let groupInitial = 'provider';
+let groupSecondary = 'provider';
+let selectedFilter = null; // {side:'left'|'right', key:string}
+let colGapPct = 60;
+
+let initialProviderMeta = {}, secondaryProviderMeta = {};
+let initialAffMeta = {}, secondaryAffMeta = {};
+
+['dragenter','dragover'].forEach(evt=>dropzone.addEventListener(evt, e=>{
+  e.preventDefault(); dropzone.classList.add('drag');
+}));
+['dragleave','drop'].forEach(evt=>dropzone.addEventListener(evt, e=>{
+  e.preventDefault(); dropzone.classList.remove('drag');
+}));
+dropzone.addEventListener('drop', e=>{
+  const f = e.dataTransfer.files[0];
+  if(f) handleFile(f);
+});
+dropzone.addEventListener('click', ()=>fileInput.click());
+fileInput.addEventListener('change', e=>{
+  if(e.target.files[0]) handleFile(e.target.files[0]);
+});
+resetBtn.addEventListener('click', ()=>{
+  allRows = [];
+  selectedFilter = null;
+  fileInput.value = '';
+  controls.classList.remove('show');
+  stage.classList.remove('show');
+  legend.style.display = 'none';
+  filterBar.classList.remove('show');
+  warningsEl.innerHTML = '';
+  svg.innerHTML = '';
+});
+
+function setupToggle(groupEl, onChange){
+  groupEl.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(btn.disabled) return;
+      groupEl.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      onChange(btn.dataset.val);
+      render();
+    });
+  });
+}
+setupToggle(initGroupToggle, val => groupInitial = val);
+setupToggle(secGroupToggle, val => groupSecondary = val);
+
+clearFilterBtn.addEventListener('click', ()=>{ selectedFilter = null; render(); });
+
+colSpacing.addEventListener('input', ()=>{
+  colGapPct = Number(colSpacing.value);
+  colSpacingLabel.textContent = colGapPct + '%';
+  render();
+});
+
+function handleFile(file){
+  fileMeta.textContent = file.name;
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    complete: results => processData(results.data, results.meta.fields || [])
+  });
+}
+
+function processData(rows, headers){
+  warningsEl.innerHTML = '';
+  const missing = Object.values(REQUIRED).filter(h => !headers.includes(h));
+  if(missing.length){
+    const w = document.createElement('div');
+    w.className = 'warn';
+    w.textContent = "Missing column(s): " + missing.join(', ') + ". Rendering with what's available — some fields in the hover cards may be blank.";
+    warningsEl.appendChild(w);
+  }
+
+  allRows = rows
+    .map(r => ({
+      initial: (r[REQUIRED.initialProvider]||'').trim(),
+      initialSpec: (r[REQUIRED.initialSpecialty]||'').trim(),
+      initialAff: (r[REQUIRED.initialAffiliation]||'').trim(),
+      secondary: (r[REQUIRED.secondaryProvider]||'').trim(),
+      secondarySpec: (r[REQUIRED.secondarySpecialty]||'').trim(),
+      secondaryAff: (r[REQUIRED.secondaryAffiliation]||'').trim(),
+      shared: Number(String(r[REQUIRED.shared]||'0').replace(/,/g,'')) || 0
+    }))
+    .filter(r => r.initial && r.secondary && r.shared > 0);
+
+  if(!allRows.length){
+    const w = document.createElement('div');
+    w.className = 'warn';
+    w.textContent = "No usable rows found — check that Initial Provider, Secondary Provider, and Shared Patients are populated.";
+    warningsEl.appendChild(w);
+    controls.classList.remove('show');
+    stage.classList.remove('show');
+    legend.style.display = 'none';
+    return;
+  }
+
+  initialProviderMeta = {}; secondaryProviderMeta = {};
+  initialAffMeta = {}; secondaryAffMeta = {};
+  allRows.forEach(r=>{
+    if(r.initial && !initialProviderMeta[r.initial]) initialProviderMeta[r.initial] = {spec:r.initialSpec, aff:r.initialAff};
+    if(r.secondary && !secondaryProviderMeta[r.secondary]) secondaryProviderMeta[r.secondary] = {spec:r.secondarySpec, aff:r.secondaryAff};
+    if(r.initialAff){
+      if(!initialAffMeta[r.initialAff]) initialAffMeta[r.initialAff] = {specialties:new Set(), providers:new Set()};
+      initialAffMeta[r.initialAff].specialties.add(r.initialSpec);
+      initialAffMeta[r.initialAff].providers.add(r.initial);
+    }
+    if(r.secondaryAff){
+      if(!secondaryAffMeta[r.secondaryAff]) secondaryAffMeta[r.secondaryAff] = {specialties:new Set(), providers:new Set()};
+      secondaryAffMeta[r.secondaryAff].specialties.add(r.secondarySpec);
+      secondaryAffMeta[r.secondaryAff].providers.add(r.secondary);
+    }
+  });
+
+  const maxShared = Math.max(...allRows.map(r=>r.shared));
+  minShared.max = maxShared;
+  minShared.value = 0;
+  minValLabel.textContent = '0';
+  selectedFilter = null;
+
+  controls.classList.add('show');
+  stage.classList.add('show');
+  legend.style.display = 'flex';
+  render();
+}
+
+searchBox.addEventListener('input', render);
+minShared.addEventListener('input', ()=>{ minValLabel.textContent = minShared.value; render(); });
+
+function buildPairs(){
+  const map = new Map();
+  allRows.forEach(r=>{
+    const lk = groupInitial === 'provider' ? r.initial : r.initialAff;
+    const rk = groupSecondary === 'provider' ? r.secondary : r.secondaryAff;
+    if(!lk || !rk) return;
+    const k = lk + '|||' + rk;
+    if(!map.has(k)) map.set(k, {left:lk, right:rk, shared:0});
+    map.get(k).shared += r.shared;
+  });
+  return Array.from(map.values());
+}
+
+function nodeMetaLines(side, key){
+  if(side === 'left'){
+    if(groupInitial === 'provider'){
+      const m = initialProviderMeta[key] || {};
+      return [['Specialty', m.spec || '—'], ['Affiliation', m.aff || '—']];
+    } else {
+      const m = initialAffMeta[key] || {specialties:new Set(), providers:new Set()};
+      return [['Providers', m.providers.size], ['Specialties', Array.from(m.specialties).filter(Boolean).join(', ') || '—']];
+    }
+  } else {
+    if(groupSecondary === 'provider'){
+      const m = secondaryProviderMeta[key] || {};
+      return [['Specialty', m.spec || '—'], ['Affiliation', m.aff || '—']];
+    } else {
+      const m = secondaryAffMeta[key] || {specialties:new Set(), providers:new Set()};
+      return [['Providers', m.providers.size], ['Specialties', Array.from(m.specialties).filter(Boolean).join(', ') || '—']];
+    }
+  }
+}
+
+function updateToggleAvailability(){
+  const leftLocked = !!(selectedFilter && selectedFilter.side === 'left');
+  const rightLocked = !!(selectedFilter && selectedFilter.side === 'right');
+  initGroupToggle.querySelectorAll('button').forEach(b=>{
+    b.disabled = leftLocked;
+    b.title = leftLocked ? 'Clear the current filter to change this' : '';
+  });
+  secGroupToggle.querySelectorAll('button').forEach(b=>{
+    b.disabled = rightLocked;
+    b.title = rightLocked ? 'Clear the current filter to change this' : '';
+  });
+}
+
+function render(){
+  if(!allRows.length) return;
+
+  updateToggleAvailability();
+
+  if(selectedFilter){
+    filterBar.classList.add('show');
+    filterText.innerHTML = 'Showing connections for <b>' + esc(selectedFilter.key) + '</b>';
+  } else {
+    filterBar.classList.remove('show');
+  }
+
+  const q = searchBox.value.trim().toLowerCase();
+  const minVal = Number(minShared.value);
+
+  let pairs = buildPairs().filter(p => p.shared >= minVal);
+  if(q){
+    pairs = pairs.filter(p => p.left.toLowerCase().includes(q) || p.right.toLowerCase().includes(q));
+  }
+  if(selectedFilter){
+    pairs = pairs.filter(p =>
+      (selectedFilter.side === 'left' && p.left === selectedFilter.key) ||
+      (selectedFilter.side === 'right' && p.right === selectedFilter.key)
+    );
+  }
+
+  svg.innerHTML = '';
+  if(!pairs.length){
+    emptyMsg.style.display = 'block';
+    svg.style.display = 'none';
+    return;
+  }
+  emptyMsg.style.display = 'none';
+  svg.style.display = 'block';
+
+  const totals = {};
+  pairs.forEach(p=>{
+    totals[p.left] = (totals[p.left]||0) + p.shared;
+    totals[p.right] = (totals[p.right]||0) + p.shared;
+  });
+
+  const lefts = Array.from(new Set(pairs.map(p=>p.left))).sort((a,b)=>totals[b]-totals[a]);
+  const rights = Array.from(new Set(pairs.map(p=>p.right))).sort((a,b)=>totals[b]-totals[a]);
+
+  const W = Math.max(stage.clientWidth - 32, 640);
+  const rowH = 42;
+  const topPad = 40, botPad = 30;
+  const H = Math.max(560, Math.max(lefts.length, rights.length) * rowH + topPad + botPad);
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.setAttribute('height', H);
+
+  const leftX = W * (50 - colGapPct/2) / 100;
+  const rightX = W * (50 + colGapPct/2) / 100;
+
+  function layout(list){
+    const n = list.length;
+    const usable = H - topPad - botPad;
+    const step = n > 1 ? usable / (n-1) : 0;
+    const start = n > 1 ? topPad : H/2;
+    const map = {};
+    list.forEach((id,i)=>{ map[id] = n>1 ? start + i*step : start; });
+    return map;
+  }
+  const yLeft = layout(lefts);
+  const yRight = layout(rights);
+
+  const maxTotal = Math.max(...Object.values(totals));
+  const maxVal = Math.max(...pairs.map(p=>p.shared));
+  const rScale = t => 10 + (t/maxTotal) * 24;
+  const wScale = v => 1 + (v/maxVal) * 8;
+  const oScale = v => 0.18 + (v/maxVal) * 0.72;
+
+  const ns = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs){
+    const e = document.createElementNS(ns, tag);
+    for(const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  const linkLayer = el('g',{});
+  const nodeLayer = el('g',{});
+  svg.appendChild(linkLayer);
+  svg.appendChild(nodeLayer);
+
+  function showTip(html, e){
+    tooltip.style.opacity = 1;
+    tooltip.innerHTML = html;
+    let left = e.clientX + 14;
+    let top = e.clientY - 10;
+    if(left + 260 > window.innerWidth) left = e.clientX - 274;
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+  }
+  function hideTip(){ tooltip.style.opacity = 0; }
+
+  pairs.forEach(p=>{
+    const line = el('line', {
+      x1:leftX, y1:yLeft[p.left], x2:rightX, y2:yRight[p.right],
+      stroke:'#8A877D', 'stroke-width':wScale(p.shared), 'stroke-opacity':oScale(p.shared),
+      'stroke-linecap':'round', style:'cursor:pointer'
+    });
+    const html = '<b>'+esc(p.left)+'</b> &rarr; <b>'+esc(p.right)+'</b><br><span class="lbl">Shared patients:</span> '+p.shared;
+    line.addEventListener('mouseenter', e=>showTip(html,e));
+    line.addEventListener('mousemove', e=>showTip(html,e));
+    line.addEventListener('mouseleave', hideTip);
+    linkLayer.appendChild(line);
+  });
+
+  function drawNode(id, x, y, color, side){
+    const g = el('g', {style:'cursor:pointer'});
+    const r = rScale(totals[id]);
+    const isSelected = selectedFilter && selectedFilter.side === side && selectedFilter.key === id;
+    g.appendChild(el('circle', {
+      cx:x, cy:y, r, fill:color, 'fill-opacity':0.88,
+      stroke: isSelected ? '#1A1917' : color, 'stroke-width': isSelected ? 2 : 0.5
+    }));
+    const label = el('text', {
+      x: x + (side==='left' ? -(r+8) : (r+8)),
+      y, 'text-anchor': side==='left' ? 'end' : 'start',
+      'dominant-baseline':'central', class:'node-label'
+    });
+    label.textContent = id;
+    g.appendChild(label);
+    const lines = nodeMetaLines(side, id);
+    const html = '<b>'+esc(id)+'</b><br><span class="lbl">Total shared patients:</span> '+totals[id]
+      + lines.map(l => '<br><span class="lbl">'+esc(l[0])+':</span> '+esc(String(l[1]))).join('');
+    g.addEventListener('mouseenter', e=>showTip(html,e));
+    g.addEventListener('mousemove', e=>showTip(html,e));
+    g.addEventListener('mouseleave', hideTip);
+    g.addEventListener('click', ()=>{
+      if(selectedFilter && selectedFilter.side === side && selectedFilter.key === id){
+        selectedFilter = null;
+      } else {
+        selectedFilter = {side, key:id};
+      }
+      render();
+    });
+    nodeLayer.appendChild(g);
+  }
+
+  lefts.forEach(id => drawNode(id, leftX, yLeft[id], getVar('--initial'), 'left'));
+  rights.forEach(id => drawNode(id, rightX, yRight[id], getVar('--secondary'), 'right'));
+}
+
+function getVar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+function esc(s){
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+window.addEventListener('resize', ()=>{ if(allRows.length) render(); });
+</script>
+</body>
+</html>
